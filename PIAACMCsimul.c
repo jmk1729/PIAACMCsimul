@@ -280,6 +280,12 @@ int_fast8_t PIAACMCsimul_run_cli(){
 
 
 
+void __attribute__ ((constructor)) libinit_PIAACMCsimul()
+{
+	init_PIAACMCsimul();
+	printf(" ...... Loading module %s\n", __FILE__);
+}
+
 
 
 
