@@ -107,6 +107,44 @@ set_optconfig=0
 
 
 # refractive PIAA lenses in collimated beam, SiO2 focal plane mask
+function SetConfig_SCExAO_APLCMC_1024 {
+size="1024"
+invPIAAmode=0
+lambda="1650"
+PIAAmaterial="Mirror"
+beamrad="0.00882"
+pscale="0.00002205"
+Fratio="29.422"
+PIAAsep="0.10"
+PIAA0pos="0.0"
+LyotZmin="-0.1"
+LyotZmax="0.1"
+pupoutmaskrad="0.98"
+
+fpmmaterial="SiO2"
+FPMsectors="2"
+
+# LYOT STOP(S) DESIGN
+LStransm="0.90"
+NBls="1"
+
+    echo "setting APLC mode (no PIAA optics)"
+    APLCMC="1"
+    PIAAmode="0"
+    echo "$PIAAmode" > ./conf/conf_PIAAmode.txt
+    PIAAmode="0"
+	prePIAA0maskpos="0"
+	echo "$prePIAA0maskpos" > ./conf/conf_prePIAA0maskpos.txt
+	pupoutmaskrad="1.0"
+	echo "$pupoutmaskrad" > ./conf/conf_pupoutmaskrad.txt
+
+set_optconfig=1
+}
+
+
+
+# refractive PIAA lenses in collimated beam, SiO2 focal plane mask
+
 function SetConfig_PIAACMCnearIRlenses2048 {
 size="2048"
 invPIAAmode=1
@@ -194,6 +232,18 @@ pupoutmaskrad="0.92"
 set_pupil=1
 }
 
+
+
+function loadPup_Subaru1024 {
+exampledir="$srcdir/PIAACMCsimul/examples"
+cp $exampledir/pupSubaruM_1024_200.fits.gz pup_1024.fits.gz
+rm pup_1024.fits 2> /dev/null
+gunzip pup_1024.fits.gz
+coin="0.3175"
+coout="0.2"
+pupoutmaskrad="0.95"
+set_pupil=1
+}
 
 
 function loadPup_Subaru2048 {
@@ -298,6 +348,7 @@ echo "                           0 : Subaru PIAACMC, H band, 2048 pix array"
 echo "                           1 : WFIST PIAACMC, visible (default), 1024 pix array"
 echo "                           2 : PIAACMC on 3-rings segmented aperture, visible, 1024 pix array"
 echo "                           3 : LUVOIR visible, 1024 pix array"
+echo "                           4 : Subaru APLCMC, H band, 1024 pix array (-a not needed), 2% band"
 echo "     $(tput bold)-l$(tput sgr0)              List design parameters"
 echo "     $(tput bold)-m$(tput sgr0) <step>       Design PIAACMC step <step>"
 echo "                      1-18 : design monochromatic PIAACMC up to this step"
@@ -532,12 +583,15 @@ fi
 
 
 if [ "$SETparams" = "1" ]; then
+
 # Subaru PIAACMC
 if [ "$DesignExampleIndex" -eq 0 ]; then
 loadPup_Subaru2048
 SetConfig_PIAACMCnearIRlenses2048
 SetOptParam
 fi
+
+
 
 # WFIRST optical
 if [ "$DesignExampleIndex" -eq 1 ]; then
@@ -560,6 +614,22 @@ loadPup_LUVOIR1024
 SetConfig_PIAACMCvisMirrorGregorian1024
 SetOptParam
 fi
+
+
+# Subaru APLCMC
+if [ "$DesignExampleIndex" -eq 4 ]; then
+loadPup_Subaru1024
+SetConfig_SCExAO_APLCMC_1024
+SetOptParam
+NBrings="24"
+fpmradld="1.2"
+fpmmaterial="CstPha"
+fpmminsag="-0.5e-6"
+fpmmaxsag="0.5e-6"
+lambdaB="2"    # spectral band (%)
+mlambdaB="$lambdaB"
+fi
+
 
 fi
 

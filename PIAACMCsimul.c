@@ -1459,7 +1459,7 @@ int PIAAsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0
     IDPA = create_2Dimage_ID("PAcoord", size, size);
     printf("pre-computing x, y, r, and PA\n");
     fflush(stdout);
-    list_image_ID();
+   // list_image_ID();
 
     for(ii=0; ii<size; ii++)
     {
@@ -2063,7 +2063,7 @@ int PIAAsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0
 
     // ============= MAKE LYOT STOPS =======================
     printf("LOADING/CREATING LYOT MASK  - %ld masks  (PIAAmode = %d, %ld x %ld)\n", piaacmc[0].NBLyotStop, piaacmc[0].PIAAmode, xsize, ysize);
-    list_image_ID();
+   // list_image_ID();
     size2 = size*size;
 
 	
@@ -6189,10 +6189,10 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
                             // safely remove image with this name
                             delete_image_ID("tmpFPMresp");
-                            list_image_ID();
+                          //  list_image_ID();
                             // try to load the final child's partial FPMresp file
                             ID1 = load_fits(fname, "tmpFPMresp", 1);
-                            list_image_ID();
+                          //  list_image_ID();
                         }
                         // we found this child's partial FPMresp file!
                         // now insert it into our combined FPMresp file
@@ -9185,7 +9185,7 @@ long PIAACMCsimul_CA2propCubeInt(const char *IDamp_name, const char *IDpha_name,
     printf("PIAACMCsimul_CA2propCubeInt   : %s %s %f %f %ld %s\n", IDamp_name, IDpha_name, zmin, zmax, NBz, IDout_name);
     fflush(stdout);
     
-    list_image_ID();
+  //  list_image_ID();
     
     IDa = image_ID(IDamp_name);
     xsize = data.image[IDa].md[0].size[0];
@@ -9341,11 +9341,11 @@ int PIAACMCsimul_run(const char *confindex, long mode)
         i = 0;
 
         // while not exceed searchtime or no stop file
-		ret = system("touch start.loop.ttxt");
+		//ret = system("touch start.loop.ttxt");
         while((loopOK==1)&&(i<1000000))
         {
-			sprintf(command, "touch start.iter%05ld.ttxt", i);
-			ret = system(command);
+			//sprintf(command, "touch start.iter%05ld.ttxt", i);
+			//ret = system(command);
 			
             // read in the real searchtime nominally set by the bash script
             sprintf(fname, "searchtime.txt");
@@ -9357,8 +9357,8 @@ int PIAACMCsimul_run(const char *confindex, long mode)
             }
 
 
-			sprintf(command, "touch step00.iter%05ld.ttxt", i);
-			ret = system(command);
+			//sprintf(command, "touch step00.iter%05ld.ttxt", i);
+			//ret = system(command);
 
             loopin = 1; // loop has been initialized
             if((i<1))
@@ -9405,8 +9405,8 @@ int PIAACMCsimul_run(const char *confindex, long mode)
             else
                 zeroST = 0;
 
-			sprintf(command, "touch step01.iter%05ld.ttxt", i);
-			ret = system(command);
+			//sprintf(command, "touch step01.iter%05ld.ttxt", i);
+			//ret = system(command);
 
             // zeroST = 3 => starting point is best solution found so far.  Same as zeroST=2
             // this flags that it's this value 'cause it's third iteration
@@ -9460,8 +9460,8 @@ int PIAACMCsimul_run(const char *confindex, long mode)
 
             }
             
-            sprintf(command, "touch step02.iter%05ld.ttxt", i);
-			ret = system(command);
+            //sprintf(command, "touch step02.iter%05ld.ttxt", i);
+			//ret = system(command);
             
 
             // actually do the optmization
@@ -9489,8 +9489,8 @@ int PIAACMCsimul_run(const char *confindex, long mode)
             // set the name of the stopfile
             sprintf(stopfile, "%s/stoploop13.txt", piaacmcconfdir);
 
-			sprintf(command, "touch step03.iter%05ld.ttxt", i);
-			ret = system(command);
+			//sprintf(command, "touch step03.iter%05ld.ttxt", i);
+			//ret = system(command);
 
 
             // on first iteration load the best _value_ if it exists
@@ -9508,16 +9508,16 @@ int PIAACMCsimul_run(const char *confindex, long mode)
                 }
             }
 
-			sprintf(command, "touch step04.iter%05ld.ttxt", i);
-			ret = system(command);
+			//sprintf(command, "touch step04.iter%05ld.ttxt", i);
+			//ret = system(command);
 
             printf("\n\n\n\n======= val = %g [%g]\n", PIAACMCSIMUL_VAL, bestval);
             fflush(stdout);
 
             if(PIAACMCSIMUL_VAL<bestval) // PIAACMCSIMUL_VAL was set in PIAACMCsimul_exec()
             {
-				sprintf(command, "touch step05.iter%05ld.ttxt", i);
-				ret = system(command);
+				//sprintf(command, "touch step05.iter%05ld.ttxt", i);
+				//ret = system(command);
 			
                 // we have a better solution!
                 bOK = 1;
@@ -9561,8 +9561,8 @@ int PIAACMCsimul_run(const char *confindex, long mode)
                 sprintf(command, "touch %s/newbestsol.txt", piaacmcconfdir);
                 r = system(command);
             
-				sprintf(command, "touch step06.iter%05ld.ttxt", i);
-				ret = system(command);
+				//sprintf(command, "touch step06.iter%05ld.ttxt", i);
+				//ret = system(command);
             }
 
             // add current solution (possibly not best) to the mode13...opt.txt file
@@ -9577,8 +9577,8 @@ int PIAACMCsimul_run(const char *confindex, long mode)
                 fOK = 1;
             }
 
-			sprintf(command, "touch step07.iter%05ld.ttxt", i);
-			ret = system(command);
+			//sprintf(command, "touch step07.iter%05ld.ttxt", i);
+			//ret = system(command);
 			
             // open mode13...opt.txt for adding and write current value
             fp = fopen(fname, "a");
@@ -9606,8 +9606,8 @@ int PIAACMCsimul_run(const char *confindex, long mode)
             else
                 printf("File \"%s\" not found\n", stopfile);
 
-			sprintf(command, "touch step08.iter%05ld.ttxt", i);
-			ret = system(command);
+			//sprintf(command, "touch step08.iter%05ld.ttxt", i);
+			//ret = system(command);
 
             gettimeofday(&end, NULL);
 
@@ -9621,8 +9621,8 @@ int PIAACMCsimul_run(const char *confindex, long mode)
             fprintf(fp, "%12.3f    %12.3f\n", 1.0e-6*micros_used, searchtime);
             fclose(fp);
 
-			sprintf(command, "touch step09.iter%05ld.ttxt", i);
-			ret = system(command);
+			//sprintf(command, "touch step09.iter%05ld.ttxt", i);
+			//ret = system(command);
 
             // check to see if time has run out
             if(micros_used > 1000000.0*searchtime) // searchtime is in seconds
@@ -9631,8 +9631,8 @@ int PIAACMCsimul_run(const char *confindex, long mode)
 				ret = system("touch stop.time_elapsed.ttxt");
 			}
 			
-			sprintf(command, "touch step10.iter%05ld.ttxt", i);
-			ret = system(command);
+			//sprintf(command, "touch step10.iter%05ld.ttxt", i);
+			//ret = system(command);
         }
 
 
