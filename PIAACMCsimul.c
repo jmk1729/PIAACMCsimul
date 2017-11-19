@@ -302,7 +302,7 @@ int_fast8_t init_PIAACMCsimul()
 	#endif
 	
     strcpy(data.module[data.NBmodule].name, __FILE__);
-    strcpy(data.module[data.NBmodule].info, "falcon  - PIAACMC system simulation");
+    strcpy(data.module[data.NBmodule].info, "coffee  - PIAACMC system simulation");
     data.NBmodule++;
 
    strcpy(data.cmd[data.NBcmd].key,"piaacmcsimring2sect");
