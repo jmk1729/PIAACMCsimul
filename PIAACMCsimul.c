@@ -302,7 +302,7 @@ int_fast8_t init_PIAACMCsimul()
 	#endif
 	
     strcpy(data.module[data.NBmodule].name, __FILE__);
-    strcpy(data.module[data.NBmodule].info, "PIAACMC system simulation");
+    strcpy(data.module[data.NBmodule].info, "falcon  - PIAACMC system simulation");
     data.NBmodule++;
 
    strcpy(data.cmd[data.NBcmd].key,"piaacmcsimring2sect");
@@ -1064,6 +1064,8 @@ int PIAAsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0
     double coeff;
 
 
+
+
 	#ifdef PIAASIMUL_LOGFUNC0
 		PIAACMCsimul_logFunctionCall("PIAACMCsimul.fcall.log", __FUNCTION__, __LINE__, "");
 	#endif
@@ -1621,8 +1623,6 @@ int PIAAsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0
 
 
 
-
-
     if((piaacmc[0].piaa0CmodesID==-1)||( piaacmc[0].piaa0FmodesID==-1)||(piaacmc[0].piaa1CmodesID==-1)||( piaacmc[0].piaa1FmodesID==-1))
     {
         sprintf(fname, "%s/apo2Drad.fits", piaacmcconfdir);
@@ -1694,7 +1694,6 @@ int PIAAsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0
 
             }
         }
-        
         
         
 
