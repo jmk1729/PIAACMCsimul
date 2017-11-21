@@ -1,11 +1,13 @@
 # Getting Started {#page_PIAACMCsimul_GettingStarted}
 
 
+
+
 ## Copy scripts to local directory
 
 Create symbolic link to CLI in system or user path:
 	
-	sudo ln -s /<fullpath>/bin/FALCON /usr/local/bin/PIAACMCdesign
+	sudo ln -s /<fullpath>/bin/coffee /usr/local/bin/coffee
 
 Create symbolic link to syncscripts into work directory:
 
@@ -16,8 +18,17 @@ Import and setup scripts in work directory (run from <workdir>):
 
 	./syncscripts
 
+Examples can be loaded in `./examples/` with:
+
+	./syncscripts -x
+
+
+
 
 ## Configuration Setup
+
+
+### Setup from main script pre-defined configurations
 
 Print help for top level script:
 
@@ -31,9 +42,19 @@ This will configure all necessary files for a specific configuration. You can vi
 
 	./runPIAACMCdesign -l
 	
-If optimizing in APLC mode (no PIAA optics), type (after the -e command above):
+If optimizing in APLC mode (no PIAA optics, type (after the -e command above):
 
 	./runPIAACMCdesign -a
+	
+	
+### Setup from example script
+
+If examples are loaded, one of the `example/setup_XXXX` script can be copied in the working directory and executed to setup the corresponding configuration
+	
+
+
+
+
 
 ## Design
 
@@ -49,6 +70,9 @@ Note that this may take a long time to run ... (days ?). The polychromatic desig
 
 - Construct response to focal plane mask zones if it does not already exist. This step runs in tmux sessions, and will write a FPMresp...fits file
 - Execute a search for best solution.
+
+
+
 
 
 ## Focal plane optimization
@@ -67,6 +91,9 @@ In the search mode, the code runs for a pre-determined amount of time. You can t
 You can also stop the search at anytime by:
 
 	touch piaacmcconf_i000/stoploop13.txt
+
+
+
 
 ## Inspecting results
 

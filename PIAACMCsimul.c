@@ -1009,6 +1009,27 @@ void PIAACMCsimul_free( void )
 
 
 
+
+
+
+
+
+
+
+/**
+ * 
+ * # List of Configuration Parameters {#page_PIAACMCsimul_Configuration}
+ * 
+ * Each parameter is stored on disk as conf/conf_<param>.txt
+ * 
+ * 
+ * 
+ * 
+ */
+
+
+
+
 /**
  * @brief Creates/initializes piaacmcconf structure and directory
  *

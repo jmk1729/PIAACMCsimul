@@ -38,6 +38,7 @@ echo "     $(tput bold)-h$(tput sgr0)              (h)elp"
 echo "     $(tput bold)-e$(tput sgr0) <DESTdir>    (e)xport syncscript to directory"
 echo "     $(tput bold)-s$(tput sgr0) <SRCdir>     (s)ource directory for scripts"
 echo "     $(tput bold)-d$(tput sgr0)              har(d) copy instead of symbolic link"
+echo "     $(tput bold)-x$(tput sgr0)              copy e(x)amples"
 echo "     $(tput bold)-t$(tput sgr0)              (t)est mode. Do not write/remove file, show commands to be executed"
 echo "     $(tput bold)-c$(tput sgr0)              (c)lear all files in directory (USE WITH CARE)"
 echo ""
@@ -48,7 +49,7 @@ echo "------------------------------------------------------------------------"
 
 
 # copy PIAACMC design scripts to local directory
-execname="PIAACMCdesign"
+execname="coffee"
 srcdir=$( $execname -i 2> /dev/null | grep SOURCEDIR| awk '{ print $NF }')
 destdir=$( pwd )
 
@@ -57,8 +58,9 @@ destdir=$( pwd )
 # ================= OPTIONS =============================
 
 HARD="0"
+EXAMPLES="0"
 TESTMODE="0"
-while getopts :htcs:e:d FLAG; do
+while getopts :htcs:e:dx FLAG; do
   case $FLAG in
     h)  #show help
       printHELP
@@ -84,20 +86,17 @@ while getopts :htcs:e:d FLAG; do
     if [ $TESTMODE = "1" ]; then
 	echo "TEST MODE - COMMAND  :  rm $OPTARG/syncscripts 2> /dev/null"
 	echo "TEST MODE - COMMAND  :  ln -s $srcdir/syncscripts $OPTARG/syncscripts"
-#	echo "TEST MODE - COMMAND  :  "
-#	echo "TEST MODE - COMMAND  :  "	
 	else
     rm $OPTARG/syncscripts 2> /dev/null
     ln -s $srcdir/syncscripts $OPTARG/syncscripts
-#    execname=$( ls $srcdir/../bin/ )
-#    echo "rm $OPTARG/PIAACMCdesign 2> /dev/null"
-#    echo "execname = \"$execname\""
-#    ln -s $srcdir/../bin/$execname $OPTARG/PIAACMCdesign
     fi
     exit
     ;;
     d)
     HARD="1"
+    ;;
+    x)
+    EXAMPLES="1"
     ;;
     \?) #unrecognized option - show help
       echo -e \\n"Option -${BOLD}$OPTARG${NORM} not allowed."
@@ -176,6 +175,11 @@ sudo apt-get install inotify-tools
 sudo cp $srcdir/PIAACMCsimul/scripts/waitforfile /usr/local/bin/
 touch piaacmcscriptsinit.txt
 fi
+fi
+
+
+if [ $EXAMPLES = "1" ]; then
+rsync -au --progress $srcdir/PIAACMCsimul/examples $destdir/
 fi
 
 

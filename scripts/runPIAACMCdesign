@@ -10,7 +10,7 @@ pname=`echo "$0" | sed "s/\.\///g"`
 
 
 
-
+# load parameter
 function loadparam() {
 mkdir -p conf
 file="conf/conf_$1.txt"
@@ -33,7 +33,7 @@ fi
 
 
 # copy PIAACMC design scripts to local directory
-execname="PIAACMCdesign"
+execname="coffee"
 srcdir=$( $execname -i 2> /dev/null | grep SOURCEDIR| awk '{ print $NF }')
 destdir=$( pwd )
 
@@ -634,7 +634,7 @@ loadPup_Subaru1024
 SetConfig_SCExAO_APLCMC_1024
 SetOptParam
 NBrings="12"
-fpmradld="0.5"
+fpmradld="1.0"
 fpmmaterial="CstPha"
 fpmminsag="-0.5e-6"
 fpmmaxsag="0.5e-6"

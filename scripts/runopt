@@ -1,6 +1,6 @@
 #!/bin/bash
 
-execname="PIAACMCdesign"
+execname="coffee"
 
 size=1024 # default
 file="./conf/conf_size.txt"
