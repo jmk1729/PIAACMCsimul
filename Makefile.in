@@ -130,7 +130,8 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libpiaacmcsimul_la_LIBADD =
-am_libpiaacmcsimul_la_OBJECTS = PIAACMCsimul.lo
+am_libpiaacmcsimul_la_OBJECTS = PIAACMCsimul.lo \
+	PIAACMCsimul_initpiaacmcconf.lo
 libpiaacmcsimul_la_OBJECTS = $(am_libpiaacmcsimul_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -327,7 +328,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = libpiaacmcsimul.la
-libpiaacmcsimul_la_SOURCES = PIAACMCsimul.c PIAACMCsimul.h
+libpiaacmcsimul_la_SOURCES = PIAACMCsimul.c PIAACMCsimul_initpiaacmcconf.c PIAACMCsimul.h
 EXTRA_DIST = scripts
 AM_CPPFLAGS = -I@abs_top_srcdir@/src -fopenmp
 all: all-am
@@ -409,6 +410,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_initpiaacmcconf.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\

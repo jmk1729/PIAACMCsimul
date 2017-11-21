@@ -1,5 +1,5 @@
 lib_LTLIBRARIES = libpiaacmcsimul.la
-libpiaacmcsimul_la_SOURCES = PIAACMCsimul.c PIAACMCsimul.h
+libpiaacmcsimul_la_SOURCES = PIAACMCsimul.c PIAACMCsimul_initpiaacmcconf.c PIAACMCsimul.h
 
 EXTRA_DIST = scripts
 

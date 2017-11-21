@@ -6,6 +6,90 @@
 #define ApoFitCosFact 1.0
 
 
+
+
+
+//
+// *****************************************************************************************************
+// -------------------------- structure holding global variables ---------------------------------------
+// *****************************************************************************************************
+
+typedef struct {
+	
+	char piaacmcconfdir[300];          ///  Current configuration directory
+	int optsystinit;
+	
+	int FORCE_CREATE_Cmodes;
+	int CREATE_Cmodes;
+	int FORCE_CREATE_Fmodes;
+	int CREATE_Fmodes;
+
+	int FORCE_CREATE_fpmzmap;
+	int CREATE_fpmzmap;
+	int FORCE_CREATE_fpmzt;
+	int CREATE_fpmzt;
+
+	int FORCE_CREATE_fpmza;
+	int CREATE_fpmza;
+
+	int FORCE_MAKE_PIAA0shape;
+	int MAKE_PIAA0shape;
+	int FORCE_MAKE_PIAA1shape;
+	int MAKE_PIAA1shape;	
+	
+	int focmMode; // if != -1, compute only impulse response to corresponding zone
+	int PIAACMC_FPMsectors;
+	
+	double FPMSCALEFACTOR;	/// undersize mask in array to avoid edge clipping
+
+	double LAMBDASTART;
+	double LAMBDAEND;
+	
+	float PIAACMC_MASKRADLD;
+	
+	// for minimization
+	double *fpmresp_array;
+	double *zonez_array;
+	double *zonez0_array;
+	double *zonez1_array;
+	double *zonezbest_array;
+	double *dphadz_array;
+	double *outtmp_array;
+	long LOOPCNT;
+	
+	long vsize;
+	
+	double CnormFactor; // for contrast normalization
+	
+	int computePSF_FAST_FPMresp;
+	int computePSF_ResolvedTarget; // source size = 1e-{0.1*computePSF_ResolvedTarget}
+	int computePSF_ResolvedTarget_mode; // 0: source is simulated as 3 points, 1: source is simulated as 6 points
+	int PIAACMC_FPM_FASTDERIVATIVES;
+	
+	double SCORINGTOTAL;
+	double MODampl;
+	int SCORINGMASKTYPE;
+	int PIAACMC_save;
+//	float PIAACMC_MASKregcoeff;
+	int PIAACMC_fpmtype; // 0 for idealized PIAACMC focal plane mask, 1 for physical focal plane mask
+	
+	long PIAACMC_FPMresp_mp;
+	long PIAACMC_FPMresp_thread;
+	
+	int WRITE_OK;
+	
+	double PIAACMCSIMUL_VAL;
+	double PIAACMCSIMUL_VAL0;
+	double PIAACMCSIMUL_VALREF;
+	
+	} PIAACMCsimul_var;
+
+
+
+
+
+
+
 //
 // *****************************************************************************************************
 // -------------------------- structure defining a reflective PIAACMC system ---------------------------
