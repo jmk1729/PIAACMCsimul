@@ -72,8 +72,8 @@ echo "1.50" > ./conf/conf_PIAAr1lim.txt           # PIAA element 1 oversizing
 
 # LYOT STOP(s)
 echo "1" > ./conf/conf_NBls.txt                   # Number of Lyot stops
-echo "-0.2" > ./conf/conf_LyotZmin.txt            # conjugation range for Lyot stop (min)
-echo "0.2" > ./conf/conf_LyotZmax.txt             # conjugation range for Lyot stop (max)
+echo "-0.05" > ./conf/conf_LyotZmin.txt            # conjugation range for Lyot stop (min)
+echo "0.1" > ./conf/conf_LyotZmax.txt             # conjugation range for Lyot stop (max)
 
 
 

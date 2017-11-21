@@ -1104,8 +1104,6 @@ void PIAACMCsimul_free( void )
  * | LyotZmin               | minimum value for Lyot stop(s) conjugation range [m] - relative to element named "post focal plane mask pupil"
  * | LyotZmax               | maximum value for Lyot stop(s) conjugation range [m] - relative to element named "post focal plane mask pupil"
  * | pupoutmaskrad          | output pupil mask radius (scaled to pupil radius)
- 
-
  * 
  * 
  */
@@ -5728,13 +5726,18 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-    case 2 : // optimize focal plane mask transmission for monochromatic idealized PIAACMC
-        // for monochromatic, idealized PIAACMC, find the scalar transimssion of the uniform focal plane mask
-        // that provides best contrast in the evaluation zone
-        // very similar to the Lyot stop search in mode 1: iterative refined marching, changing the
-        // the transmission value piaacmc[0].fpmaskamptransm, which
-        // is between 0 and 1 (with Olivier's sign convention)
-        // uses single on-axis light source
+    case 2 : 
+		/** # PIAACMCsimul_exec mode 2 {#PIAACMCsimul_exec_mode02}
+		
+		Optimize focal plane mask transmission for monochromatic idealized PIAACMC
+        for monochromatic, idealized PIAACMC, find the scalar transimssion of the uniform focal plane mask
+        that provides best contrast in the evaluation zone
+        very similar to the Lyot stop search in mode 1: iterative refined marching, changing the
+        the transmission value piaacmc[0].fpmaskamptransm, which
+        is between 0 and 1 (with Olivier's sign convention)
+        uses single on-axis light source
+        **/
+        
         printf("=================================== mode 002 ===================================\n");
 
         // init as in mode 0
