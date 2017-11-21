@@ -181,7 +181,8 @@ This step takes about 2hr.
 
 ## STEP 005 (mode = 2): Optimize focal plane mask transmission, 1st pass
 
-See source code: @ref PIAACMCsimul_exec_mode02
+See source code in PIAACMCsimul_exec()
+
 
 Optimizes the focal plane mask transmission. Results are written in file `result_fpmt.log`
 
