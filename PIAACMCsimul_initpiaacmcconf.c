@@ -12,7 +12,7 @@
  * 
  */
 
-// System include
+// System includes
 
 #include <stdint.h>
 #include <string.h>
@@ -47,10 +47,6 @@ int clock_gettime(int clk_id, struct mach_timespec *t){
 #endif
 
 // External libraries
-
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_multimin.h>
-#include <gsl/gsl_vector.h>
 #include <fitsio.h>
 
 
@@ -96,6 +92,116 @@ extern PIAACMCsimul_var piaacmcsimul_var;
 extern OPTSYST *optsyst;
 
 extern OPTPIAACMCDESIGN *piaacmc;
+
+
+
+
+
+
+
+
+
+
+/**
+ * 
+ * # List of Configuration Parameters {#page_PIAACMCsimul_Configuration}
+ * 
+ * Each parameter is stored on disk as conf/conf_<param>.txt
+ * 
+ * 
+ * 
+ * 
+ * PIAA OPTICS DESIGN: 
+ * 
+ * | Parameter              | Meaning                                                  |
+ * | ---------------------- | -------------------------------------------------------- |
+ * | PIAAmode               | PIAA mode (0: classical apodization, 1: PIAA)            |
+ * | fpmradld               | Focal plane mask radius [l/D]                            |
+ * | PIAAcoeff              | Fraction of PIAA apodization                             |
+ * | coin                   | Central obstruction at input beam [beam radius]          |
+ * | coout                  | Central obstruction at output beam [beam radius]
+ * | PIAAmaterial           | PIAA optics material
+ * | PIAAcirc               | FLAG: 1 if PIAA shapes are circular (no Fourier modes)
+ * | REGPIAACCOEFF          | PIAA regularization amplitude, cosine modes
+ * | REGPIAACALPHA          | PIAA regularization power law, cosine modes
+ * | REGPIAAFCOEFF          | PIAA regularization amplitude, Fourier modes
+ * | REGPIAAFALPHA          | PIAA regularization power law, Fourier modes
+ *
+ * 
+ * LYOT STOP(S) DESIGN:          
+ * 
+ * | Parameter              | Meaning                                                  |
+ * | ---------------------- | -------------------------------------------------------- |
+ * | LStransm               | Lyot stop transmission
+ * | NBls                   | Number of Lyot stops
+ * | lambda                 | Wavelength for monochromatic design [nm]
+ * 
+ * 
+ * 
+ * 
+ * FOCAL PLANE MASK DESIGN: 
+ * 
+ * 
+ * | Parameter              | Meaning                                                  |
+ * | ---------------------- | -------------------------------------------------------- |
+ * | fpmmaterial            | focal plane mask material
+ * | FPMsectors             | mask geometry: 0=disk, 1=sectors, 2=hexagonal tiling
+ * | NBrings                | number of rings in focal plane mask
+ * | maskradld              | mask outer radius at central wavelength [l/D]
+ * | fpmminsag              | min focal plane mask sag
+ * | fpmmaxsag              | max focal plane mask sag
+ * | fpmregsag_coeff        | sag regularization coefficient
+ * | fpmregsag_alpha        | sag regularization coefficient exponent
+ * | fpmccnbr               | how many central rings replaced by cone (set to 0 if no central cone
+ * | fpmccz                 | sag at cone center (sag at cone edge will be midpoint between minsag and maxsag)
+ * | fpmocradld             | outer cone outer radius [l/D]
+ * | fpmocz                 | sag at inner edge of outer cone (sag = 0 at outer edge), set to 0 if no outer cone
+ * 
+ * 
+ * 
+ * OPTIMIZATION PARAMETERS: 
+ * 
+ * | Parameter              | Meaning                                                  |
+ * | ---------------------- | -------------------------------------------------------- |
+ * | mlambda                | central wavelength for polychromatic design [nm]
+ * | mlambdaB               | spectral bandwidth [%]
+ * | nblambda               | Number of wavelength values
+ * | ssize                  | source angular size for mask optimization (20: 0.01 l/D; 10: 0.1 l/D)
+ * | extmode                | source extent mode (0: 1 point, 1: 3 points; 2: 6 points)
+ * 
+ * 
+ * 
+ * OPTICAL DESIGN: 
+ * 
+ * 
+ * | Parameter              | Meaning                                                  |
+ * | ---------------------- | -------------------------------------------------------- |
+ * | size                   | array size
+ * | beamrad                | beam radius [mm]
+ * | pscale                 | pixel scale in pupil [m/pix]
+ * | Fratio                 | F ratio at focal plane mask
+ * | PIAAr0lim              | outer edge of PIAA optic 0 [beam radius unit]
+ * | PIAAr1lim              | outer edge of PIAA optic 1 [beam radius unit]
+ * | PIAAsep                | distance between PIAA optics [m]
+ * | PIAA0pos               | PIAA optic 0 distance from pupil plane [m]
+ * | invPIAAmode            | 0: no inv PIAA, 1: inv PIAA after Lyot stops, 2: inv PIAA before Lyot stops
+ * | prePIAA0maskpos        | pre-PIAA optic 0 mask distance from pupil plane [m] (if prePIAA0mask.fits exists)
+ * | postPIAA0maskpos       | post-PIAA optic 0 mask distance from pupil plane [m] (if postPIAA0mask.fits exits)
+ * | piaaNBCmodesmax        | maximum number of radial cosine modes for PIAA optics
+ * | piaaCPAmax             | maximum spatial frequency (CPA) for PIAA optics
+ * | LyotZmin               | minimum value for Lyot stop(s) conjugation range [m] - relative to element named "post focal plane mask pupil"
+ * | LyotZmax               | maximum value for Lyot stop(s) conjugation range [m] - relative to element named "post focal plane mask pupil"
+ * | pupoutmaskrad          | output pupil mask radius (scaled to pupil radius)
+ * 
+ * 
+ */
+
+
+
+
+
+
+
 
 
 

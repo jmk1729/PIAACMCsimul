@@ -131,7 +131,21 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libpiaacmcsimul_la_LIBADD =
 am_libpiaacmcsimul_la_OBJECTS = PIAACMCsimul.lo \
-	PIAACMCsimul_initpiaacmcconf.lo
+	PIAACMCsimul_initpiaacmcconf.lo \
+	PIAACMCsimul_loadsavepiaacmcconf.lo PIAACMCsimul_init.lo \
+	PIAACMCsimul_free.lo PIAACMCsimul_mkFPM_zonemap.lo \
+	PIAACMCsimul_exec.lo PIAACMCsimul_mkFocalPlaneMask.lo \
+	PIAACMCsimul_rings2sectors.lo PIAACMCsimul_makePIAAshapes.lo \
+	PIAACMCsimul_mkPIAAMshapes_from_RadSag.lo PIAACMCsimul_run.lo \
+	PIAACMCsimul_CA2propCubeInt.lo PIAACMCsimul_computePSF.lo \
+	PIAACMC_FPM_process.lo PIAACMC_FPMresp_resample.lo \
+	PIAACMC_FPMresp_rmzones.lo PIAACMC_f_evalmask.lo \
+	PIAACMCsimul_achromFPMsol_eval_zonezderivative.lo \
+	PIAACMCsimul_achromFPMsol_eval.lo \
+	PIAACMCsimul_optimizeLyotStop.lo PIAACMCsimul_mkLyotMask.lo \
+	PIAAsimul_mkSimpleLyotStop.lo \
+	PIAACMCsimul_init_geomPIAA_rad.lo \
+	PIAACMCsimul_load2DRadialApodization.lo
 libpiaacmcsimul_la_OBJECTS = $(am_libpiaacmcsimul_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -328,7 +342,21 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = libpiaacmcsimul.la
-libpiaacmcsimul_la_SOURCES = PIAACMCsimul.c PIAACMCsimul_initpiaacmcconf.c PIAACMCsimul.h
+libpiaacmcsimul_la_SOURCES = PIAACMCsimul.c \
+	PIAACMCsimul_initpiaacmcconf.c \
+	PIAACMCsimul_loadsavepiaacmcconf.c PIAACMCsimul_init.c \
+	PIAACMCsimul_free.c PIAACMCsimul_mkFPM_zonemap.c \
+	PIAACMCsimul_exec.c PIAACMCsimul_mkFocalPlaneMask.c \
+	PIAACMCsimul_rings2sectors.c PIAACMCsimul_makePIAAshapes.c \
+	PIAACMCsimul_mkPIAAMshapes_from_RadSag.c PIAACMCsimul_run.c \
+	PIAACMCsimul_CA2propCubeInt.c PIAACMCsimul_computePSF.c \
+	PIAACMC_FPM_process.c PIAACMC_FPMresp_resample.c \
+	PIAACMC_FPMresp_rmzones.c PIAACMC_f_evalmask.c \
+	PIAACMCsimul_achromFPMsol_eval_zonezderivative.c \
+	PIAACMCsimul_achromFPMsol_eval.c \
+	PIAACMCsimul_optimizeLyotStop.c PIAACMCsimul_mkLyotMask.c \
+	PIAAsimul_mkSimpleLyotStop.c PIAACMCsimul_init_geomPIAA_rad.c \
+	PIAACMCsimul_load2DRadialApodization.c PIAACMCsimul.h
 EXTRA_DIST = scripts
 AM_CPPFLAGS = -I@abs_top_srcdir@/src -fopenmp
 all: all-am
@@ -409,8 +437,31 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMC_FPM_process.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMC_FPMresp_resample.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMC_FPMresp_rmzones.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMC_f_evalmask.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_CA2propCubeInt.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_achromFPMsol_eval.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_achromFPMsol_eval_zonezderivative.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_computePSF.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_exec.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_free.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_init.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_init_geomPIAA_rad.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_initpiaacmcconf.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_load2DRadialApodization.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_loadsavepiaacmcconf.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_makePIAAshapes.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_mkFPM_zonemap.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_mkFocalPlaneMask.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_mkLyotMask.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_mkPIAAMshapes_from_RadSag.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_optimizeLyotStop.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_rings2sectors.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_run.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAAsimul_mkSimpleLyotStop.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
