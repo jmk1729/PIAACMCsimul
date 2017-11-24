@@ -225,11 +225,12 @@ int_fast8_t init_PIAACMCsimul()
 	#endif
 	
     strcpy(data.module[data.NBmodule].name, __FILE__);
-    strcpy(data.module[data.NBmodule].info, "coffee  - PIAACMC system simulation");
+    strcpy(data.module[data.NBmodule].package, "coffee");
+    strcpy(data.module[data.NBmodule].info, "PIAACMC system simulation");
     data.NBmodule++;
 
-   strcpy(data.cmd[data.NBcmd].key,"piaacmcsimring2sect");
-    strcpy(data.cmd[data.NBcmd].module,__FILE__);
+    strcpy(data.cmd[data.NBcmd].key,"piaacmcsimring2sect");
+    strcpy(data.cmd[data.NBcmd].module, __FILE__);
     data.cmd[data.NBcmd].fp = PIAACMCsimul_rings2sectors_cli;
     strcpy(data.cmd[data.NBcmd].info,"turn ring fpm design into sectors");
     strcpy(data.cmd[data.NBcmd].syntax,"<input ring fpm> <zone-ring table> <output sector fpm>");
@@ -239,7 +240,7 @@ int_fast8_t init_PIAACMCsimul()
 
 
     strcpy(data.cmd[data.NBcmd].key,"piaacmcsimrun");
-    strcpy(data.cmd[data.NBcmd].module,__FILE__);
+    strcpy(data.cmd[data.NBcmd].module, __FILE__);
     data.cmd[data.NBcmd].fp = PIAACMCsimul_run_cli;
     strcpy(data.cmd[data.NBcmd].info,"Simulate PIAACMC");
     strcpy(data.cmd[data.NBcmd].syntax,"<configuration index [string]> <mode[int]>");
@@ -249,7 +250,7 @@ int_fast8_t init_PIAACMCsimul()
 
 
     strcpy(data.cmd[data.NBcmd].key,"piaacmsimfpmresprm");
-    strcpy(data.cmd[data.NBcmd].module,__FILE__);
+    strcpy(data.cmd[data.NBcmd].module, __FILE__);
     data.cmd[data.NBcmd].fp = PIAACMC_FPMresp_rmzones_cli;
     strcpy(data.cmd[data.NBcmd].info,"remove zones in FPM resp matrix");
     strcpy(data.cmd[data.NBcmd].syntax,"<input FPMresp> <output FPMresp> <NBzone removed>");
@@ -258,7 +259,7 @@ int_fast8_t init_PIAACMCsimul()
     data.NBcmd++;
 
     strcpy(data.cmd[data.NBcmd].key,"piaacmsimfpmresprs");
-    strcpy(data.cmd[data.NBcmd].module,__FILE__);
+    strcpy(data.cmd[data.NBcmd].module, __FILE__);
     data.cmd[data.NBcmd].fp = PIAACMC_FPMresp_resample_cli;
     strcpy(data.cmd[data.NBcmd].info,"resample FPM resp matrix");
     strcpy(data.cmd[data.NBcmd].syntax,"<input FPMresp> <output FPMresp> <NBlambda> <EvalPts step>");
@@ -267,7 +268,7 @@ int_fast8_t init_PIAACMCsimul()
     data.NBcmd++;
 
     strcpy(data.cmd[data.NBcmd].key,"piaacmcfpmprocess");
-    strcpy(data.cmd[data.NBcmd].module,__FILE__);
+    strcpy(data.cmd[data.NBcmd].module, __FILE__);
     data.cmd[data.NBcmd].fp = PIAACMC_FPM_process_cli;
     strcpy(data.cmd[data.NBcmd].info,"Quantize FPM");
     strcpy(data.cmd[data.NBcmd].syntax,"<input FPM sags> <sectors ASCII file> <number of exposures> <output FPM sags>");

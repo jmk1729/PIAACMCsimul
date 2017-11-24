@@ -43,21 +43,49 @@ extern OPTPIAACMCDESIGN *piaacmc;
 
 
 
-///
-/// returns average contrast in evaluation zone
-///
-/// source size = 1e-{sourcesize*0.1}, except if sourcesize = 0 (point source)
-/// sourcesize is a 2-digit number ( 10 = 0.1 l/D, 20 = 0.01 l/D etc..)
-///
-/// extmode = 0 : 1 point (point source)
-/// extmode = 1 : 3 point sources, 120 apart on circle radius = source size
-/// extmode = 2 : 6 point sources. 3 as above on circle radius 1/sqrt(2.5) + 3 on outer circle, radius 2/sqrt(2.5), 120 apart, clockled 60 deg off inner points
-///
-/// if opderrcube exists, include each slice as a WF mode  
-///
-/// PSF is held in shared memory by default
-///
-/// 
+/**
+ * @brief Compute PSF
+ * 
+ * @return Average contrast in evaluation zone
+ * 
+ * @param[in]   xld         float: Source X position [l/D]
+ * @param[in]   yld         float: Source Y position [l/D]
+ * @param[in]   startelem   long : First element in propagation
+ * @param[in]   endelem     long : Last element in propagation
+ * @param[in]   savepsf     int  : Save PSF flag
+ * @param[in]   sourcezise  int  : Source size (10x log10)
+ * @param[in]   extmode     int  : Source extended type
+ * @param[in]   outsave     int  : Save output flag
+ * 
+ *  
+ * Source is defined by parameters sourcesize and extmode :
+ * - source size = 1e-{sourcesize*0.1}, except if sourcesize = 0 (point source)
+ * - sourcesize is a 2-digit number ( 10 = 0.1 l/D, 20 = 0.01 l/D etc..)
+ * - extmode = 0 : 1 point (point source)
+ * - extmode = 1 : 3 point sources, 120 apart on circle radius = source size
+ * - extmode = 2 : 6 point sources. 3 as above on circle radius 1/sqrt(2.5) + 3 on outer circle, radius 2/sqrt(2.5), 120 apart, clockled 60 deg off inner points
+ * 
+ * @note If opderrcube exists, include each slice as a WF mode  
+ * 
+ * PSF is held in shared memory by default
+ * 
+ * ---
+ * 
+ * ### Output
+ * 
+ * | name                              |  type      | Description                            |
+ * |-----------------------------------|------------|----------------------------------------|
+ * | scoringmask                       | 2D image   | focal plane points used for evaluation |
+ * | <piaacmcdir>/scoringmask<N>.fits  | 2D FITS    | focal plane points used for evaluation |
+ * | imvec                             | 1D image   | output vector                          |
+ * | psfi0                             | 3D image   | output PSF                             |
+ * 
+ * 
+ * ---
+ * ---
+ * 
+ * 
+ */ 
 
 
 
@@ -176,8 +204,8 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
     focscale = (2.0*piaacmc[0].beamrad/piaacmc[0].pixscale)/piaacmc[0].size;
 
 
-    // CREATE SCORING MASK IF IT DOES NOT EXIST
-    // which is the array of evaluation zones on the focal plane
+    /// ### Create scoring mask if it doesn't exist
+    /// The scoring mask is the array of evaluation points on the focal plane
     if((IDsm=image_ID("scoringmask"))==-1)
     {
 		printf("CREATING SCORING MASK\n");
@@ -238,25 +266,26 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
     }
 
 
-
-
-
-
-    if(piaacmcsimul_var.computePSF_FAST_FPMresp==1) // only possible if mode 11 has already been executed
+	
+	
+	
+	/// ## Fast PSF computattion (if piaacmcsimul_var.computePSF_FAST_FPMresp = 1)
+	
+    if(piaacmcsimul_var.computePSF_FAST_FPMresp==1) /// @note Only possible if mode 11 has already been executed
     {
-        // compute the PSF as the complex amplitude for the evaluation points on the focal plane
-        // for a given FPM zone thickness based on the FPMresp array computed in mode 11
+        /// Compute the PSF as the complex amplitude for the evaluation points on the focal plane
+        /// for a given FPM zone thickness based on the FPMresp array computed in mode 11
         value1 = PIAACMCsimul_achromFPMsol_eval(piaacmcsimul_var.fpmresp_array, piaacmcsimul_var.zonez_array, piaacmcsimul_var.dphadz_array, piaacmcsimul_var.outtmp_array, piaacmcsimul_var.vsize, data.image[piaacmc[0].zonezID].md[0].size[0], optsyst[0].nblambda);
-        
-        // PSF result is stored in outtmp_array
+        ///
+        /// PSF result is stored in outtmp_array
 
         value = 0.0;
         peakcontrast = 0.0;
 
-        ID = image_ID("imvect"); // use imvect if it exists
+        ID = image_ID("imvect"); /// - Use \c imvect for storage if it exists, or create it
         if(ID==-1)
             ID = create_2Dimage_ID("imvect", piaacmcsimul_var.vsize*optsyst[0].nblambda, 1);
-        // write the result into imvect (= ID)
+        /// - Write the result into \c imvect 
         for(ii=0; ii< piaacmcsimul_var.vsize*optsyst[0].nblambda; ii++) // for each wavelength
         {
             data.image[ID].array.F[ii] = piaacmcsimul_var.outtmp_array[ii];
@@ -265,11 +294,10 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
             // total intensity = sum(intensity_i) = sum(Re_i^2 + Im_i^2)
             value += tmpv;
         }
-        // here value is the total flux in the output vector
-        // store in global as total flux
+        /// - Total flux in the output vector is stored in \c piaacmcsimul_var.PIAACMCSIMUL_VAL0 as total flux
         piaacmcsimul_var.PIAACMCSIMUL_VAL0 = value;
 
-        // morally: value -> average value per area normalized to flux
+        /// set \c value to average value per area normalized to flux
         value = value/size/size/optsyst[0].flux[0]; // flux[0] is proportional to the number of lambda channels, so this normalization makes value independant of number of spectral channels
         // here value is the total light (averaged across spectral channels) in the measurement points, normalized to the input flux
         // actual average contrast, averaging over # of pixels and physical area
@@ -281,12 +309,12 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
         //		printf("Total light in scoring field = %g  -> Average contrast = %g   (%g)\n", value, value/(arith_image_total("scoringmask")*focscale*focscale), value1/piaacmcsimul_var.CnormFactor/optsyst[0].nblambda);
 
     }
-    else // we need to create the PSF from scratch
+    else /// ## Full/Slow PSF computation (if piaacmcsimul_var.computePSF_FAST_FPMresp = 0)
     {
-        // if non-zero we are going to approximate the PSF for an extended source as
-        // a collection of point sources
-        // sourcesize determines the separation of the point sources
-        if(sourcesize!=0) // sourcesize > 0 only if in linear optimization (step >= 100)
+        /// The PSF for an extended source is approximated as
+        /// a collection of point sources.
+        /// Sourcesize determines the separation of the point sources
+        if( sourcesize != 0 ) // sourcesize > 0 only if in linear optimization (step >= 100)
         {
             printf("COMPUTING RESOLVED SOURCE PSF / ADDING OPD MODES\n");	
             fflush(stdout);
@@ -409,6 +437,7 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
             }
             
             
+			/// ### OPTIONAL: Add OPD error to list of modes
 			
 			printf("Adding optional OPD error modes (%ld modes)\n", nbOPDerr);
 			fflush(stdout);
@@ -435,11 +464,11 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
 				imindex++;
 			}
 			
-            // now average over all the PSFs we've created to simulate this extended source
+            /// - Average over all the PSFs we've created to simulate this extended source
 			NBimindex = imindex;
 			arith_image_cstmult_inplace("psfi0ext", 1.0/NBimindex);
 
-
+			/// - If \c outsave = 1, save PSF to FITS file
             if(outsave==1)
             {
                 sprintf(fname, "!%s/psfi0_exsrc%3d_sm%d_s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d.fits", piaacmcsimul_var.piaacmcconfdir, sourcesize, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda);    
@@ -497,6 +526,7 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
 
             //            sprintf(fname,"%s/flux.txt", piaacmcsimul_var.piaacmcconfdir);
             
+			/// - If \c outsave = 1, save flux to txt file
             if(outsave==1)
             {
                 sprintf(fname, "!%s/flux_exsrc%3d_sm%d_s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d.txt", piaacmcsimul_var.piaacmcconfdir, sourcesize, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda); 
@@ -541,6 +571,7 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
                 fprintf(fp, "%g", avContrast);
                 fclose(fp);
             }
+
         }
         else // called for step 0 through 15.  Does not use OPDerr
         { // compute the PSF for a single point source at offset xld, yld
@@ -550,7 +581,11 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
             // ========== initializes optical system to piaacmc design ===========
             // xld and yld are the input positions of the input source in lamba/D
             // initialize first point source, which sets optsyst
+            
+            /// calls PIAACMCsimul_init() 
             PIAACMCsimul_init(piaacmc, 0, xld, yld);
+            
+            /// calls PIAACMCsimul_makePIAAshapes()
             PIAACMCsimul_makePIAAshapes(piaacmc, 0);
 
 

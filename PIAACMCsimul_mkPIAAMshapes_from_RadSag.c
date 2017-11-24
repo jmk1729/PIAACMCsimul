@@ -35,9 +35,11 @@ extern OPTPIAACMCDESIGN *piaacmc;
 
 
 
-//
-// make PIAA OPD screens from radial sag profile
-//
+/**
+ * @brief Make PIAA OPD screens from radial sag profile
+ * 
+ */
+ 
 int PIAACMCsimul_mkPIAAMshapes_from_RadSag(const char *fname, const char *ID_PIAAM0_name, const char *ID_PIAAM1_name)
 {
     FILE *fp;

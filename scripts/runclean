@@ -59,6 +59,8 @@ rm conj_test.txt
 rm _pupmaskload.fits
 rm SVDmodes.log
 rm eigenv_*
+rm -rf eval1
+rm -rf eval2
 }
 
 

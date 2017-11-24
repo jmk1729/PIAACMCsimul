@@ -31,9 +31,12 @@ extern OPTSYST *optsyst;
 
 
 
-///
-/// propagate complex amplitude image into intensity map cube
-///
+/**
+ * @brief Propagate complex amplitude image into intensity map cube
+ * 
+ * 
+ */
+  
 long PIAACMCsimul_CA2propCubeInt(const char *IDamp_name, const char *IDpha_name, float zmin, float zmax, long NBz, const char *IDout_name)
 {
     long IDout;

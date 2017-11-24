@@ -1,6 +1,6 @@
 /**
  * @file    PIAAACMCsimul_init.c
- * @brief   PIAA-type coronagraph design, initialize
+ * @brief   Initializes the optsyst structure to simulate PIAACMC system
  * 
  * Can design both APLCMC and PIAACMC coronagraphs
  *  
@@ -49,15 +49,19 @@ extern OPTPIAACMCDESIGN *piaacmc;
 
 
 
-///
-/// initializes the optsyst structure to simulate PIAACMC system
-/// Fills in an OPTSYST global optsyst (see OptSysProp.h) which describes
-/// the optical system as a series of planes based on the input design structure
-///
-
-// TTxld and TTyld are tip/tilt x-y coordinates specifying the location of the source relative
-// to the optical axis in units of lambda/D
-// index allows multiple configurations, but it's always 0.  Nonzero values are untested
+/**
+ * 
+ * @brief Initializes the optsyst structure to simulate PIAACMC system
+ * 
+ * Fills in an OPTSYST global optsyst (see OptSysProp.h) which describes
+ * the optical system as a series of planes based on the input design structure
+ * 
+ * TTxld and TTyld are tip/tilt x-y coordinates specifying the location of the source relative
+ * to the optical axis in units of lambda/D
+ * 
+ * @note Index allows multiple configurations, but it's always 0.  Nonzero values are untested
+ * 
+ */
 void PIAACMCsimul_init( OPTPIAACMCDESIGN *design, long index, double TTxld, double TTyld )
 {
     FILE *fp;
@@ -475,15 +479,20 @@ void PIAACMCsimul_init( OPTPIAACMCDESIGN *design, long index, double TTxld, doub
         optsyst[0].elemarrayindex[elem] = 0;
 
         printf("=========== MAKE FOCAL PLANE MASK ===========\n");
-        //sleep(5);
-
-
         savefpm = 0;
         if((IDv=variable_ID("PIAACMC_SAVE_fpm"))!=-1)
             savefpm = (int) (data.variable[IDv].value.f+0.001);
 
-        // make the focal plane mask here
+        /// call PIAACMCsimul_mkFocalPlaneMask() to make the focal plane mask
         optsyst[0].FOCMASKarray[0].fpmID = PIAACMCsimul_mkFocalPlaneMask("fpmzmap", "piaacmcfpm", piaacmcsimul_var.focmMode, savefpm); // if -1, this is 1-fpm; otherwise, this is impulse response from single zone
+
+		// TEST
+		mk_reim_from_complex("piaacmcfpm", "piaacmcfpm_re", "piaacmcfpm_im", 0);
+        save_fits("piaacmcfpm_re", "!test_piaacmcfpm_re.fits");
+        save_fits("piaacmcfpm_im", "!test_piaacmcfpm_im.fits");
+        delete_image_ID("piaacmcfpm_re");
+        delete_image_ID("piaacmcfpm_im");
+		
 
 
         // zfactor is the zoom factor for the DFT, driving sample resolution in the z direction

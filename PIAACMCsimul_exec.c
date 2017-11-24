@@ -62,9 +62,15 @@ extern OPTPIAACMCDESIGN *piaacmc;
 
 
 
-
-/// make Lyot stops using off-axis light minimums
-/// finds minumum flux level in intensity data cube
+/** @brief Make Lyot stops using off-axis light minimums
+ * 
+ *  Finds minumum flux level in 3D intensity data cube
+ * 
+ * @param[in]  IDincohc_name             image: Input 3D intensity 
+ * @param[out] test_oals_val.fits        FITS : Minimum 2D image
+ * @param[out] test_oals_index.fits      FITS : z-index for each pixel of the 2D output minimum
+ * 
+*/
 
 long PIAACMCsimul_optimizeLyotStop_OAmin(const char *IDincohc_name)
 {
@@ -134,6 +140,7 @@ long PIAACMCsimul_optimizeLyotStop_OAmin(const char *IDincohc_name)
  *
  * @brief Main simulation routine
  *
+ * 
  * @param[in] confindex  PIAACMC configuration index pointing to the input/output directory number
  * @param[in] mode       Type of operation to be performed
  *
@@ -585,7 +592,10 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
     case 1 : 
-    /** ## Mode 1: Optimize Lyot stop positions
+    /** 
+     * ---
+     * 
+     * ## Mode 1: Optimize Lyot stop positions
     
     Lyot stop positions are encoded as piaacmc[0].LyotStop_zpos
     
@@ -706,6 +716,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
     case 2 : 
 		/** 
+		 * ---
 		 * 
 		 * ## Mode 2: Optimize focal plane mask transmission for monochromatic idealized PIAACMC
         
@@ -716,22 +727,24 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         the transmission value piaacmc[0].fpmaskamptransm, which
         is between 0 and 1
         
-        uses single on-axis light source
+        Uses single on-axis light source
         **/
         
         printf("=================================== mode 002 ===================================\n");
 
-        // init as in mode 0
+        /// ### Initialize as in mode 0
         PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
         PIAACMCsimul_makePIAAshapes(piaacmc, 0);
         optsyst[0].FOCMASKarray[0].mode = 1; // use 1-fpm
 
-        // initialization, see mode 1
+        /// ### Initialize search range and step
         range = 0.3;
         stepsize = range/3.0;
         paramref[0] = piaacmc[0].fpmaskamptransm; // initialized in PIAAsimul_initpiaacmcconf
         NBiter = 6;
 
+
+		/// ### Scan parameter value
         sprintf(fnamelog, "%s/result_fpmt.log", piaacmcsimul_var.piaacmcconfdir);
         fp = fopen(fnamelog, "w");
         fclose(fp);
@@ -747,13 +760,19 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
             loopOK = 1;
             valbest = 1.0;
 
-            // while within the march range
+            /// While within the search loop :
             while(loopOK==1)
             {
+				printf("\n\n\n");
+				
                 piaacmcsimul_var.FORCE_CREATE_fpmza = 1; // forces creation of new focal plane mask in the next two routines
+
+                /// - Call PIAAsimul_initpiaacmcconf() 
                 PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 0);
+                                
                 // compute on-axis PSF of all optical elements returning contrast in evaluation zone
                 // ************************* need to do all optsyst[0].NBelem?
+				/// - call PIAACMCsimul_computePSF() to evaluate design
                 val = PIAACMCsimul_computePSF(0.0, 0.0, 0, optsyst[0].NBelem, 0, 0, 0, 0);
 
                 if(val<valbest)
@@ -763,19 +782,34 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
                     valbest = val;
                 }
 
-                fp = fopen(fnamelog, "a");
-                fprintf(fp," %lf", piaacmc[0].fpmaskamptransm);
-                fprintf(fp, " %g  %ld %g %g\n", val, iter, range, stepsize);
+				/// - write entry to output log file
+				fp = fopen(fnamelog, "a");
+                fprintf(fp," %+011.8lf", piaacmc[0].fpmaskamptransm);
+                fprintf(fp, " %12g  %8ld %12g %12g\n", val, iter, range, stepsize);
                 fclose(fp);
 
-                
-                // keep marching along
+				// Save image (testing)
+				system("mkdir -p testdir");
+				sprintf(fname, "testdir/psfi0_%+011.8f.fits",  piaacmc[0].fpmaskamptransm);
+				save_fits("psfi0", fname);
+/*				sprintf(fname, "testdir/fpma_%+011.8f.fits",  piaacmc[0].fpmaskamptransm);
+				save_fits("fpmatest", fname);
+				sprintf(fname, "testdir/fpmp_%+011.8f.fits",  piaacmc[0].fpmaskamptransm);
+				save_fits("fpmptest", fname);
+	*/			
+				sprintf(command, "mv test_piaacmcfpm_re.fits testdir/fpmre_%+011.8f.fits",  piaacmc[0].fpmaskamptransm);
+				system(command);
+				sprintf(command, "mv test_piaacmcfpm_im.fits testdir/fpmim_%+011.8f.fits",  piaacmc[0].fpmaskamptransm);
+				system(command);
+								
+                /// -  increment parameter
                 piaacmc[0].fpmaskamptransm += stepsize;
                 
                 // if we've reached the end of the range stop the loop
                 if(piaacmc[0].fpmaskamptransm>paramref[0]+range+0.001*stepsize)
                     loopOK = 0;
             }
+
 
             printf("BEST SOLUTION :  ");
             // store best solution
@@ -804,10 +838,19 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-    case 3 : // calibrate, no focal plane mask (not currently used)
-        // compute PSF and contrast with no focal plane mask with the current design
-        // provides the denominator for the contrast estimate
-        // saved by PIAACMCsimul_computePSF as fits file "psfi0"
+    case 3 : 
+		/** 
+		 * ---
+		 * 
+		 * ## Mode 3: Calibrate, no focal plane mask (not currently used)
+		 * 
+		 * Compute PSF and contrast with no focal plane mask with the current design.
+        * 
+        * Provides the denominator for the contrast estimate
+        * 
+        * Saved by PIAACMCsimul_computePSF as fits file "psfi0"
+        
+        */
         printf("=================================== mode 003 ===================================\n");
 
         // init as in mode 0
@@ -835,7 +878,13 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-    case 4 : // optimize PIAA optics shapes, cosine modes only (not currently used, replaced by mode 40. skipping)
+    case 4 :
+    /** 
+     * ---
+     * 
+     * ## Mode 4: Optimize PIAA optics shapes, cosine modes only (not currently used, replaced by mode 40. skipping)
+     * 
+     */ 
         printf("=================================== mode 004 ===================================\n");
 
         PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
@@ -885,32 +934,52 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-    case 5 : // optimize Lyot stops shapes and positions
+    case 5 : 
+    /** 
+     * ---
+     * 
+     * ## Mode 5: Optimize Lyot stops shapes and positions
+     * 
+     * 
+     * 
+     */ 
         printf("=================================== mode 005 ===================================\n");
-        // init as in mode 0
+        
+        
+        /// ### Initialize as in mode 0
         PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
         PIAACMCsimul_makePIAAshapes(piaacmc, 0);
         optsyst[0].FOCMASKarray[0].mode = 1; // use 1-fpm
 
-        // load cli variables as appropriate
-        // # of propagation steps along the beam
+
+
+        /// ### Load CLI variables as appropriate
+             
+		/// - <- **PIAACMC_nbpropstep** : # of propagation steps along the beam
         NBpropstep = 150;
         if((IDv=variable_ID("PIAACMC_nbpropstep"))!=-1)
             NBpropstep = (long) data.variable[IDv].value.f+0.01;
-        // desired Lyot stop transmission
+              
+		/// - <- **PIAACMC_lstransm** : desired Lyot stop transmission		
         lstransm = 0.85;
         if((IDv=variable_ID("PIAACMC_lstransm"))!=-1)
             lstransm = (double) data.variable[IDv].value.f;
         printf("lstransm  = %f\n", lstransm);
 
-        /// identify post focal plane pupil plane (first pupil after focal plane mask)
-        // provides reference complex amplitude plane for downstream analysis
+
+
+
+
+        /// ### Identify post focal plane pupil plane (first pupil after focal plane mask)
+
+        /// Provides reference complex amplitude plane for downstream analysis
         PIAACMCsimul_init(piaacmc, 0, 0.0, 0.0);
+        
         printf("=========== %ld elements ======================================================\n", optsyst[0].NBelem);
         // find the ID of the "post focal plane mask pupil" element
         for(elem=0; elem<optsyst[0].NBelem; elem++)
         {
-            if(strcmp("post focal plane mask pupil", optsyst[0].name[elem])==0)
+            if( strcmp("post focal plane mask pupil", optsyst[0].name[elem]) == 0 )
             {
                 elem0 = elem;
                 printf("post focal plane mask pupil = %ld\n", elem);
@@ -919,7 +988,16 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
                 printf("elem %ld : %s\n", elem, optsyst[0].name[elem]);
         }
         optsyst[0].keepMem[elem0] = 1; // keep it for future use
-
+        
+        
+        
+        
+        
+		/// ### Compute incoherent 3D illumination near pupil plane
+		
+		/// Multiple off-axis sources are propagated and the corresponding intensities added
+		/// - -> **OAincohc**  Output incoherent image (3D)
+		
         oaoffset = 20.0; // off axis amplitude
         // compute the reference on-axis PSF
         PIAACMCsimul_computePSF(0.0, 0.0, 0, optsyst[0].NBelem, 0, 0, 0, 0);
@@ -951,11 +1029,11 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         xsize = data.image[IDa].md[0].size[0];
         ysize = data.image[IDa].md[0].size[1];
 
-        // OAincohc is the summed light "all" from off-axis sources in the pupil,
-        // including the on-axis source(!),
-        // giving intensity contribution of all off-axis sources
-        // in order to preserve the intensity of the off-axis in the design.
-        // load OAincohc if exist, maybe we've been here before
+        /// OAincohc is the summed light "all" from off-axis sources in the pupil,
+        /// including the on-axis source(!),
+        /// giving intensity contribution of all off-axis sources
+        /// in order to preserve the intensity of the off-axis in the design.
+        /// load OAincohc if exist, maybe we've been here before
         sprintf(fname, "%s/OAincohc.fits", piaacmcsimul_var.piaacmcconfdir);
         IDc = load_fits(fname, "OAincohc", 1);
 
@@ -994,22 +1072,39 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
             // save the final result
             save_fits("OAincohc", fname);
         }
-        // compute on-axis PSF to define light to reject
+        
+        
+        
+        /// ### Compute on-axis PSF 3D intensity to define light to reject
         PIAACMCsimul_computePSF(0.0, 0.0, 0, optsyst[0].NBelem, 0, 0, 0, 0);
         // propagate it into the optical system, with result in image named "iprop00"
+        
+        /// call function PIAACMCsimul_CA2propCubeInt() to compute 3D intensity cube
+        /// @param[out] iprop00 3D intensity image
         PIAACMCsimul_CA2propCubeInt(fnamea, fnamep, zmin, zmax, NBpropstep, "iprop00");
         //  save_fits("iprop00", "!test_iprop00.fits");
 
-        // make image that has the min along z of OAincohc at each x,y
+        /// ### Compute image that has the min along z of OAincohc at each x,y
+		/// Function PIAACMCsimul_optimizeLyotStop_OAmin() computes minimal intensity image.
+		/// 
         PIAACMCsimul_optimizeLyotStop_OAmin("OAincohc");
-        // do the actual Lyot stop shape and location optimization, producing optimal Lyot stops in optLM*.fits
-        // and position relative to elem0 in piaacmc[0].LyotStop_zpos
+        
+        /// ### Optimize Lyot stops
+        
+        /// The actual Lyot stop shape and location optimization is done by PIAACMCsimul_optimizeLyotStop(), producing optimal Lyot stops in optLM*.fits
+        /// and position relative to elem0 in piaacmc[0].LyotStop_zpos
         PIAACMCsimul_optimizeLyotStop(fnamea, fnamep, "OAincohc", zmin, zmax, lstransm, NBpropstep, piaacmc[0].NBLyotStop);
 
         sprintf(fptestname, "conj_test.txt");
         fptest = fopen(fptestname, "w");
+        fprintf(fptest, "# Optimal Lyot stop conjugations\n");
+        fprintf(fptest, "# \n");
+        fprintf(fptest, "# DO NOT EDIT THIS FILE\n");
+        fprintf(fptest, "# Written by %s in %s\n", __FUNCTION__, __FILE__);
+		fprintf(fptest, "# \n");
+        fprintf(fptest, "# Lyot stop index   zmin   zmax    LyotStop_zpos    elemZpos[elem0]\n");
         for(ls=0; ls<piaacmc[0].NBLyotStop; ls++)
-            fprintf(fptest, "%ld  %f  %f     %f  %f\n", ls, zmin, zmax, piaacmc[0].LyotStop_zpos[ls], optsyst[0].elemZpos[elem0]);
+            fprintf(fptest, "%5ld  %f  %f     %f  %f\n", ls, zmin, zmax, piaacmc[0].LyotStop_zpos[ls], optsyst[0].elemZpos[elem0]);
         fclose(fptest);
 
         // convert Lyot stop position from relative to elem0 to absolute
@@ -1035,9 +1130,17 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-    case 11 : // setup multizone ring mask and Compute polychromatic response to zones, store result in FPMresp
-        // here we compute how the light propagates from each individual mask zone to the focal plane
-        // (where each mask zone is completely tranparent)
+    case 11 :
+    
+    /** 
+     * ---
+     * 
+     * ## Mode 11: Setup multizone ring mask and Compute polychromatic response to zones, store result in FPMresp
+      
+       here we compute how the light propagates from each individual mask zone to the focal plane
+       (where each mask zone is completely tranparent)
+       * 
+       */ 
         printf("=================================== mode 011 ===================================\n");
 
         // get cli variables
@@ -1442,16 +1545,24 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-    case 13 : // optimize focal plane mask zones only
-        // uses "fast" mode:
-        // after mode 11, we can use the (complex) light propagated from each zone to compute the impact of
-        // any thickness (sag) of that zone: the zone thickness induces a phase rotation for that zone,
-        // which is applied to the unobstructed light from that zone as a complex rotation.
-        //
-        // The search is via steepest descent from random starting points
-        //
-        // this mode only sets up the optimization that actually happens after exiting the switch statement
-        // if LINOPT = 1 (as does mode 40)
+    case 13 : 
+    /** 
+     * ---
+     * 
+     *  ## Mode 13: Optimize focal plane mask zones only
+     * 
+     * Uses "fast" mode:
+     * 
+     * After mode 11, we can use the (complex) light propagated from each zone to compute the impact of
+     * any thickness (sag) of that zone: the zone thickness induces a phase rotation for that zone,
+     * which is applied to the unobstructed light from that zone as a complex rotation.
+     * 
+     * The search is via steepest descent from random starting points.
+     * 
+     * This mode only sets up the optimization that actually happens after exiting the switch statement if LINOPT = 1 (as does mode 40)
+     * 
+     */
+      
         printf("=================================== mode 013 ===================================\n");
 
 
@@ -1580,7 +1691,14 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-    case 40 : // optimize PIAA optics shapes (and focal plane mask transmission for idealized PIAACMC)
+    case 40 : 
+    /**
+     * ---
+     * 
+     * ## Mode 40: Optimize PIAA optics shapes (and focal plane mask transmission for idealized PIAACMC)
+     * 
+     * 
+     */ 
         printf("=================================== mode 040 ===================================\n");
         //		piaacmcsimul_var.FORCE_CREATE_fpmza = 1;
         piaacmcsimul_var.PIAACMC_fpmtype = 0; // idealized (default)
@@ -2211,7 +2329,13 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-    case 101 : // transmission as a function of angular separation
+    case 101 : 
+    /**
+     * ---
+     * 
+     * ## Mode 101: Measure transmission as a function of angular separation
+     * 
+     */ 
         printf("=================================== mode 101 ===================================\n");
 
         printf("101: transm as a function of angular separation  ldoffset = %f\n", ldoffset);
@@ -2278,7 +2402,13 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-    case 300 : // import FPM configuration setting from parent directory
+    case 300 : 
+    /** 
+     * ---
+     * 
+     * ## Mode 300: Import FPM configuration setting from parent directory
+     * 
+     */ 
         printf("=================================== mode 300 ===================================\n");
 
         /*  sprintf(command, "cp conf_MASKRADLD.txt %s/", piaacmcsimul_var.piaacmcconfdir);

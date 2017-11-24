@@ -42,11 +42,20 @@ extern OPTPIAACMCDESIGN *piaacmc;
 
 
 
-///
-/// Lyot stops positions from zmin to zmax relative to current, working back (light goes from 0 to zmax)
-/// @param[in] FluxTOT  total flux in current plane
-/// @param[in] FluxLim   max flux allowed from star
-///
+/**
+ * @brief Lyot stops positions from zmin to zmax relative to current, working back (light goes from 0 to zmax)
+ * 
+ * @param[in]	IDamp_name    image : 2D amplitude
+ * @param[in]	IDpha_name    image : 2D phase
+ * @param[in]   IDincohc_name image : 3D incoherent intensity
+ * @param[in]   zmin          float : minimum propagation value
+ * @param[in]   zmax          float : maximum propagation value
+ * @param[in]   throughput    double: Geometric throughput of Lyot stop(s)
+ * @param[in]   NBz           long  : Number of discrete propagation planes between zmin and zmax
+ * @param[in]   NBmasks       long  : Number of Lyot stop(s)
+ * 
+*/
+
 double PIAACMCsimul_optimizeLyotStop(const char *IDamp_name, const char *IDpha_name, const char *IDincohc_name, float zmin, float zmax, double throughput, long NBz, long NBmasks)
 {
     // initial guess places Lyot stops regularly from zmin to zmax
@@ -315,6 +324,8 @@ double PIAACMCsimul_optimizeLyotStop(const char *IDamp_name, const char *IDpha_n
         save_fits("LcombOA", fname);
     }
     
+    
+    /// call PIAACMCsimul_mkLyotMask() 
     ID = PIAACMCsimul_mkLyotMask("LcombOA", "Lcomb", "LMzonemap", throughput, "LMask");
     
     if( piaacmcsimul_var.PIAACMC_save==1)

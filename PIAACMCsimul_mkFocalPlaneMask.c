@@ -42,15 +42,19 @@ extern OPTPIAACMCDESIGN *piaacmc;
 
 
 
-///
-/// @param[in]  IDzonemap_name	zones
-/// @param[in]  ID_name
-/// @param[in]  mode       if mode = -1, make whole 1-fpm, if mode = zone, make only 1 zone with CA = (1.0, 0.0)
-/// @param[in]  saveMask   1 if mask saved to file system
-//
-// makes 1-fpm CA
-// zone numbering starts here from 1 (zone 1 = outermost ring)
-//
+/**
+ * @brief Make complex amplitude focal plane mask
+ * 
+ @param[in]  IDzonemap_name	zones
+ @param[in]  ID_name
+ @param[in]  mode       if mode = -1, make whole 1-fpm, if mode = zone, make only 1 zone with CA = (1.0, 0.0)
+ @param[in]  saveMask   1 if mask saved to file system
+
+ makes 1-fpm CA
+ 
+ zone numbering starts here from 1 (zone 1 = outermost ring)
+*/
+
 long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_name, int mode, int saveMask)
 {
 	double eps = 1.0e-12;
@@ -152,26 +156,27 @@ long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_na
 			printf("lamdba %3ld  zone %4ld   ", k, zi);
 			fflush(stdout);
 	
-			printf("  %3ld %3ld -> %4ld/%4ld : ", piaacmc[0].zonezID, zi, piaacmc[0].focmNBzone*k+zi, piaacmc[0].focmNBzone*nblambda);
-			fflush(stdout);
-			tarray[piaacmc[0].focmNBzone*k+zi] = data.image[piaacmc[0].zonezID].array.D[zi];
-			printf("%8.4f   ", tarray[piaacmc[0].focmNBzone*k+zi]);
+			printf("  ID=%3ld  zi=%3ld -> %4ld/%4ld :\n", piaacmc[0].zonezID, zi, piaacmc[0].focmNBzone*k+zi, piaacmc[0].focmNBzone*nblambda);
 			fflush(stdout);
 			
-			printf("  %3ld %3ld -> %4ld/%4ld : ", piaacmc[0].zoneaID, zi, piaacmc[0].focmNBzone*k+zi, piaacmc[0].focmNBzone*nblambda);
-			fflush(stdout);			aarray[piaacmc[0].focmNBzone*k+zi] = data.image[piaacmc[0].zoneaID].array.D[zi];
-			printf("%8.4f   ", aarray[piaacmc[0].focmNBzone*k+zi]);
+			// print material thickness
+			tarray[piaacmc[0].focmNBzone*k+zi] = data.image[piaacmc[0].zonezID].array.D[zi];
+			printf("     thickness = %8.4g m\n", tarray[piaacmc[0].focmNBzone*k+zi]);
+			fflush(stdout);
+			
+			printf("     (ID = %3ld  zi = %3ld -> pix = %4ld/%4ld)\n", piaacmc[0].zoneaID, zi, piaacmc[0].focmNBzone*k+zi, piaacmc[0].focmNBzone*nblambda);
+			fflush(stdout);			
+			aarray[piaacmc[0].focmNBzone*k+zi] = data.image[piaacmc[0].zoneaID].array.D[zi];
+			printf("     amp = %8.4f\n", aarray[piaacmc[0].focmNBzone*k+zi]);
 			fflush(stdout);			
 			
+			// compute phase from thickness
 			phaarray[piaacmc[0].focmNBzone*k+zi] = OPTICSMATERIALS_pha_lambda(piaacmc[0].fpmmaterial_code, tarray[piaacmc[0].focmNBzone*k+zi], optsyst[0].lambdaarray[k]);
-			printf("  %8.4f  ", phaarray[piaacmc[0].focmNBzone*k+zi]);
+			printf("     pha = %8.4f rad\n", phaarray[piaacmc[0].focmNBzone*k+zi]);
 			fflush(stdout);		
 
 			cosphaarray[piaacmc[0].focmNBzone*k+zi] = cosf(phaarray[piaacmc[0].focmNBzone*k+zi]);
 			sinphaarray[piaacmc[0].focmNBzone*k+zi] = sinf(phaarray[piaacmc[0].focmNBzone*k+zi]);
-			
-			printf("\n");
-			fflush(stdout);
 		}
 
 
@@ -306,6 +311,7 @@ long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_na
                                         a = data.image[piaacmc[0].zoneaID].array.D[zi-1]; // amplitude transmission
      									cospha = cosphaarray[piaacmc[0].focmNBzone*k+zi-1];
 										sinpha = sinphaarray[piaacmc[0].focmNBzone*k+zi-1];                                
+										amp = a;
                                     }
                                 }
 

@@ -5,20 +5,24 @@
  * Can design both APLCMC and PIAACMC coronagraphs
  *  
  * @author  O. Guyon
- * @date    21 nov 2017
+ * @date    24 nov 2017
  *
+ * 
+ * | date        |  Code Change      |
+ * |-------------|-------------------|
+ * | 2017-11-24  | documentation     |
+ * 
  * 
  * @bug No known bugs.
  * 
  */
 
+
+
 #include "CommandLineInterface/CLIcore.h"
 #include "COREMOD_memory/COREMOD_memory.h"
+
 #include "PIAACMCsimul/PIAACMCsimul.h"
-
-
-
-
 
 
 
@@ -28,11 +32,14 @@ extern DATA data;
 
 
 
-
-
-/// @param[in] IDin_name	input image: circular mask design
-/// @param[in] sectfname	text file specifying which zones belong to which rings
-/// @param[out] IDout_name	output sector mask design
+/**
+ * @brief Rings to sectors
+ * 
+ * @param[in] IDin_name	input image: circular mask design
+ * @param[in] sectfname	text file specifying which zones belong to which rings
+ * @param[out] IDout_name	output sector mask design
+ * 
+ */ 
 long PIAACMCsimul_rings2sectors(const char *IDin_name, const char *sectfname, const char *IDout_name)
 {
     long IDin, IDout;
