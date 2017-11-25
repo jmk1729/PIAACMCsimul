@@ -12,6 +12,7 @@
  * 
  */
 
+
 // System includes
 
 #include <stdint.h>
@@ -28,7 +29,7 @@
 #include <assert.h>
 #include <sys/stat.h>
 #include <sys/types.h>
- 
+
 #ifdef __MACH__
 #include <mach/mach_time.h>
 #define CLOCK_REALTIME 0
@@ -89,7 +90,7 @@ int clock_gettime(int clk_id, struct mach_timespec *t){
 
 extern DATA data;   
 
-extern PIAACMCsimul_var piaacmcsimul_var;
+extern PIAACMCsimul_varType piaacmcsimul_var;
 
 extern OPTSYST *optsyst;
 
@@ -230,7 +231,7 @@ extern OPTPIAACMCDESIGN *piaacmc;
  * 
  */
 
-int PIAAsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0, double centobs1, int WFCmode, int load)
+int PIAACMCsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0, double centobs1, int WFCmode, int load)
 {
     FILE *fp;
     float beamradpix;
@@ -595,7 +596,7 @@ int PIAAsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0
         fflush(stdout);
         sprintf(command, "mkdir -p %s", piaacmcsimul_var.piaacmcconfdir);
         ret = system(command);
-        loaded = PIAAsimul_loadpiaacmcconf(piaacmcsimul_var.piaacmcconfdir);
+        loaded = PIAACMCsimul_loadpiaacmcconf(piaacmcsimul_var.piaacmcconfdir);
         if(loaded==0)
         {
             printf("Saving default configuration\n");
@@ -1294,11 +1295,11 @@ int PIAAsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0
             {
                 sprintf(fname, "!%s/LyotStop%ld.fits", piaacmcsimul_var.piaacmcconfdir, i);
                 if ((i == 0) && (piaacmc[0].NBLyotStop > 1))
-                    piaacmc[0].IDLyotStop[i] = PIAAsimul_mkSimpleLyotStop(name, -0.01, 0.98);
+                    piaacmc[0].IDLyotStop[i] = PIAACMCsimul_mkSimpleLyotStop(name, -0.01, 0.98);
                 else if ((i == 1) && (piaacmc[0].NBLyotStop > 2))
-                    piaacmc[0].IDLyotStop[i] = PIAAsimul_mkSimpleLyotStop(name, piaacmc[0].centObs1+0.02, 1.2);
+                    piaacmc[0].IDLyotStop[i] = PIAACMCsimul_mkSimpleLyotStop(name, piaacmc[0].centObs1+0.02, 1.2);
                 else
-                    piaacmc[0].IDLyotStop[i] = PIAAsimul_mkSimpleLyotStop(name, piaacmc[0].centObs1+0.02, 0.98);
+                    piaacmc[0].IDLyotStop[i] = PIAACMCsimul_mkSimpleLyotStop(name, piaacmc[0].centObs1+0.02, 0.98);
 
                 save_fl_fits(name, fname);
             }
@@ -1340,7 +1341,7 @@ int PIAAsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0
     }
 
     if(saveconf==1)
-        PIAAsimul_savepiaacmcconf( piaacmcsimul_var.piaacmcconfdir);
+        PIAACMCsimul_savepiaacmcconf( piaacmcsimul_var.piaacmcconfdir);
 
 
     return(0);

@@ -29,7 +29,7 @@
 
 extern DATA data;  
 extern OPTPIAACMCDESIGN *piaacmc;
-extern PIAACMCsimul_var piaacmcsimul_var;
+extern PIAACMCsimul_varType piaacmcsimul_var;
 
 
 

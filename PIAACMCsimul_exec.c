@@ -49,7 +49,7 @@
 
 extern DATA data;   
 
-extern PIAACMCsimul_var piaacmcsimul_var;
+extern PIAACMCsimul_varType piaacmcsimul_var;
 
 extern OPTSYST *optsyst;
 
@@ -132,475 +132,16 @@ long PIAACMCsimul_optimizeLyotStop_OAmin(const char *IDincohc_name)
 
 
 
-/**
- * 
- * @brief Compute PSF or image scene
- * 
- */
- 
-int PIAAsimul_exec_mode00()
-{
-	long IDv;
-	double fpmradld = 0.95;  // default
-    double centobs0 = 0.3;
-    double centobs1 = 0.2;
-	int PIAACMC_WFCmode = 0;
-	uint32_t *sizearray;
-	FILE *fp;
-	long IDopderrC;
-	long sizecrop;
-	long k, ii, jj, ii1, jj1;
-	double xpos, ypos, fval;
-    int initscene;
-    long IDscene;
-	long xsize, ysize, zsize;
-	long ID;
-	long iter;
-	long IDpsfi0;
-	double valref;
 
-	
-	// Run existing config for on-axis point source. If new, create centrally obscured idealized PIAACMC
-        // compatible with wavefront control
-        printf("=================================== mode 000 ===================================\n");
-        // Either load a set of point sources from "scene.txt" or use a single on-axis point source,
-        // and create the image for these sources by computing and adding their PSFs
-            
-        // load some more cli variables
-            if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
-        centobs0 = data.variable[IDv].value.f;
-    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
-        centobs1 = data.variable[IDv].value.f;
-    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
-    {
-        fpmradld = data.variable[IDv].value.f;
-        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
-    }
-        
-        piaacmcsimul_var.PIAACMC_fpmtype = 0; // idealized (default)
-        if((IDv=variable_ID("PIAACMC_fpmtype"))!=-1)
-            piaacmcsimul_var.PIAACMC_fpmtype = (int) (data.variable[IDv].value.f + 0.1);
-        printf("PIAACMC_fpmtype = %d\n", piaacmcsimul_var.PIAACMC_fpmtype);
 
-        PIAACMC_WFCmode = 0; // number of DMs
-        if((IDv=variable_ID("PIAACMC_WFCmode"))!=-1)
-            PIAACMC_WFCmode = (int) (data.variable[IDv].value.f + 0.1);
-        printf("PIAACMC_WFCmode = %d\n", PIAACMC_WFCmode);
 
 
 
 
-        // force creation of the FPM zone amplitudes by called functions
-        piaacmcsimul_var.FORCE_CREATE_fpmza = 1;
 
-        // main initialization function to set up the piaacmc structure
-        PIAAsimul_initpiaacmcconf(piaacmcsimul_var.PIAACMC_fpmtype, fpmradld, centobs0, centobs1, PIAACMC_WFCmode, 1);
-        // make the mirror or lenses shapes (only mirrors for WFIRST piaacmc)
-        PIAACMCsimul_makePIAAshapes(piaacmc, 0);
-        optsyst[0].FOCMASKarray[0].mode = 1; // use 1-fpm normalization for efficiency
 
-		
-		
-		// if file "LOOPMODE" exists, run PSF computation as a loop, waiting on OPDerrC to change
-		fp = fopen("LOOPMODE.txt", "r");
-		if(fp != NULL)
-		{
-			printf("RUNNING PSF LOOP COMPUTATION\n");
-			sizearray = (uint32_t*) malloc(sizeof(uint32_t)*2);
-			sizearray[0] = piaacmc[0].size;
-			sizearray[1] = piaacmc[0].size;
-			
-			IDopderrC = create_image_ID("opderr", 2, sizearray, _DATATYPE_FLOAT, 1, 0);
-			COREMOD_MEMORY_image_set_createsem("opderr", 10);
-			free(sizearray);		
-			
-			sizecrop = piaacmc[0].size/16;
-			sizearray = (uint32_t*) malloc(sizeof(uint32_t)*3);
-			sizearray[0] = sizecrop;
-			sizearray[1] = sizecrop;
-			sizearray[2] = piaacmc[0].nblambda;
-			IDpsfi0 = create_image_ID("psfiout0", 3, sizearray, _DATATYPE_FLOAT, 1, 0);
-			free(sizearray);
-			
-			iter = 0;
-			while(iter<10)
-			{				
-				PIAACMCsimul_computePSF(xpos, ypos, 0, optsyst[0].NBelem, 1, 0, 0, 1);
-				ID = image_ID("psfi0");
-				
-		       // copy results to IDpsfi0
-				data.image[IDpsfi0].md[0].write = 1;
 
-				for(k=0;k<piaacmc[0].nblambda;k++)
-					for(ii1=0;ii1<sizecrop;ii1++)
-						for(jj1=0;jj1<sizecrop;jj1++)
-						{
-							ii = ii1 + (piaacmc[0].size - sizecrop)/2;
-							jj = jj1 + (piaacmc[0].size - sizecrop)/2;
-							data.image[IDpsfi0].array.F[k*sizecrop*sizecrop + jj1*sizecrop + ii1] = data.image[ID].array.F[k*piaacmc[0].size*piaacmc[0].size + jj*piaacmc[0].size + ii];
-						}
-				COREMOD_MEMORY_image_set_sempost_byID(IDpsfi0, -1);
-				data.image[IDpsfi0].md[0].cnt0 ++;
-				data.image[IDpsfi0].md[0].write = 0;
-				
-				COREMOD_MEMORY_image_set_semwait("opderr", 0);
-				// drive semaphore #1 to zero
-				while(sem_trywait(data.image[IDopderrC].semptr[0])==0) {}
-				//iter++;
-			}			
-		}
-		else
-		{
-			// if file "scene.txt" exists, compute series of PSFs and sum
-			fp = fopen("SCENE.txt", "r");
-			if(fp!=NULL)
-			{
-            initscene = 0;
-            // for each source in the scene, read position and flux
-            while(fscanf(fp, "%lf %lf %lf\n", &xpos, &ypos, &fval) == 3)
-            {
-                printf("COMPUTING PSF AT POSITION %lf %lf, flux  = %g\n", xpos, ypos, fval);
-                // make the actual PSF
-                PIAACMCsimul_computePSF(xpos, ypos, 0, optsyst[0].NBelem, 1, 0, 0, 1);
-                // get the image "psfi0" index, which was created in PIAACMCsimul_computePSF
-                ID = image_ID("psfi0");
-                // get image size.  3rd dimension is wavelength
-                xsize = data.image[ID].md[0].size[0];
-                ysize = data.image[ID].md[0].size[1];
-                zsize = data.image[ID].md[0].size[2];
 
-                if(initscene==0)
-                {
-                    initscene = 1;
-                    // create 3D image to sum the PSFs into
-                    IDscene = create_3Dimage_ID("scene", xsize, ysize, zsize);
-                }
-                ID = image_ID("psfi0");
-                // sum the current PSF into the image: summed image is IDscene, source is ID
-                for(ii=0; ii<xsize*ysize*zsize; ii++)
-                    data.image[IDscene].array.F[ii] += fval*data.image[ID].array.F[ii];
-
-
-            }
-            fclose(fp);
-            // we're done!  Save it, overwriting previous scene.fits file
-            save_fits("scene", "!scene.fits");
-			}
-			else // scene.txt does not exist, just do an on-axis source
-			{
-				valref = PIAACMCsimul_computePSF(0.0, 0.0, 0, optsyst[0].NBelem, 1, 0, 0, 1);
-				printf("valref = %g\n", valref);
-			}
-		}
-		
-	return 0;
-		
-}
-
-
-
-
-
-
-
-	    /** 
-     * ---
-     * 
-     * ## Mode 1: Optimize Lyot stop positions
-    
-    Lyot stop positions are encoded as piaacmc[0].LyotStop_zpos
-    
-    there can be multiple LyotStop_zpos
-    
-    Vary these zpos, looking for the best contrast returned by PIAACMCsimul_computePSF
-    
-    Search is performed by iterative refined marching
-    **/ 
-int PIAAsimul_exec_mode01()
-{   
-	long IDv;
-	double fpmradld = 0.95;  // default
-    double centobs0 = 0.3;
-    double centobs1 = 0.2;    
-    double range, stepsize;
-    FILE *fp;     
-    long ls, ls1;
-    long iter;
-    long NBiter = 1000;    
-    double parambest[10000]; // for scanning
-    double paramref[10000];    
-    int loopOK;    
-	double valbest;
-    char fnamelog[500];	    
-    long elem0;
-    
-        printf("=================================== mode 001 ===================================\n");
-        // load some more cli variables
-    if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
-        centobs0 = data.variable[IDv].value.f;
-    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
-        centobs1 = data.variable[IDv].value.f;
-    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
-    {
-        fpmradld = data.variable[IDv].value.f;
-        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
-    }
-        
-
-
-        // init as in mode 0
-        PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
-        PIAACMCsimul_makePIAAshapes(piaacmc, 0);
-        optsyst[0].FOCMASKarray[0].mode = 1; // use 1-fpm
-
-        // initialization
-		PIAACMCsimul_init(piaacmc, 0, 0.0, 0.0); // necessary to initialize optical design
-        // set initial lyot stop marching range (current position +- range)
-        if((IDv=variable_ID("PIAACMC_lsoptrange"))!=-1)
-            range = data.variable[IDv].value.f; // from cli
-        else
-            range = 3.0; // default, in meters
-        stepsize = range/3.0; // initial march stepsize
-        // store initial Lyot stop positions
-        for(ls=0; ls<piaacmc[0].NBLyotStop; ls++) // NBLyotStop = length(LyotStop_zpos)
-            paramref[ls] = piaacmc[0].LyotStop_zpos[ls];
-        NBiter = 4; // number of iterations
-
-        // start up a log
-        sprintf(fnamelog, "%s/result_LMpos.log", piaacmcsimul_var.piaacmcconfdir);
-        fp = fopen(fnamelog, "w");
-        fclose(fp);
-
-
-
-        // pick another initial march stepsize
-        stepsize = range/5.0;
-        // start the iterative refined march
-        for(iter=0; iter<NBiter; iter++)
-        {
-            // for each Lyot stop, find its best position
-            for(ls=0; ls<piaacmc[0].NBLyotStop; ls++)
-            {
-                // start position for march.  paramref is current best value
-                piaacmc[0].LyotStop_zpos[ls] = paramref[ls]-range;
-                // current best position
-                parambest[ls] = piaacmc[0].LyotStop_zpos[ls];
-
-                loopOK = 1;
-                valbest = 1.0;
-                
-                // march to the other other end of range
-                while(piaacmc[0].LyotStop_zpos[ls]<paramref[ls]+range)
-                {
-                    long elem;
-                    double val;
-                    
-                    elem0 = 6; // elem0 is the starting point of the PSF propagation.  This is a staring default
-
-                    // look for the element called "Lyot mask 0" as the actual starting point
-					elem0 = -1;
-					printf("Number of elements = %ld\n", optsyst[0].NBelem);
-					assert ( optsyst[0].NBelem > 0 );
-					
-					for(elem=0; elem<optsyst[0].NBelem; elem++)
-					{
-						printf("elem %ld :  %s\n", elem, optsyst[0].name[elem]);
-                        if(strcmp("Lyot mask 0", optsyst[0].name[elem])==0)
-                            elem0 = elem;
-					}
-					assert( elem0 != -1); // throw a message if this was not found
-
-
-                    optsyst[0].keepMem[elem0] = 1; // save this element and reuse
-
-                    // compute the PSF for this Lyot stop position, returning contrast in the evaluation zone
-                    val = PIAACMCsimul_computePSF(0.0, 0.0, elem0, optsyst[0].NBelem, 0, 0, 0, 0);
-
-                    // if this is the best contrast for this stop, save it for it and the position of this stop
-                    if(val<valbest)
-                    {
-                        parambest[ls] = piaacmc[0].LyotStop_zpos[ls];
-                        valbest = val;
-                    }
-
-                    // say what's happening
-                    fp = fopen(fnamelog, "a");
-                    for(ls1=0; ls1<piaacmc[0].NBLyotStop; ls1++)
-                        fprintf(fp," %lf", piaacmc[0].LyotStop_zpos[ls1]);
-                    fprintf(fp, " %g\n", val);
-                    fclose(fp);
-
-                    // march along by the step size
-                    piaacmc[0].LyotStop_zpos[ls] += stepsize;
-                }
-                printf("BEST SOLUTION :  ");
-                paramref[ls] = parambest[ls]; // update best position for this stop
-                piaacmc[0].LyotStop_zpos[ls] = paramref[ls]; // store in case this is last iteration
-                printf(" %lf", parambest[ls]);
-                printf(" %g\n", valbest);
-            }
-
-            fp = fopen(fnamelog, "a");
-            fprintf(fp, "\n");
-            fclose(fp);
-
-            // reduce the range and stepsize, refining the march
-            range *= 0.3;
-            stepsize = range/3.0;
-        }
-        // store all best positions  Done!!
-        for(ls=0; ls<piaacmc[0].NBLyotStop; ls++)
-            piaacmc[0].LyotStop_zpos[ls] = parambest[ls];
-        PIAAsimul_savepiaacmcconf( piaacmcsimul_var.piaacmcconfdir);
-
-		return 0;
-}
-
-
-
-
-
-
-
-
-		/** 
-		 * ---
-		 * 
-		 * ## Mode 2: Optimize focal plane mask transmission for monochromatic idealized PIAACMC
-        
-        For monochromatic, idealized PIAACMC, find the scalar transimssion of the uniform focal plane mask
-        that provides best contrast in the evaluation zone
-        
-        Very similar to the Lyot stop search in mode 1: iterative refined marching, changing the
-        the transmission value piaacmc[0].fpmaskamptransm, which
-        is between 0 and 1
-        
-        Uses single on-axis light source
-        **/
-int PIAAsimul_exec_mode02()
-{   
-	long IDv;
-	double fpmradld = 0.95;  // default
-    double centobs0 = 0.3;
-    double centobs1 = 0.2;    
-    double range, stepsize;
-    FILE *fp;     
-    int loopOK;    
-	double valbest;
-    long iter;
-    long NBiter = 1000;
-    double parambest[10000]; // for scanning
-    double paramref[10000];       
-    char fnamelog[500];	        
-    char fname[800];
-     char command[1000];   
-    	
-        printf("=================================== mode 002 ===================================\n");
-
-        // load some more cli variables
-    if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
-        centobs0 = data.variable[IDv].value.f;
-    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
-        centobs1 = data.variable[IDv].value.f;
-    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
-    {
-        fpmradld = data.variable[IDv].value.f;
-        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
-    }
-
-	
-
-
-        /// ### Initialize as in mode 0
-        PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
-        PIAACMCsimul_makePIAAshapes(piaacmc, 0);
-        optsyst[0].FOCMASKarray[0].mode = 1; // use 1-fpm
-
-        /// ### Initialize search range and step
-        range = 0.3;
-        stepsize = range/3.0;
-        paramref[0] = piaacmc[0].fpmaskamptransm; // initialized in PIAAsimul_initpiaacmcconf
-        NBiter = 6;
-
-
-		/// ### Scan parameter value
-        sprintf(fnamelog, "%s/result_fpmt.log", piaacmcsimul_var.piaacmcconfdir);
-        fp = fopen(fnamelog, "w");
-        fclose(fp);
-
-        for(iter=0; iter<NBiter; iter++)
-        {
-            // starting point of march
-            piaacmc[0].fpmaskamptransm = paramref[0]-range;
- 
-            // store current value as best
-            parambest[0] = piaacmc[0].fpmaskamptransm;
-
-            loopOK = 1;
-            valbest = 1.0;
-
-            /// While within the search loop :
-            while(loopOK==1)
-            {
-				double val;
-				
-				printf("\n\n\n");
-				
-                piaacmcsimul_var.FORCE_CREATE_fpmza = 1; // forces creation of new focal plane mask in the next two routines
-
-                /// - Call PIAAsimul_initpiaacmcconf() 
-                PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 0);
-                                
-                // compute on-axis PSF of all optical elements returning contrast in evaluation zone
-                // ************************* need to do all optsyst[0].NBelem?
-				/// - call PIAACMCsimul_computePSF() to evaluate design
-                val = PIAACMCsimul_computePSF(0.0, 0.0, 0, optsyst[0].NBelem, 0, 0, 0, 0);
-
-                if(val<valbest)
-                {
-                    // we have a better contrast!  Store it
-                    parambest[0] = piaacmc[0].fpmaskamptransm;
-                    valbest = val;
-                }
-
-				/// - write entry to output log file
-				fp = fopen(fnamelog, "a");
-                fprintf(fp," %+011.8lf", piaacmc[0].fpmaskamptransm);
-                fprintf(fp, " %12g  %8ld %12g %12g\n", val, iter, range, stepsize);
-                fclose(fp);
-								
-                /// -  increment parameter
-                piaacmc[0].fpmaskamptransm += stepsize;
-                
-                // if we've reached the end of the range stop the loop
-                if(piaacmc[0].fpmaskamptransm>paramref[0]+range+0.001*stepsize)
-                    loopOK = 0;
-            }
-
-
-            printf("BEST SOLUTION :  ");
-            // store best solution
-            paramref[0] = parambest[0];
-            printf(" %lf", parambest[0]);
-
-            printf(" %g\n", valbest);
-
-
-            fp = fopen(fnamelog, "a");
-            fprintf(fp, "\n");
-            fclose(fp);
-            // refine range and stepsize
-            range *= 0.3;
-            stepsize = range/3.0;
-        }
-        // save final result
-        piaacmc[0].fpmaskamptransm = parambest[0];
-        PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 0); // why? **************************
-        PIAAsimul_savepiaacmcconf( piaacmcsimul_var.piaacmcconfdir); // save final result to disk
-        piaacmcsimul_var.FORCE_CREATE_fpmza = 0; // turning off to be good citizens
-
-	return 0;
-}
 
 
 
@@ -624,7 +165,7 @@ int PIAAsimul_exec_mode02()
         * Saved by PIAACMCsimul_computePSF as fits file "psfi0"
         
         */
-double PIAAsimul_exec_mode03()
+double PIAACMCsimul_exec_mode03()
 {   
 	long IDv;
 	double fpmradld = 0.95;  // default
@@ -648,7 +189,7 @@ double PIAAsimul_exec_mode03()
 
 
         // init as in mode 0
-        PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
+        PIAACMCsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
         PIAACMCsimul_makePIAAshapes(piaacmc, 0);
         optsyst[0].FOCMASKarray[0].mode = 1; // use 1-fpm
 
@@ -656,14 +197,14 @@ double PIAAsimul_exec_mode03()
 
         piaacmc[0].fpmaskamptransm = -1.0;  // Remove focal plane mask
         piaacmcsimul_var.FORCE_CREATE_fpmza = 1;
-        PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 0);
+        PIAACMCsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 0);
         // compute the PSF for an on-axis source, all optical elements
         val = PIAACMCsimul_computePSF(0.0, 0.0, 0, optsyst[0].NBelem, 0, 0, 0, 0);
 
         // restore original configuration
         piaacmc[0].fpmaskamptransm = paramref[0];
-        PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 0);
-        PIAAsimul_savepiaacmcconf( piaacmcsimul_var.piaacmcconfdir);
+        PIAACMCsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 0);
+        PIAACMCsimul_savepiaacmcconf( piaacmcsimul_var.piaacmcconfdir);
         piaacmcsimul_var.FORCE_CREATE_fpmza = 0;
 
 return val;
@@ -680,7 +221,7 @@ return val;
      * ## Mode 4: Optimize PIAA optics shapes, cosine modes only (not currently used, replaced by mode 40. skipping)
      * 
      */ 
-int PIAAsimul_exec_mode04()
+int PIAACMCsimul_exec_mode04()
 {   
 	long IDv;
 	double fpmradld = 0.95;  // default
@@ -712,7 +253,7 @@ int PIAAsimul_exec_mode04()
         printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
     }
 
-        PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
+        PIAACMCsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
         piaacmcsimul_var.LINOPT = 1; // perform linear optimization
         if((IDv=variable_ID("PIAACMC_nbiter"))!=-1)
             NBiter = (long) data.variable[IDv].value.f+0.01;
@@ -771,7 +312,7 @@ return 0;
      * 
      * 
      */ 
-int PIAAsimul_exec_mode05()
+int PIAACMCsimul_exec_mode05()
 {
 	long IDv;
 	double fpmradld = 0.95;  // default
@@ -810,7 +351,7 @@ int PIAAsimul_exec_mode05()
     }        
         
         /// ### Initialize as in mode 0
-        PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
+        PIAACMCsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
         PIAACMCsimul_makePIAAshapes(piaacmc, 0);
         optsyst[0].FOCMASKarray[0].mode = 1; // use 1-fpm
 
@@ -975,7 +516,7 @@ int PIAAsimul_exec_mode05()
             piaacmc[0].LyotStop_zpos[ls] += optsyst[0].elemZpos[elem0];
 
         // and we're done!  save.
-        PIAAsimul_savepiaacmcconf( piaacmcsimul_var.piaacmcconfdir);
+        PIAACMCsimul_savepiaacmcconf( piaacmcsimul_var.piaacmcconfdir);
         // copy to the final Lyot stop file for this mode
         for(ls=0; ls<piaacmc[0].NBLyotStop; ls++)
         {
@@ -1007,7 +548,7 @@ return 0;
        */ 
 
 
-int PIAAsimul_exec_mode11()
+int PIAACMCsimul_exec_mode11()
 {
 	long IDv;
     int tmpnblambda;	
@@ -1069,7 +610,7 @@ int PIAAsimul_exec_mode11()
             tmpNBrings = data.variable[IDv].value.f;
 
         // initialize
-        PIAAsimul_initpiaacmcconf(1, fpmradld, centobs0, centobs1, 0, 1);
+        PIAACMCsimul_initpiaacmcconf(1, fpmradld, centobs0, centobs1, 0, 1);
 
         printf("piaacmcconfdir     : %s\n", piaacmcsimul_var.piaacmcconfdir);
         fflush(stdout);
@@ -1134,7 +675,7 @@ int PIAAsimul_exec_mode11()
                 piaacmcsimul_var.FORCE_CREATE_fpmzmap = 1;
                 piaacmcsimul_var.FORCE_CREATE_fpmzt = 1;
                 piaacmcsimul_var.FORCE_CREATE_fpmza = 1;
-                PIAAsimul_initpiaacmcconf(1, fpmradld, centobs0, centobs1, 0, 1);
+                PIAACMCsimul_initpiaacmcconf(1, fpmradld, centobs0, centobs1, 0, 1);
             }
             else
             {
@@ -1143,7 +684,7 @@ int PIAAsimul_exec_mode11()
                 piaacmcsimul_var.FORCE_CREATE_fpmzmap = 0;
                 piaacmcsimul_var.FORCE_CREATE_fpmzt = 0;
                 piaacmcsimul_var.FORCE_CREATE_fpmza = 0;
-                PIAAsimul_initpiaacmcconf(1, fpmradld, centobs0, centobs1, 0, 1);
+                PIAACMCsimul_initpiaacmcconf(1, fpmradld, centobs0, centobs1, 0, 1);
             }
 
 
@@ -1195,7 +736,7 @@ int PIAAsimul_exec_mode11()
                 // set the physical size of the FPM as mean(lambda/D)*mask radius in units of lambda/D
                 piaacmc[0].fpmRad = 0.5*(piaacmcsimul_var.LAMBDASTART + piaacmcsimul_var.LAMBDAEND)*piaacmc[0].Fratio * piaacmcsimul_var.PIAACMC_MASKRADLD; // piaacmcsimul_var.PIAACMC_MASKRADLD l/D radius at central lambda
                 // initialize the optical system
-                PIAAsimul_initpiaacmcconf(1, fpmradld, centobs0, centobs1, 0, 0);
+                PIAACMCsimul_initpiaacmcconf(1, fpmradld, centobs0, centobs1, 0, 0);
 
                 //     printf("-------------------------- STEP 0005a  piaacmc[0].focmNBzone  =  %ld   (%ld)\n", piaacmc[0].focmNBzone, piaacmc[0].NBrings);
                 //            sleep(3);
@@ -1491,7 +1032,7 @@ int PIAAsimul_exec_mode11()
      */
 
 
-int PIAAsimul_exec_mode13()
+int PIAACMCsimul_exec_mode13()
 {
 	long IDv;
 	double fpmradld = 0.95;  // default
@@ -1567,7 +1108,7 @@ long k;
         data.image[IDstatus].array.UI16[0] = 0;
 
         // usual initialization
-        PIAAsimul_initpiaacmcconf(1, fpmradld, centobs0, centobs1, 0, 1);
+        PIAACMCsimul_initpiaacmcconf(1, fpmradld, centobs0, centobs1, 0, 1);
         PIAACMCsimul_makePIAAshapes(piaacmc, 0);
 
         PIAACMCsimul_init(piaacmc, 0, 0.0, 0.0);
@@ -1697,7 +1238,7 @@ long k;
      * 
      */ 
      
-int PIAAsimul_exec_mode40()
+int PIAACMCsimul_exec_mode40()
 {    
 	long IDv;
 	double fpmradld = 0.95;  // default
@@ -1762,7 +1303,7 @@ int PIAAsimul_exec_mode40()
 
 
         piaacmcsimul_var.FORCE_CREATE_fpmza = 1;
-        PIAAsimul_initpiaacmcconf(piaacmcsimul_var.PIAACMC_fpmtype, fpmradld, centobs0, centobs1, 0, 1);
+        PIAACMCsimul_initpiaacmcconf(piaacmcsimul_var.PIAACMC_fpmtype, fpmradld, centobs0, centobs1, 0, 1);
         //       printf("data.image[piaacmc[0].zoneaID].array.D[0] = %lf\n", data.image[piaacmc[0].zoneaID].array.D[0]);
         //        sleep(10);
 
@@ -1953,7 +1494,7 @@ int PIAAsimul_exec_mode40()
 
 
 
-int PIAAsimul_exec_mode100()
+int PIAACMCsimul_exec_mode100()
 {
 	long IDopderrC;
 	long nbOPDerr;
@@ -2058,7 +1599,7 @@ int PIAAsimul_exec_mode100()
 	
 
         piaacmcsimul_var.FORCE_CREATE_fpmza = 1;
-        PIAAsimul_initpiaacmcconf(piaacmcsimul_var.PIAACMC_fpmtype, fpmradld, centobs0, centobs1, 0, 1);
+        PIAACMCsimul_initpiaacmcconf(piaacmcsimul_var.PIAACMC_fpmtype, fpmradld, centobs0, centobs1, 0, 1);
 
 
 
@@ -2471,7 +2012,7 @@ return 0;
      * ## Mode 101: Measure transmission as a function of angular separation
      * 
      */ 
-int PIAAsimul_exec_mode101()
+int PIAACMCsimul_exec_mode101()
 {
 	long IDv;
 	double fpmradld = 0.95;  // default
@@ -2502,7 +2043,7 @@ int PIAAsimul_exec_mode101()
             piaacmcsimul_var.PIAACMC_fpmtype = (int) (data.variable[IDv].value.f + 0.1);
 
         piaacmcsimul_var.FORCE_CREATE_fpmza = 1;
-        PIAAsimul_initpiaacmcconf(piaacmcsimul_var.PIAACMC_fpmtype, fpmradld, centobs0, centobs1, 0, 1);
+        PIAACMCsimul_initpiaacmcconf(piaacmcsimul_var.PIAACMC_fpmtype, fpmradld, centobs0, centobs1, 0, 1);
 
         PIAACMCsimul_makePIAAshapes(piaacmc, 0);
         optsyst[0].FOCMASKarray[0].mode = 1; // use 1-fpm
@@ -2568,22 +2109,6 @@ int PIAAsimul_exec_mode101()
 
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2821,49 +2346,49 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
     switch (mode) {
 		
     case 0 :  
-		PIAAsimul_exec_mode00();
+		PIAACMCsimul_exec_compute_image();
         printf("EXEC CASE 0 COMPLETED\n");
         fflush(stdout);
         break;
 
     case 1 : 
-		PIAAsimul_exec_mode01();
+		PIAACMCsimul_exec_optimize_lyot_stop_position();
         break;
 
     case 2 : 
-		PIAAsimul_exec_mode02();
+		PIAACMCsimul_exec_optimize_fpmtransmission();
         break;
 
     case 3 : 
-		val = PIAAsimul_exec_mode03();
+		val = PIAACMCsimul_exec_mode03();
         break;
 
     case 4 :
-        PIAAsimul_exec_mode04();
+        PIAACMCsimul_exec_mode04();
         break;
 
     case 5 :
-		PIAAsimul_exec_mode05();
+		PIAACMCsimul_exec_mode05();
         break;
 
     case 11 :
-		PIAAsimul_exec_mode11();
+		PIAACMCsimul_exec_mode11();
         break;
 
     case 13 : 
-		PIAAsimul_exec_mode13();
+		PIAACMCsimul_exec_mode13();
         break;
 
     case 40 : 
-		PIAAsimul_exec_mode40();
+		PIAACMCsimul_exec_mode40();
         break;
 
     case 100 : // evaluate current design: polychromatic contrast, pointing sensitivity
-		PIAAsimul_exec_mode100();
+		PIAACMCsimul_exec_mode100();
         break;
 
     case 101 : 
-		PIAAsimul_exec_mode101();
+		PIAACMCsimul_exec_mode101();
         break;
 
 
@@ -2972,7 +2497,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
         // save the current configuration to the _linopt directory
         sprintf(dirname, "%s_linopt", piaacmcsimul_var.piaacmcconfdir);
-        PIAAsimul_savepiaacmcconf(dirname);
+        PIAACMCsimul_savepiaacmcconf(dirname);
 
         // import configuration from _linopt directory
         sprintf(command, "rsync -au --progress %s/* ./%s/", dirname, piaacmcsimul_var.piaacmcconfdir);
@@ -4126,7 +3651,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
             // tracking diagnostics giving behavior of the modes by iteration
             sprintf(dirname, "%s_linopt", piaacmcsimul_var.piaacmcconfdir);
-            PIAAsimul_savepiaacmcconf(dirname); // staging area
+            PIAACMCsimul_savepiaacmcconf(dirname); // staging area
             sprintf(command, "rsync -au --progress %s/* ./%s/", dirname, piaacmcsimul_var.piaacmcconfdir);
             r = system(command);
 
@@ -4179,9 +3704,9 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-    //  PIAAsimul_savepiaacmcconf("piaacmc0");
-    //  PIAAsimul_loadpiaacmcconf("piaacmc0");
-    // PIAAsimul_savepiaacmcconf("piaacmc1");
+    //  PIAACMCsimul_savepiaacmcconf("piaacmc0");
+    //  PIAACMCsimul_loadpiaacmcconf("piaacmc0");
+    // PIAACMCsimul_savepiaacmcconf("piaacmc1");
     //exit(0);
 
     return 0;

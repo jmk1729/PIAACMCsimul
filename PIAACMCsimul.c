@@ -15,7 +15,6 @@
 
 // System include
 
-#include <stdint.h>
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -88,23 +87,14 @@ int clock_gettime(int clk_id, struct mach_timespec *t){
 
 
 /// All global images and variables 
-
 extern DATA data;   
 
 
-
-
-
-PIAACMCsimul_var piaacmcsimul_var; 
-
-
- 
-
-
+PIAACMCsimul_varType piaacmcsimul_var; 
 
 /// optical system description
-
 OPTSYST *optsyst;
+
 
 OPTPIAACMCDESIGN *piaacmc;
 

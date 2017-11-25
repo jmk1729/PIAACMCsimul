@@ -6,6 +6,8 @@
 #define ApoFitCosFact 1.0
 
 
+#include <stdint.h>
+
 
 
 
@@ -81,10 +83,15 @@ typedef struct {
 	double PIAACMCSIMUL_VAL;
 	double PIAACMCSIMUL_VAL0;
 	double PIAACMCSIMUL_VALREF;
+
+
+	// Linear Optimization
+	int LINOPT;            // 1 if linear optimization should be started
+	long number_param;     // number of optimization paramters
+
+
 	
-	int LINOPT; // 1 if linear optimization should be started
-	
-	} PIAACMCsimul_var;
+} PIAACMCsimul_varType;
 
 
 
@@ -262,17 +269,17 @@ void PIAACMCsimul_init( OPTPIAACMCDESIGN *design, long index, double TTxld, doub
 /**
  * @brief initializes configuration
  */
-int PIAAsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0, double centobs1, int WFCmode, int load);
+int PIAACMCsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0, double centobs1, int WFCmode, int load);
 
 /**
  * @brief Save configuration
  */
-int PIAAsimul_savepiaacmcconf(const char *dname);
+int PIAACMCsimul_savepiaacmcconf(const char *dname);
 
 /**
  * @brief Load configuration
  */
-int PIAAsimul_loadpiaacmcconf(const char *dname);
+int PIAACMCsimul_loadpiaacmcconf(const char *dname);
 
 
 ///@}
@@ -329,7 +336,7 @@ int PIAACMCsimul_makePIAAshapes(OPTPIAACMCDESIGN *design, long index);
 /* =============================================================================================== */
 /* =============================================================================================== */
 
-long PIAAsimul_mkSimpleLyotStop(const char *ID_name, float rin, float rout);
+long PIAACMCsimul_mkSimpleLyotStop(const char *ID_name, float rin, float rout);
 
 double PIAACMCsimul_optimizeLyotStop(const char *IDamp_name, const char *IDpha_name, const char *IDincoh_name, float zmin, float zmax, double throughput, long NBz, long NBmasks);
 
@@ -393,6 +400,10 @@ long PIAACMCsimul_CA2propCubeInt(const char *IDamp_name, const char *IDpha_name,
 
 int PIAACMCsimul_run(const char *confindex, long mode);
 
+
+int PIAACMCsimul_exec_compute_image();
+int PIAACMCsimul_exec_optimize_lyot_stop_position();
+int PIAACMCsimul_exec_optimize_fpmtransmission();
 ///@}
 
 

@@ -30,7 +30,7 @@
 
 extern DATA data;   
 extern OPTPIAACMCDESIGN *piaacmc;
-extern PIAACMCsimul_var piaacmcsimul_var;
+extern PIAACMCsimul_varType piaacmcsimul_var;
 
 
 
@@ -39,7 +39,7 @@ extern PIAACMCsimul_var piaacmcsimul_var;
 
 
 // transmits between rin and rout
-long PIAAsimul_mkSimpleLyotStop(const char *ID_name, float rin, float rout)
+long PIAACMCsimul_mkSimpleLyotStop(const char *ID_name, float rin, float rout)
 {
     long size;
     long size2;
