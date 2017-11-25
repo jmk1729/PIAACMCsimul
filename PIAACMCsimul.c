@@ -326,6 +326,8 @@ int_fast8_t init_PIAACMCsimul()
 	
 	piaacmcsimul_var.WRITE_OK = 1;
 	
+	piaacmcsimul_var.LINOPT = 0;
+	
     // add atexit functions here
     atexit(PIAACMCsimul_free);
 

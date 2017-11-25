@@ -82,6 +82,8 @@ typedef struct {
 	double PIAACMCSIMUL_VAL0;
 	double PIAACMCSIMUL_VALREF;
 	
+	int LINOPT; // 1 if linear optimization should be started
+	
 	} PIAACMCsimul_var;
 
 

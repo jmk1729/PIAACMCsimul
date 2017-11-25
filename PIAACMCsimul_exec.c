@@ -132,336 +132,51 @@ long PIAACMCsimul_optimizeLyotStop_OAmin(const char *IDincohc_name)
 
 
 
-
-
-
-
 /**
- *
- * @brief Main simulation routine
- *
  * 
- * @param[in] confindex  PIAACMC configuration index pointing to the input/output directory number
- * @param[in] mode       Type of operation to be performed
- *
+ * @brief Compute PSF or image scene
+ * 
  */
-
-int PIAACMCsimul_exec(const char *confindex, long mode)
+ 
+int PIAAsimul_exec_mode00()
 {
-    long NBparam;
-    FILE *fp;
-    FILE *fpt;
-    FILE *fptest;
-    char fptestname[1000];
-    char command[1000];
-    char dirname[500];
-    int paramtype[10000]; // FLOAT or DOUBLE
-    double *paramval[10000]; // array of pointers, double
-    float *paramvalf[10000]; // array of pointers, float
-    double paramrefval[10000];
-
-    double paramdelta[10000];
-    double parammaxstep[10000]; // maximum single iteration step
-    double parammin[10000]; // minimum value
-    double parammax[10000]; // maximum value
-
-    double paramdeltaval[10000];
-
-    double valref, valref1, valbest, val0;
-    double parambest[10000]; // for scanning
-    double paramref[10000];
-    long i, ii, jj, kk;
-    long IDv, ID, ID1, IDref, IDa, IDcomb;
-    long IDmodes, IDmodes2D;
-    long xsize = 0;
-    long ysize = 0;
-    long zsize = 0;
-    long k;
-
-    long iter;
-    long NBiter = 1000;
-
-    long IDfpmresp, IDref1;
-    double t, a, dpha, amp;
-    int zi;
-
-    char fname[800];
-    char fnamecomb[500];
-    char fname1[500];
-    char fname2[500];
-    char fnamet[500];
-    char fnametmp[500];
-    char fnametransm[500];
-    char fnamelog[500];
-    long IDm, ID1D, ID1Dref;
-    long size1Dvec, size1Dvec0;
-
-    char fnamea[500];
-    char fnamep[500];
-    long elem0;
-
-
-    // OPTIMIZATION PARAMETERS
-    int REGPIAASHAPES = 0;
-
-    float piaa0C_regcoeff = 0.0e-7; // regularization coeff
-    float piaa1C_regcoeff = 0.0e-7; // regularization coeff
-    float piaa0C_regcoeff_alpha = 1.0; // regularization coeff power
-    float piaa1C_regcoeff_alpha = 1.0; // regularization coeff power
-
-    float piaa0F_regcoeff = 0.0e-7; // regularization coeff
-    float piaa1F_regcoeff = 0.0e-7; // regularization coeff
-    float piaa0F_regcoeff_alpha = 1.0; // regularization coeff power
-    float piaa1F_regcoeff_alpha = 1.0; // regularization coeff power
-
-
-    int REGFPMSAG = 0; // regularization for FPM sag
- //   float fpmsagreg_coeff = 1.0e-8;
-//    float fpmsagreg_coeff_alpha = 1.0;
-
-
-
-
-    int r;
-
-    double val, v1, v2, pha, cosp, sinp, re, im, re1, im1;
-
-
-    double fpmradld = 0.95;  // default
+	long IDv;
+	double fpmradld = 0.95;  // default
     double centobs0 = 0.3;
     double centobs1 = 0.2;
-
-    double range, stepsize;
-    int loopOK;
-    long ls, ls1, NBpropstep;
-    double lstransm;
-    long mz;
-
-    int LINOPT = 0; // 1 if perform linear optimization
-    long ii1, ii2, ki, kv, ki1;
-
-    double scangain;
-    double scanstepgain = 0.001;
-    int linscanOK;
-    double valold, oldval;
-    double bestgain;
-    double linoptgainarray[100];
-    double linoptvalarray[100];
-    int linoptlimflagarray[100];
-    long NBlinoptgain;
-    long kmax;
-
-
-    double valtest;
-    int ret;
-    int kmaxC, kmaxF;
-
-
-    long st;
-    const gsl_multimin_fminimizer_type *T = gsl_multimin_fminimizer_nmsimplex2rand;
-    gsl_multimin_fminimizer *s = NULL;
-    gsl_vector *ss, *x;
-    gsl_multimin_function fpmeval_func;
-    int status;
-
-    // simulated annealing loop(s)
-    long NBITER_SA = 1000000;
-    long ITERMAX;
-    long iter1;
-    double SAcoeff;
-    double amp1;
-    double val1;
-    int SA_MV = 0;
-    double tmp1;
-    double bestvalue;
-    FILE *fpbest;
-
-    // downhill simplex
-    long NBITER_DS = 1000;
-    long iterMax;
-    int OK;
-    int KEEP;
-    double KEEPlimit = 1.0;
-    double KEEPlimit1 = 1.0;
-    double eps1;
-    double mmsize;
-
-    long elem;
-
-
-    double tmplf1, tmplf2;
-    float *peakarray;
-    float avpeak;
-
-    double *eval_contrastCurve;
-    double *eval_COHcontrastCurve;
-    double *eval_INCcontrastCurve;
-    double *eval_contrastCurve_cnt;
-    double eval_sepstepld = 0.2; // in l/D
-    double eval_sepmaxld = 20.0; // in l/D
-    long eval_sepNBpt;
-    double focscale;
-    double xc, yc, rc;
-    long ri;
-    long IDre, IDim;
-    long IDps, IDps_re, IDps_im;
-    long IDps_COH, IDps_INC;
-    double xld, stepld;
-    double ldoffset;
-
-    // spreading computations over multiple processes for resp matrix
-    long mzoffset = 0;
-    long mzstep = 1;
-    long thr;
-    long tmpl1;
-    int tmpd1;
-
-    int iterOK;
-
-
-    char stopfile[500];
-    struct stat buf;
-
-    double aveC;
-    double aveC_COH;
-    double aveC_INC;
-    long aveCcnt;
-
-    double alphareg;
-    double bestval = 0.0;
-    long IDoptvec = -1;
-
-    long index;
-
-    long tmpNBrings;
-    int tmpnblambda;
-    float dx, dy;
-
-    double zmin, zmax, sigma;
-    long IDc;
-    double oaoffset; // off-axis offset for Lyot stop optimization
-    long k1, kr;
-    long NBincpt, NBincpt1, NBkr;
-    long cnt;
-
-    int PIAACMC_WFCmode = 0;
-
-    double xpos, ypos, fval;
+	int PIAACMC_WFCmode = 0;
+	uint32_t *sizearray;
+	FILE *fp;
+	long IDopderrC;
+	long sizecrop;
+	long k, ii, jj, ii1, jj1;
+	double xpos, ypos, fval;
     int initscene;
     long IDscene;
-
-    double acoeff0, acoeff1, acoeff2;
-    float scangainfact;
-    int alphascaninit = 0;
-
-
-    uint32_t *sizearray;
-    long IDstatus;
-
-    double valContrast;
-    double tmp;
-    int initbestval = 0;
-
-
-	long size;
-	long IDopderrC, nbOPDerr, OPDmode, IDopderr;
-
-	int tmpn1;
-	char userinputstr[100];
-	
-	long NBpt;
-
+	long xsize, ysize, zsize;
+	long ID;
+	long iter;
 	long IDpsfi0;
-	long sizecrop;
-	long jj1;
+	double valref;
+
 	
-	long IDrc;
-	float *rcarray;
-	float drc;
-	long rcbin;
-	long rcbinmax;
-	float rcmin, rcmax;
-	long rc_cnt;
-	float p50, p20;
-
-	long ID_CPAfreq;
-
-
-
-	#ifdef PIAASIMUL_LOGFUNC0
-		sprintf(flogcomment, "%s %ld", confindex, mode);
-		PIAACMCsimul_logFunctionCall("PIAACMCsimul.fcall.log", __FUNCTION__, __LINE__, flogcomment);
-	#endif
-
-
-    // Create status shared variable
-    // this allows realtime monitoring of the code by other processes
-    // sets status at different points in the code
-    IDstatus = image_ID("stat_PIAACMCsimulexec");
-    if(IDstatus == -1)
-        IDstatus = read_sharedmem_image("stat_PIAACMCsimulexec");
-
-    sizearray = (uint32_t*) malloc(sizeof(uint32_t)*2);
-    sizearray[0] = 1;
-    sizearray[1] = 1;
-    IDstatus = create_image_ID("stat_PIAACMCsimulexec", 2, sizearray, _DATATYPE_UINT16, 1, 0);
-    free(sizearray);
-
-
-
-    //piaacmc = NULL; // set the pointer to the piaacmc structure to null
-
-    // if the optical system pointer is empty, create an empty version
-    if(optsyst==NULL)
-    {
-        optsyst = (OPTSYST*) malloc(sizeof(OPTSYST));
-        optsyst[0].SAVE = 1;
-    }
-
-    for(elem=0; elem<100; elem++)
-        optsyst[0].keepMem[elem] = 0; // flag that says save this element for reuse
-
-
-    // set the result directories
-    sprintf( piaacmcsimul_var.piaacmcconfdir, "%s", confindex);
-    sprintf( data.SAVEDIR, "%s", piaacmcsimul_var.piaacmcconfdir);
-
-
-
-
-
-
-    optsyst[0].SAVE = piaacmcsimul_var.PIAACMC_save;
-
-    // get variables from command line, possibly sets globals
-    if((IDv=variable_ID("PIAACMC_centobs0"))!=-1)
-        centobs0 = data.variable[IDv].value.f;
-    if((IDv=variable_ID("PIAACMC_centobs1"))!=-1)
-        centobs1 = data.variable[IDv].value.f;
-    if((IDv=variable_ID("PIAACMC_fpmradld"))!=-1)
-    {
-        fpmradld = data.variable[IDv].value.f;
-        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
-    }
-
-    // start a log of code mode entry/exit times
-    sprintf(command, "echo \"%03ld     $(date)\" >> ./log/PIAACMC_mode_log.txt", mode);
-    ret = system(command);
-    printf("command = %s\n", command);
-
-
-
-    // set the name of the stopfile
-    sprintf(stopfile, "%s/stopmode%ld.txt", piaacmcsimul_var.piaacmcconfdir, mode);
-
-    switch (mode) {
-    case 0 :  // Run existing config for on-axis point source. If new, create centrally obscured idealized PIAACMC
+	// Run existing config for on-axis point source. If new, create centrally obscured idealized PIAACMC
         // compatible with wavefront control
         printf("=================================== mode 000 ===================================\n");
         // Either load a set of point sources from "scene.txt" or use a single on-axis point source,
         // and create the image for these sources by computing and adding their PSFs
             
         // load some more cli variables
+            if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
+        centobs0 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
+        centobs1 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
+    {
+        fpmradld = data.variable[IDv].value.f;
+        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
+    }
+        
         piaacmcsimul_var.PIAACMC_fpmtype = 0; // idealized (default)
         if((IDv=variable_ID("PIAACMC_fpmtype"))!=-1)
             piaacmcsimul_var.PIAACMC_fpmtype = (int) (data.variable[IDv].value.f + 0.1);
@@ -471,6 +186,9 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         if((IDv=variable_ID("PIAACMC_WFCmode"))!=-1)
             PIAACMC_WFCmode = (int) (data.variable[IDv].value.f + 0.1);
         printf("PIAACMC_WFCmode = %d\n", PIAACMC_WFCmode);
+
+
+
 
         // force creation of the FPM zone amplitudes by called functions
         piaacmcsimul_var.FORCE_CREATE_fpmza = 1;
@@ -575,11 +293,9 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 			}
 		}
 		
-        printf("EXEC CASE 0 COMPLETED\n");
-        fflush(stdout);
-
-        break;
-
+	return 0;
+		
+}
 
 
 
@@ -587,12 +303,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-
-
-
-
-    case 1 : 
-    /** 
+	    /** 
      * ---
      * 
      * ## Mode 1: Optimize Lyot stop positions
@@ -605,7 +316,37 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
     
     Search is performed by iterative refined marching
     **/ 
+int PIAAsimul_exec_mode01()
+{   
+	long IDv;
+	double fpmradld = 0.95;  // default
+    double centobs0 = 0.3;
+    double centobs1 = 0.2;    
+    double range, stepsize;
+    FILE *fp;     
+    long ls, ls1;
+    long iter;
+    long NBiter = 1000;    
+    double parambest[10000]; // for scanning
+    double paramref[10000];    
+    int loopOK;    
+	double valbest;
+    char fnamelog[500];	    
+    long elem0;
+    
         printf("=================================== mode 001 ===================================\n");
+        // load some more cli variables
+    if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
+        centobs0 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
+        centobs1 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
+    {
+        fpmradld = data.variable[IDv].value.f;
+        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
+    }
+        
+
 
         // init as in mode 0
         PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
@@ -651,12 +392,16 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
                 // march to the other other end of range
                 while(piaacmc[0].LyotStop_zpos[ls]<paramref[ls]+range)
                 {
+                    long elem;
+                    double val;
+                    
                     elem0 = 6; // elem0 is the starting point of the PSF propagation.  This is a staring default
 
                     // look for the element called "Lyot mask 0" as the actual starting point
 					elem0 = -1;
 					printf("Number of elements = %ld\n", optsyst[0].NBelem);
 					assert ( optsyst[0].NBelem > 0 );
+					
 					for(elem=0; elem<optsyst[0].NBelem; elem++)
 					{
 						printf("elem %ld :  %s\n", elem, optsyst[0].name[elem]);
@@ -707,14 +452,17 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         for(ls=0; ls<piaacmc[0].NBLyotStop; ls++)
             piaacmc[0].LyotStop_zpos[ls] = parambest[ls];
         PIAAsimul_savepiaacmcconf( piaacmcsimul_var.piaacmcconfdir);
-        break;
+
+		return 0;
+}
 
 
 
 
 
 
-    case 2 : 
+
+
 		/** 
 		 * ---
 		 * 
@@ -729,8 +477,39 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         
         Uses single on-axis light source
         **/
-        
+int PIAAsimul_exec_mode02()
+{   
+	long IDv;
+	double fpmradld = 0.95;  // default
+    double centobs0 = 0.3;
+    double centobs1 = 0.2;    
+    double range, stepsize;
+    FILE *fp;     
+    int loopOK;    
+	double valbest;
+    long iter;
+    long NBiter = 1000;
+    double parambest[10000]; // for scanning
+    double paramref[10000];       
+    char fnamelog[500];	        
+    char fname[800];
+     char command[1000];   
+    	
         printf("=================================== mode 002 ===================================\n");
+
+        // load some more cli variables
+    if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
+        centobs0 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
+        centobs1 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
+    {
+        fpmradld = data.variable[IDv].value.f;
+        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
+    }
+
+	
+
 
         /// ### Initialize as in mode 0
         PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
@@ -763,6 +542,8 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
             /// While within the search loop :
             while(loopOK==1)
             {
+				double val;
+				
 				printf("\n\n\n");
 				
                 piaacmcsimul_var.FORCE_CREATE_fpmza = 1; // forces creation of new focal plane mask in the next two routines
@@ -831,14 +612,20 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 0); // why? **************************
         PIAAsimul_savepiaacmcconf( piaacmcsimul_var.piaacmcconfdir); // save final result to disk
         piaacmcsimul_var.FORCE_CREATE_fpmza = 0; // turning off to be good citizens
-        break;
+
+	return 0;
+}
 
 
 
 
 
 
-    case 3 : 
+
+
+
+
+
 		/** 
 		 * ---
 		 * 
@@ -851,7 +638,28 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         * Saved by PIAACMCsimul_computePSF as fits file "psfi0"
         
         */
-        printf("=================================== mode 003 ===================================\n");
+double PIAAsimul_exec_mode03()
+{   
+	long IDv;
+	double fpmradld = 0.95;  // default
+    double centobs0 = 0.3;
+    double centobs1 = 0.2;    
+	double val;
+    double paramref[10000];
+    
+	        printf("=================================== mode 003 ===================================\n");
+
+       // load some more cli variables
+    if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
+        centobs0 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
+        centobs1 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
+    {
+        fpmradld = data.variable[IDv].value.f;
+        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
+    }
+
 
         // init as in mode 0
         PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
@@ -872,23 +680,54 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         PIAAsimul_savepiaacmcconf( piaacmcsimul_var.piaacmcconfdir);
         piaacmcsimul_var.FORCE_CREATE_fpmza = 0;
 
-        break;
+return val;
+}
 
 
 
 
 
-    case 4 :
+
     /** 
      * ---
      * 
      * ## Mode 4: Optimize PIAA optics shapes, cosine modes only (not currently used, replaced by mode 40. skipping)
      * 
      */ 
-        printf("=================================== mode 004 ===================================\n");
+int PIAAsimul_exec_mode04()
+{   
+	long IDv;
+	double fpmradld = 0.95;  // default
+    double centobs0 = 0.3;
+    double centobs1 = 0.2;      
+    long NBiter = 1000;    
+    long number_param;
+    long kmax;
+    long k;    
+    
+    int paramtype[10000]; // FLOAT or DOUBLE
+    float *paramvalf[10000]; // array of pointers, float
+    double paramrefval[10000];
+ 
+    double paramdelta[10000];
+    double parammaxstep[10000]; // maximum single iteration step
+    double parammin[10000]; // minimum value
+    double parammax[10000]; // maximum value
+ 
+            printf("=================================== mode 004 ===================================\n");
+       // load some more cli variables
+    if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
+        centobs0 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
+        centobs1 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
+    {
+        fpmradld = data.variable[IDv].value.f;
+        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
+    }
 
         PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
-        LINOPT = 1; // perform linear optimization
+        piaacmcsimul_var.LINOPT = 1; // perform linear optimization
         if((IDv=variable_ID("PIAACMC_nbiter"))!=-1)
             NBiter = (long) data.variable[IDv].value.f+0.01;
         else
@@ -901,31 +740,34 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         if(kmax>data.image[piaacmc[0].piaa0CmodesID].md[0].size[0])
             kmax = data.image[piaacmc[0].piaa0CmodesID].md[0].size[0];
 
-        NBparam = 0;
+        number_param = 0;
         for(k=0; k<kmax; k++)
         {
-            paramtype[NBparam] = _DATATYPE_FLOAT;
-            paramvalf[NBparam] = &data.image[piaacmc[0].piaa0CmodesID].array.F[k];
-            paramdelta[NBparam] = 1.0e-9;
-            parammaxstep[NBparam] = 1.0e-8;
-            parammin[NBparam] = -1.0e-5;
-            parammax[NBparam] = 1.0e-5;
-            NBparam++;
+            paramtype[number_param] = _DATATYPE_FLOAT;
+            paramvalf[number_param] = &data.image[piaacmc[0].piaa0CmodesID].array.F[k];
+            paramdelta[number_param] = 1.0e-9;
+            parammaxstep[number_param] = 1.0e-8;
+            parammin[number_param] = -1.0e-5;
+            parammax[number_param] = 1.0e-5;
+            number_param++;
         }
 
         for(k=0; k<kmax; k++)
         {
-            paramtype[NBparam] = _DATATYPE_FLOAT;
-            paramvalf[NBparam] = &data.image[piaacmc[0].piaa1CmodesID].array.F[k];
-            paramdelta[NBparam] = 1.0e-9;
-            parammaxstep[NBparam] = 1.0e-8;
-            parammin[NBparam] = -1.0e-5;
-            parammax[NBparam] = 1.0e-5;
-            NBparam++;
+            paramtype[number_param] = _DATATYPE_FLOAT;
+            paramvalf[number_param] = &data.image[piaacmc[0].piaa1CmodesID].array.F[k];
+            paramdelta[number_param] = 1.0e-9;
+            parammaxstep[number_param] = 1.0e-8;
+            parammin[number_param] = -1.0e-5;
+            parammax[number_param] = 1.0e-5;
+            number_param++;
         }
         piaacmcsimul_var.FORCE_MAKE_PIAA0shape = 1;
         piaacmcsimul_var.FORCE_MAKE_PIAA1shape = 1;
-        break;
+
+
+return 0;
+}
 
 
 
@@ -934,8 +776,8 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-    case 5 : 
-    /** 
+
+   /** 
      * ---
      * 
      * ## Mode 5: Optimize Lyot stops shapes and positions
@@ -943,8 +785,43 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
      * 
      * 
      */ 
+int PIAAsimul_exec_mode05()
+{
+	long IDv;
+	double fpmradld = 0.95;  // default
+    double centobs0 = 0.3;
+    double centobs1 = 0.2;   
+	long elem, elem0;
+    long ls, NBpropstep, k;
+    double oaoffset; // off-axis offset for Lyot stop optimization	
+    double zmin, zmax;	
+    char fnamea[500];
+    char fnamep[500];	
+    double lstransm;
+	long NBincpt, k1;
+	long ii;
+    long xsize = 0;
+    long ysize = 0;
+    long NBkr, kr;
+    long ID1, IDa, IDc;
+    char command[1000];   
+    char fname[1000];  
+    long cnt;    
+    char fptestname[1000];
+    FILE *fptest;
+    int r;
+     	
         printf("=================================== mode 005 ===================================\n");
-        
+       // load some more cli variables
+    if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
+        centobs0 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
+        centobs1 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
+    {
+        fpmradld = data.variable[IDv].value.f;
+        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
+    }        
         
         /// ### Initialize as in mode 0
         PIAAsimul_initpiaacmcconf(0, fpmradld, centobs0, centobs1, 0, 1);
@@ -1120,18 +997,19 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
             r = system(command);
         }
 
-        break;
+return 0;
+}
 
 
 
 
- 
 
 
 
 
-    case 11 :
-    
+
+
+
     /** 
      * ---
      * 
@@ -1141,9 +1019,63 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
        (where each mask zone is completely tranparent)
        * 
        */ 
-        printf("=================================== mode 011 ===================================\n");
+
+
+int PIAAsimul_exec_mode11()
+{
+	long IDv;
+    int tmpnblambda;	
+    long tmpNBrings;
+	double fpmradld = 0.95;  // default
+    double centobs0 = 0.3;
+    double centobs1 = 0.2;  	
+	long index;
+    char fname[1000];     
+    char fnamet[1000]; 
+    char fnametmp[1000];  
+    char fname1[500];
+    char fname2[500];   
+    long ID;
+	long elem, elem0;
+
+    char command[1000]; 
+
+    // spreading computations over multiple processes for resp matrix
+    long mzoffset = 0;
+    long mzstep = 1;
+    long thr;
+    long tmpl1;
+    
+    long IDcomb;
+    double val;
+    
+	long i, ii, k;
+	FILE *fpt;
+
+	int r;
+	
+	char fnamecomb[1000];
+	long ID1;
+	
+	long IDfpmresp;
+    long mz;
+
+
+	        printf("=================================== mode 011 ===================================\n");
 
         // get cli variables
+
+    if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
+        centobs0 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
+        centobs1 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
+    {
+        fpmradld = data.variable[IDv].value.f;
+        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
+    }        
+
+
         if((IDv=variable_ID("PIAACMC_nblambda"))!=-1)
             tmpnblambda = data.variable[IDv].value.f;
 
@@ -1540,12 +1472,21 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
                 printf("File \"%s\" or \"%s\" exists\n", fname, fnamecomb);
         }
         piaacmcsimul_var.focmMode = -1;
-        break;
+	
+	
+	
+	return 0;
+}
 
 
 
 
-    case 13 : 
+
+
+
+
+
+
     /** 
      * ---
      * 
@@ -1559,11 +1500,55 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
      * 
      * The search is via steepest descent from random starting points.
      * 
-     * This mode only sets up the optimization that actually happens after exiting the switch statement if LINOPT = 1 (as does mode 40)
+     * This mode only sets up the optimization that actually happens after exiting the switch statement if piaacmcsimul_var.LINOPT = 1 (as does mode 40)
      * 
      */
-      
-        printf("=================================== mode 013 ===================================\n");
+
+
+int PIAAsimul_exec_mode13()
+{
+	long IDv;
+	double fpmradld = 0.95;  // default
+    double centobs0 = 0.3;
+    double centobs1 = 0.2;  	
+	
+    char stopfile[500];	
+	
+    int REGFPMSAG = 0; // regularization for FPM sag
+ //   float fpmsagreg_coeff = 1.0e-8;
+//    float fpmsagreg_coeff_alpha = 1.0;
+
+    int paramtype[10000]; // FLOAT or DOUBLE
+    double *paramval[10000]; // array of pointers, double
+//    float *paramvalf[10000]; // array of pointers, float
+//    double paramrefval[10000];
+
+    double paramdelta[10000];
+    double parammaxstep[10000]; // maximum single iteration step
+    double parammin[10000]; // minimum value
+    double parammax[10000]; // maximum value
+
+long IDfpmresp;
+long k;
+
+	long IDstatus;
+    char fname[1000]; 
+    
+	FILE *fp;
+	
+	long elem;
+	int ret;
+    double tmplf1, tmplf2;	
+    int tmpd1;     
+ 
+    long NBiter = 1000; 
+	
+	long ID;
+	
+	long mz;
+	long number_param;
+	
+	        printf("=================================== mode 013 ===================================\n");
 
 
         // set the name of the stopfile
@@ -1572,6 +1557,18 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
         // get cli variables
+
+    if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
+        centobs0 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
+        centobs1 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
+    {
+        fpmradld = data.variable[IDv].value.f;
+        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
+    }        
+
+
         // FPM sag regularization control flag, do if == 1
         REGFPMSAG = 1; // default
         if((IDv=variable_ID("REGFPMSAG"))!=-1)
@@ -1603,7 +1600,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         fclose(fp);
 
 
-        LINOPT = 1; // perform linear optimization after the switch exits
+        piaacmcsimul_var.LINOPT = 1; // perform linear optimization after the switch exits
         // get the number of iterations
         if((IDv=variable_ID("PIAACMC_nbiter"))!=-1)
             NBiter = (long) data.variable[IDv].value.f+0.01;
@@ -1659,22 +1656,22 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
         // set up optimization parameters for each zone
         // uses abstract specification of optimization parameters called paramval, ...
-        NBparam = 0;
+        number_param = 0;
         for(mz=0; mz<data.image[piaacmc[0].zonezID].md[0].size[0]; mz++)
         {
             // parameter type
-            paramtype[NBparam] = _DATATYPE_DOUBLE;
+            paramtype[number_param] = _DATATYPE_DOUBLE;
             // value: sag of each zone
-            paramval[NBparam] = &data.image[piaacmc[0].zonezID].array.D[mz];
+            paramval[number_param] = &data.image[piaacmc[0].zonezID].array.D[mz];
             // derivative step size
-            paramdelta[NBparam] = 3.0e-9;
+            paramdelta[number_param] = 3.0e-9;
             // max parameter step size
-            parammaxstep[NBparam] = 1.0e-6;
+            parammaxstep[number_param] = 1.0e-6;
             // max and min allowed values for parameter
-            parammin[NBparam] = piaacmc[0].fpmminsag;
-            parammax[NBparam] = piaacmc[0].fpmmaxsag;
+            parammin[number_param] = piaacmc[0].fpmminsag;
+            parammax[number_param] = piaacmc[0].fpmmaxsag;
             // move on to next parameter
-            NBparam++;
+            number_param++;
         }
         piaacmcsimul_var.PIAACMC_FPM_FASTDERIVATIVES = 1; // for fast execution using analytic derivatives
 
@@ -1682,7 +1679,9 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         data.image[IDstatus].array.UI16[0] = 4;
         // Now on to the actual optimization, after exit from the switch statement
         // I hope you have a lot of time...
-        break;
+	
+	return 0;
+}
 
 
 
@@ -1691,7 +1690,19 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-    case 40 : 
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * ---
      * 
@@ -1699,8 +1710,65 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
      * 
      * 
      */ 
+     
+int PIAAsimul_exec_mode40()
+{    
+	long IDv;
+	double fpmradld = 0.95;  // default
+    double centobs0 = 0.3;
+    double centobs1 = 0.2;  	
+    long NBiter = 1000;	
+	
+	long number_param = 0;
+	
+    int paramtype[10000]; // FLOAT or DOUBLE
+    double *paramval[10000]; // array of pointers, double
+    float *paramvalf[10000]; // array of pointers, float
+//    double paramrefval[10000];
+
+    double paramdelta[10000];
+    double parammaxstep[10000]; // maximum single iteration step
+    double parammin[10000]; // minimum value
+    double parammax[10000]; // maximum value
+    
+    long mz, k;
+    long ID_CPAfreq;
+    long kmaxC, kmaxF;
+    
+        // OPTIMIZATION PARAMETERS
+    int REGPIAASHAPES = 0;
+
+    float piaa0C_regcoeff = 0.0e-7; // regularization coeff
+    float piaa1C_regcoeff = 0.0e-7; // regularization coeff
+    float piaa0C_regcoeff_alpha = 1.0; // regularization coeff power
+    float piaa1C_regcoeff_alpha = 1.0; // regularization coeff power
+
+    float piaa0F_regcoeff = 0.0e-7; // regularization coeff
+    float piaa1F_regcoeff = 0.0e-7; // regularization coeff
+    float piaa0F_regcoeff_alpha = 1.0; // regularization coeff power
+    float piaa1F_regcoeff_alpha = 1.0; // regularization coeff power
+
+    int REGFPMSAG = 0; // regularization for FPM sag
+ //   float fpmsagreg_coeff = 1.0e-8;
+//    float fpmsagreg_coeff_alpha = 1.0;
+
+    	
+	
         printf("=================================== mode 040 ===================================\n");
         //		piaacmcsimul_var.FORCE_CREATE_fpmza = 1;
+ 
+     if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
+        centobs0 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
+        centobs1 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
+    {
+        fpmradld = data.variable[IDv].value.f;
+        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
+    }        
+
+ 
+ 
         piaacmcsimul_var.PIAACMC_fpmtype = 0; // idealized (default)
         if((IDv=variable_ID("PIAACMC_fpmtype"))!=-1)
             piaacmcsimul_var.PIAACMC_fpmtype = (int) (data.variable[IDv].value.f + 0.1);
@@ -1720,14 +1788,16 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
         if(0) // TEST
         {
+			double valref;
+			
             valref = PIAACMCsimul_computePSF(0.0, 0.0, 0, optsyst[0].NBelem, 1, 0, 0, 1);
             printf("valref = %g\n", valref);
             printf("EXEC CASE 40 COMPLETED\n");
         }
         else
         {
-
-            LINOPT = 1; // perform linear optimization
+			piaacmcsimul_var.LINOPT = 1; // perform linear optimization
+			
             if((IDv=variable_ID("PIAACMC_nbiter"))!=-1)
                 NBiter = (long) data.variable[IDv].value.f+0.01;
             else
@@ -1807,17 +1877,17 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-            NBparam = 0;
+            number_param = 0;
 
             if(piaacmcsimul_var.PIAACMC_fpmtype==0) // ideal mask
             {
-                paramtype[NBparam] = _DATATYPE_DOUBLE;
-                paramval[NBparam] = &data.image[piaacmc[0].zoneaID].array.D[0];
-                paramdelta[NBparam] = 1.0e-3;
-                parammaxstep[NBparam] = 2.0e-1;
-                parammin[NBparam] = -1.0;
-                parammax[NBparam] = 1.0;
-                NBparam++;
+                paramtype[number_param] = _DATATYPE_DOUBLE;
+                paramval[number_param] = &data.image[piaacmc[0].zoneaID].array.D[0];
+                paramdelta[number_param] = 1.0e-3;
+                parammaxstep[number_param] = 2.0e-1;
+                parammin[number_param] = -1.0;
+                parammax[number_param] = 1.0;
+                number_param++;
             }
             else // real physical mask
             {
@@ -1825,13 +1895,13 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
                 {
                     for(mz=0; mz<data.image[piaacmc[0].zonezID].md[0].size[0]; mz++)
                     {
-                        paramtype[NBparam] = _DATATYPE_DOUBLE;
-                        paramval[NBparam] = &data.image[piaacmc[0].zonezID].array.D[mz];
-                        paramdelta[NBparam] = 1.0e-9;
-                        parammaxstep[NBparam] = 5.0e-8;
-                        parammin[NBparam] = -2.0e-6;
-                        parammax[NBparam] = 2.0e-6;
-                        NBparam++;
+                        paramtype[number_param] = _DATATYPE_DOUBLE;
+                        paramval[number_param] = &data.image[piaacmc[0].zonezID].array.D[mz];
+                        paramdelta[number_param] = 1.0e-9;
+                        parammaxstep[number_param] = 5.0e-8;
+                        parammin[number_param] = -2.0e-6;
+                        parammax[number_param] = 2.0e-6;
+                        number_param++;
                     }
                 }
             }
@@ -1839,52 +1909,54 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
             for(k=0; k<kmaxC; k++)
             {
-                paramtype[NBparam] = _DATATYPE_FLOAT;
-                paramvalf[NBparam] = &data.image[piaacmc[0].piaa0CmodesID].array.F[k];
-                paramdelta[NBparam] = 1.0e-10;
-                parammaxstep[NBparam] = 1.0e-7;
-                parammin[NBparam] = -1.0e-3;
-                parammax[NBparam] = 1.0e-3;
-                NBparam++;
+                paramtype[number_param] = _DATATYPE_FLOAT;
+                paramvalf[number_param] = &data.image[piaacmc[0].piaa0CmodesID].array.F[k];
+                paramdelta[number_param] = 1.0e-10;
+                parammaxstep[number_param] = 1.0e-7;
+                parammin[number_param] = -1.0e-3;
+                parammax[number_param] = 1.0e-3;
+                number_param++;
             }
 
             for(k=0; k<kmaxC; k++)
             {
-                paramtype[NBparam] = _DATATYPE_FLOAT;
-                paramvalf[NBparam] = &data.image[piaacmc[0].piaa1CmodesID].array.F[k];
-                paramdelta[NBparam] = 1.0e-10;
-                parammaxstep[NBparam] = 1.0e-7;
-                parammin[NBparam] = -1.0e-3;
-                parammax[NBparam] = 1.0e-3;
-                NBparam++;
+                paramtype[number_param] = _DATATYPE_FLOAT;
+                paramvalf[number_param] = &data.image[piaacmc[0].piaa1CmodesID].array.F[k];
+                paramdelta[number_param] = 1.0e-10;
+                parammaxstep[number_param] = 1.0e-7;
+                parammin[number_param] = -1.0e-3;
+                parammax[number_param] = 1.0e-3;
+                number_param++;
             }
 
             for(k=0; k<kmaxF; k++)
             {
-                paramtype[NBparam] = _DATATYPE_FLOAT;
-                paramvalf[NBparam] = &data.image[piaacmc[0].piaa0FmodesID].array.F[k];
-                paramdelta[NBparam] = 1.0e-10;
-                parammaxstep[NBparam] = 1.0e-7;
-                parammin[NBparam] = -1.0e-3;
-                parammax[NBparam] = 1.0e-3;
-                NBparam++;
+                paramtype[number_param] = _DATATYPE_FLOAT;
+                paramvalf[number_param] = &data.image[piaacmc[0].piaa0FmodesID].array.F[k];
+                paramdelta[number_param] = 1.0e-10;
+                parammaxstep[number_param] = 1.0e-7;
+                parammin[number_param] = -1.0e-3;
+                parammax[number_param] = 1.0e-3;
+                number_param++;
             }
 
             for(k=0; k<kmaxF; k++)
             {
-                paramtype[NBparam] = _DATATYPE_FLOAT;
-                paramvalf[NBparam] = &data.image[piaacmc[0].piaa1FmodesID].array.F[k];
-                paramdelta[NBparam] = 1.0e-10;
-                parammaxstep[NBparam] = 1.0e-7;
-                parammin[NBparam] = -1.0e-3;
-                parammax[NBparam] = 1.0e-3;
-                NBparam++;
+                paramtype[number_param] = _DATATYPE_FLOAT;
+                paramvalf[number_param] = &data.image[piaacmc[0].piaa1FmodesID].array.F[k];
+                paramdelta[number_param] = 1.0e-10;
+                parammaxstep[number_param] = 1.0e-7;
+                parammin[number_param] = -1.0e-3;
+                parammax[number_param] = 1.0e-3;
+                number_param++;
             }
 
             piaacmcsimul_var.FORCE_MAKE_PIAA0shape = 1;
             piaacmcsimul_var.FORCE_MAKE_PIAA1shape = 1;
         }
-        break;
+
+	return 0;
+}
 
 
 
@@ -1893,9 +1965,74 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
 
-    case 100 : // evaluate current design: polychromatic contrast, pointing sensitivity
+
+
+int PIAAsimul_exec_mode100()
+{
+	long IDopderrC;
+	long nbOPDerr;
+	long IDv;
+	double fpmradld = 0.95;  // default
+    double centobs0 = 0.3;
+    double centobs1 = 0.2;  	
+    double ldoffset;	
+	double valref;
+	
+	long ID;
+	char fname[1000];
+	long xsize, ysize, zsize;
+	
+    float *peakarray;
+    float avpeak;
+
+	long kk, ii, jj;
+	double val;
+
+    double focscale;
+    double xc, yc, rc;
+	
+    double *eval_contrastCurve;
+    double *eval_COHcontrastCurve;
+    double *eval_INCcontrastCurve;
+    double *eval_contrastCurve_cnt;
+    double eval_sepstepld = 0.2; // in l/D
+    double eval_sepmaxld = 20.0; // in l/D
+    long eval_sepNBpt;
+	
+	long ri;
+	FILE *fp;
+	long IDps, IDps_re, IDps_im, IDps_COH, IDps_INC, IDre, IDim, IDopderr, IDrc;
+	
+		float *rcarray;
+	float drc;
+	long rcbin;
+	long rcbinmax;
+	float rcmin, rcmax;
+	long rc_cnt;
+	float p50, p20;
+	
+	long NBpt;
+	
+    double aveC;
+    double aveC_COH;
+    double aveC_INC;
+    long aveCcnt;	
+	
+	long OPDmode;
+	long size;
+	
         printf("=================================== mode 100 ===================================\n");
 		
+    if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
+        centobs0 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
+        centobs1 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
+    {
+        fpmradld = data.variable[IDv].value.f;
+        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
+    }        
+
 		
 
 		// measure sensitivity to errors
@@ -2325,18 +2462,52 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         fprintf(fp, "%10g %10g %4.2f %4.2f %4.2f %4.2f %04ld %02ld %d %03ld %03ld %02d %03ld %7.3f %02d %d\n", valref, aveC/aveCcnt, piaacmc[0].fpmaskradld, piaacmcsimul_var.PIAACMC_MASKRADLD, piaacmc[0].centObs0, piaacmc[0].centObs1, (long) (piaacmc[0].lambda*1e9), (long) (piaacmc[0].lambdaB+0.1), piaacmcsimul_var.PIAACMC_FPMsectors, piaacmc[0].NBrings, piaacmc[0].focmNBzone, piaacmc[0].nblambda, (long) (1000.0*ldoffset), piaacmc[0].fpmsagreg_coeff, piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode);
         fclose(fp);
 
-        break;
+return 0;
+}
 
 
 
-    case 101 : 
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * ---
      * 
      * ## Mode 101: Measure transmission as a function of angular separation
      * 
      */ 
+int PIAAsimul_exec_mode101()
+{
+	long IDv;
+	double fpmradld = 0.95;  // default
+    double centobs0 = 0.3;
+    double centobs1 = 0.2;  	
+     double ldoffset;
+	double valref;
+	char fname[1000];
+	char fnametransm[1000];
+
         printf("=================================== mode 101 ===================================\n");
+
+    if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
+        centobs0 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
+        centobs1 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
+    {
+        fpmradld = data.variable[IDv].value.f;
+        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
+    }        
+
 
         printf("101: transm as a function of angular separation  ldoffset = %f\n", ldoffset);
 
@@ -2358,13 +2529,18 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
        sprintf(fnametransm, "%s/transmCurve_sm%d_s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda);
 
-
+		FILE *fpt;
         fpt = fopen(fnametransm, "w");
         fclose(fpt);
-
-        stepld = 0.001;
+		
+		double stepld = 0.001;
+        double xld;
         for(xld=0.0; xld<10.0; xld+=stepld)
         {
+			long ID;
+			long xsize, ysize, zsize;
+			double val;
+			
             valref = PIAACMCsimul_computePSF(xld, 0.0, 0, optsyst[0].NBelem, 0, 0, 0, 0);
             ID = image_ID("psfi0");
             //            sprintf(fname, "!psfi0transm_%04.1f.fits", xld);
@@ -2375,11 +2551,16 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
             zsize = data.image[ID].md[0].size[2];
             printf("image size = %ld %ld %ld\n", xsize, ysize, zsize);
             val = 0.0;
+            
+            long kk;
             for(kk=0; kk<zsize; kk++)
             {
+				long ii, jj;
                 for(ii=0; ii<xsize; ii++)
                     for(jj=0; jj<ysize; jj++)
                     {
+						double dx, dy;
+						
                         dx = 1.0*ii-0.5*xsize;
                         dy = 1.0*jj-0.5*ysize;
                         if((dx*dx+dy*dy)<30.0*30.0)
@@ -2398,8 +2579,306 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
             if(stepld>0.2)
                 stepld = 0.2;
         }
+
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ *
+ * @brief Main simulation routine
+ *
+ * 
+ * @param[in] confindex  PIAACMC configuration index pointing to the input/output directory number
+ * @param[in] mode       Type of operation to be performed
+ *
+ */
+
+int PIAACMCsimul_exec(const char *confindex, long mode)
+{
+    FILE *fp;
+    char command[1000];
+    char dirname[500];
+    int paramtype[10000];
+    double *paramval[10000]; 
+    float *paramvalf[10000]; 
+
+    double paramdelta[10000];
+    double parammaxstep[10000]; 
+    double parammin[10000]; 
+    double parammax[10000]; 
+
+    double paramdeltaval[10000];
+
+
+    double valref, val0;
+   long i, jj, ii;
+
+    long IDv, ID, IDref;
+    long IDmodes, IDmodes2D;
+    long xsize = 0;
+    long ysize = 0;
+    long k;
+
+    long iter;
+    long NBiter = 1000;
+
+
+    char fname[800];
+    long IDm, ID1D, ID1Dref;
+    long size1Dvec, size1Dvec0;
+
+
+
+
+  
+    int REGPIAASHAPES = 0;
+
+    float piaa0C_regcoeff = 0.0e-7; 
+    float piaa1C_regcoeff = 0.0e-7; 
+    float piaa0C_regcoeff_alpha = 1.0; 
+    float piaa1C_regcoeff_alpha = 1.0; 
+
+    float piaa0F_regcoeff = 0.0e-7; 
+    float piaa1F_regcoeff = 0.0e-7; 
+    float piaa0F_regcoeff_alpha = 1.0; 
+    float piaa1F_regcoeff_alpha = 1.0;
+
+
+    int REGFPMSAG = 0; 
+
+    int r;
+    double val;
+
+    double fpmradld = 0.95;  
+    double centobs0 = 0.3;
+    double centobs1 = 0.2;
+
+    long mz;
+
+    long ii1, ii2, ki, kv, ki1;
+
+    double scangain;
+    double scanstepgain = 0.001;
+    int linscanOK;
+    double valold, oldval;
+    double bestgain;
+    double linoptgainarray[100];
+    double linoptvalarray[100];
+    int linoptlimflagarray[100];
+    long NBlinoptgain;
+    long kmax;
+
+
+    double valtest;
+    int ret;
+    int kmaxC, kmaxF;
+	long number_param = 0;
+
+    long st;
+    const gsl_multimin_fminimizer_type *T = gsl_multimin_fminimizer_nmsimplex2rand;
+    gsl_multimin_fminimizer *s = NULL;
+    gsl_vector *ss, *x;
+    gsl_multimin_function fpmeval_func;
+    int status;
+
+    // simulated annealing loop(s)
+    long NBITER_SA = 1000000;
+    long ITERMAX;
+    long iter1;
+    double SAcoeff;
+    double amp1;
+    double val1;
+    int SA_MV = 0;
+    double tmp1;
+    double bestvalue;
+    FILE *fpbest;
+
+    // downhill simplex
+    long NBITER_DS = 1000;
+    long iterMax;
+    int OK;
+    int KEEP;
+    double KEEPlimit = 1.0;
+    double KEEPlimit1 = 1.0;
+    double eps1;
+    double mmsize;
+
+    long elem;
+
+
+    int iterOK;
+    char stopfile[500];
+
+    double alphareg;
+    double bestval = 0.0;
+    long IDoptvec = -1;
+
+    double acoeff0, acoeff1, acoeff2;
+    float scangainfact;
+    int alphascaninit = 0;
+
+    uint32_t *sizearray;
+    long IDstatus;
+
+    double valContrast;
+    double tmp;
+    int initbestval = 0;
+
+	long ID_CPAfreq;
+
+
+
+
+
+	#ifdef PIAASIMUL_LOGFUNC0
+		sprintf(flogcomment, "%s %ld", confindex, mode);
+		PIAACMCsimul_logFunctionCall("PIAACMCsimul.fcall.log", __FUNCTION__, __LINE__, flogcomment);
+	#endif
+
+
+    // Create status shared variable
+    // this allows realtime monitoring of the code by other processes
+    // sets status at different points in the code
+    IDstatus = image_ID("stat_PIAACMCsimulexec");
+    if(IDstatus == -1)
+        IDstatus = read_sharedmem_image("stat_PIAACMCsimulexec");
+
+    sizearray = (uint32_t*) malloc(sizeof(uint32_t)*2);
+    sizearray[0] = 1;
+    sizearray[1] = 1;
+    IDstatus = create_image_ID("stat_PIAACMCsimulexec", 2, sizearray, _DATATYPE_UINT16, 1, 0);
+    free(sizearray);
+
+
+
+    //piaacmc = NULL; // set the pointer to the piaacmc structure to null
+
+    // if the optical system pointer is empty, create an empty version
+    if(optsyst==NULL)
+    {
+        optsyst = (OPTSYST*) malloc(sizeof(OPTSYST));
+        optsyst[0].SAVE = 1;
+    }
+
+    for(elem=0; elem<100; elem++)
+        optsyst[0].keepMem[elem] = 0; // flag that says save this element for reuse
+
+
+    // set the result directories
+    sprintf( piaacmcsimul_var.piaacmcconfdir, "%s", confindex);
+    sprintf( data.SAVEDIR, "%s", piaacmcsimul_var.piaacmcconfdir);
+
+
+
+
+
+
+    optsyst[0].SAVE = piaacmcsimul_var.PIAACMC_save;
+
+    // get variables from command line, possibly sets globals
+    if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
+        centobs0 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
+        centobs1 = data.variable[IDv].value.f;
+    if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
+    {
+        fpmradld = data.variable[IDv].value.f;
+        printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
+    }
+
+    // start a log of code mode entry/exit times
+    sprintf(command, "echo \"%03ld     $(date)\" >> ./log/PIAACMC_mode_log.txt", mode);
+    ret = system(command);
+    printf("command = %s\n", command);
+
+
+
+    // set the name of the stopfile
+    sprintf(stopfile, "%s/stopmode%ld.txt", piaacmcsimul_var.piaacmcconfdir, mode);
+
+    switch (mode) {
+		
+    case 0 :  
+		PIAAsimul_exec_mode00();
+        printf("EXEC CASE 0 COMPLETED\n");
+        fflush(stdout);
         break;
 
+    case 1 : 
+		PIAAsimul_exec_mode01();
+        break;
+
+    case 2 : 
+		PIAAsimul_exec_mode02();
+        break;
+
+    case 3 : 
+		val = PIAAsimul_exec_mode03();
+        break;
+
+    case 4 :
+        PIAAsimul_exec_mode04();
+        break;
+
+    case 5 :
+		PIAAsimul_exec_mode05();
+        break;
+
+    case 11 :
+		PIAAsimul_exec_mode11();
+        break;
+
+    case 13 : 
+		PIAAsimul_exec_mode13();
+        break;
+
+    case 40 : 
+		PIAAsimul_exec_mode40();
+        break;
+
+    case 100 : // evaluate current design: polychromatic contrast, pointing sensitivity
+		PIAAsimul_exec_mode100();
+        break;
+
+    case 101 : 
+		PIAAsimul_exec_mode101();
+        break;
 
 
     case 300 : 
@@ -2450,10 +2929,6 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         break;
 
 
-
-
-
-
     default :
         printERROR(__FILE__,__func__,__LINE__, "mode not recognized");
         break;
@@ -2498,7 +2973,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
     // the output parameters start as the evaluation zone values in "imvect"
     // If we are regularizing, we supplement the output parameters by adding
     // penalty terms as additional output parameters
-    if(LINOPT == 1) // linear optimization
+    if(piaacmcsimul_var.LINOPT == 1) // linear optimization
     {
         // for state tracking and statistics
         data.image[IDstatus].array.UI16[0] = 5;
@@ -2859,9 +3334,9 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
          
             // array for collecting dark hole mode derivatives
             // stores derivative of output vector against input parameters
-            IDmodes = create_3Dimage_ID("DHmodes", size1Dvec, 1, NBparam);
+            IDmodes = create_3Dimage_ID("DHmodes", size1Dvec, 1, number_param);
             // 2D array for diagnostic display
-            IDmodes2D = create_2Dimage_ID("DHmodes2D", size1Dvec, NBparam); //TEST
+            IDmodes2D = create_2Dimage_ID("DHmodes2D", size1Dvec, number_param); //TEST
 
             // get ready to update optimization tracking file
             sprintf(fname, "%s/linoptval.txt", piaacmcsimul_var.piaacmcconfdir);
@@ -2880,7 +3355,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
                 // for state tracking and statistics
                 data.image[IDstatus].array.UI16[0] = 12;
                 optsyst[0].FOCMASKarray[0].mode = 1; // use 1-fpm
-                //				ID = create_2Dimage_ID("DHmodes2Dtest", size1Dvec, NBparam);
+                //				ID = create_2Dimage_ID("DHmodes2Dtest", size1Dvec, number_param);
             
 				printf("Computing %ld derivatives ", (long) data.image[piaacmc[0].zonezID].md[0].size[0]);
 				fflush(stdout);
@@ -2911,7 +3386,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
 
                 // TEST diagnostic
-                memcpy(data.image[IDmodes2D].array.F, data.image[IDmodes].array.F, sizeof(float)*size1Dvec*NBparam);
+                memcpy(data.image[IDmodes2D].array.F, data.image[IDmodes].array.F, sizeof(float)*size1Dvec*number_param);
                 save_fl_fits("DHmodes2D", "!test_DHmodes2D.fits");
 
                 // for state tracking and statistics
@@ -2926,7 +3401,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
                 
                 // for state tracking and statistics
                 data.image[IDstatus].array.UI16[0] = 14;
-                for(i=0; i<NBparam; i++)
+                for(i=0; i<number_param; i++)
                 {
                     optsyst[0].FOCMASKarray[0].mode = 1; // use 1-fpm
                     // get delta on-axis PSF response to the change in paramdelta
@@ -2949,7 +3424,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
 
                     sprintf(fname, "%s/linoptval.txt", piaacmcsimul_var.piaacmcconfdir);
                     fp = fopen(fname, "a");
-                    fprintf(fp, "# %5ld/%5ld %5ld/%5ld %20.15g %20.15g %20.15g      %20.15g\n", iter, NBiter, i, NBparam, paramdelta[i], val, valref, bestval);
+                    fprintf(fp, "# %5ld/%5ld %5ld/%5ld %20.15g %20.15g %20.15g      %20.15g\n", iter, NBiter, i, number_param, paramdelta[i], val, valref, bestval);
                     fclose(fp);
 
                     // re-package vector into 1D array and add regularization terms
@@ -3041,7 +3516,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
                     //    printf("%3ld %g %g\n", i, val, valref);
 
                     // create diagnostic image
-                    ID = create_2Dimage_ID("DHmodes2D", size1Dvec, NBparam);
+                    ID = create_2Dimage_ID("DHmodes2D", size1Dvec, number_param);
                     for(ii=0; ii<data.image[IDmodes].md[0].nelement; ii++)
                         data.image[ID].array.F[ii] = data.image[IDmodes].array.F[ii];
 
@@ -3193,7 +3668,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
                     ID = image_ID("optcoeff"); // direction vector
                     linoptlimflagarray[k] = 0;
                     // step each parameter by optcoeff
-                    for(i=0; i<NBparam; i++) // looping over parameters
+                    for(i=0; i<number_param; i++) // looping over parameters
                     {
                         // compute step delta for this parameter
                         // image[ID] = optcoeff is a derivative w.r.t. paramdelta, so has dimension
@@ -3345,13 +3820,13 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
                     sprintf(fname, "%s/linoptval.txt", piaacmcsimul_var.piaacmcconfdir);
                     fp = fopen(fname, "a");
                     // printf the first part of the line reporting current values
-                    fprintf(fp, "##  %5.3f   %20lf           %20g    (reg = %12g %12g   contrast = %20g)       [%d] [%ld]", alphareg, scangain, val, val0, val1, valContrast, linoptlimflagarray[k], NBparam);
+                    fprintf(fp, "##  %5.3f   %20lf           %20g    (reg = %12g %12g   contrast = %20g)       [%d] [%ld]", alphareg, scangain, val, val0, val1, valContrast, linoptlimflagarray[k], number_param);
  
                     // now add text indicating status and complete line
                     // and store all parameters for the current best solution
                     if((val<bestval)||(initbestval==0))
                     {
-                        for(i=0; i<NBparam; i++)
+                        for(i=0; i<number_param; i++)
                             if(paramtype[i]==_DATATYPE_FLOAT)
                                 data.image[IDoptvec].array.F[i] = *(paramvalf[i]);
                             else
@@ -3371,7 +3846,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
                     fclose(fp);
 
                     // remove offsets returning the global data object to its original state
-                    for(i=0; i<NBparam; i++)
+                    for(i=0; i<number_param; i++)
                     {
                         if(paramtype[i]==_DATATYPE_FLOAT)
                             *(paramvalf[i]) -= (float) paramdeltaval[i];
@@ -3433,7 +3908,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
             // (re-)compute best solution identified in previous linescan
 			// update state to best solution (IDoptvec), setting the global data object
             // to the optimal state
-            for(i=0; i<NBparam; i++)
+            for(i=0; i<number_param; i++)
             {
                 if(paramtype[i]==_DATATYPE_FLOAT)
                     *(paramvalf[i]) = data.image[IDoptvec].array.F[i];
@@ -3712,9 +4187,9 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         printf(" ============ END OF OPTIMIZATION LOOP ======= \n");
         // for state tracking and statistics
         data.image[IDstatus].array.UI16[0] = 32;
-    } // end of if (LINOPT==1): done with the linear optimization
+    } // end of if (piaacmcsimul_var.LINOPT==1): done with the linear optimization
 
-
+	piaacmcsimul_var.LINOPT = 0;
 
 
 
