@@ -26,7 +26,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <assert.h>
-
+#include <sys/stat.h>
+#include <sys/types.h>
+ 
 #ifdef __MACH__
 #include <mach/mach_time.h>
 #define CLOCK_REALTIME 0
@@ -271,6 +273,16 @@ int PIAAsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0
 	#ifdef PIAASIMUL_LOGFUNC0
 		PIAACMCsimul_logFunctionCall("PIAACMCsimul.fcall.log", __FUNCTION__, __LINE__, "");
 	#endif
+
+
+	// Create required directories
+	ret = mkdir("testdir", 0777);  // test files, output from code
+	ret = mkdir("conf",    0777);  // configuration
+	ret = mkdir("status",  0777);  // status
+	ret = mkdir("ref",     0777);  // reference files
+	ret = mkdir("log",     0777);  // log
+
+
 
 
     if(piaacmc == NULL)
@@ -707,10 +719,10 @@ int PIAAsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0
     printf("Creating / loading Cmodes and Fmodes ...\n");
     fflush(stdout);
 
-
+	
     piaacmcsimul_var.CREATE_Cmodes = 0;
     //   sprintf(fname, "%s/Cmodes.fits", piaacmcsimul_var.piaacmcconfdir);
-    sprintf(fname, "Cmodes_%ld.fits", piaacmc[0].size);
+    sprintf(fname, "ref/Cmodes_%ld.fits", piaacmc[0].size);
     if( piaacmcsimul_var.FORCE_CREATE_Cmodes == 0 )
     {
         piaacmc[0].CmodesID = image_ID("Cmodes");
@@ -744,7 +756,7 @@ int PIAAsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0
 
     piaacmcsimul_var.CREATE_Fmodes = 0;
     //    sprintf(fname, "%s/Fmodes.fits", piaacmcsimul_var.piaacmcconfdir);
-    sprintf(fname, "Fmodes_%ld.fits", piaacmc[0].size);
+    sprintf(fname, "ref/Fmodes_%ld.fits", piaacmc[0].size);
     if( piaacmcsimul_var.FORCE_CREATE_Fmodes == 0 )
     {
         piaacmc[0].FmodesID = image_ID("Fmodes");

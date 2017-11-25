@@ -21,6 +21,14 @@ rm piaacmcscriptsinit.txt
 
 
 function CLEANoutput {
+	
+rm -rf testdir
+rm -rf log
+rm -rf ref
+rm -rf status
+rm -rf piaacmcconf_*
+rm -rf eval*
+
 rm ModesExpr_CPA.txt
 rm prePIAA0mask.fits
 rm prePIAA1mask.fits
@@ -30,9 +38,6 @@ rm initOK*
 rm run.cmd.tsart
 rm optcoeff*.fits
 rm step0*.txt
-rm -rf ./status/
-rm -rf ./log/
-rm step_setup.txt
 rm varlog.txt
 rm cpamodesfreq.fits
 rm cmdlog.txt
@@ -40,7 +45,6 @@ rm Cmodes_*
 rm Fmodes_*
 rm runPIAACMCfifo*
 rm clistartup*.txt
-rm -rf piaacmcconf_*
 rm test*
 rm piaacmc*/*thread0*.fits
 rm piaacmc*/*thread0*.fits.tmp
@@ -59,8 +63,6 @@ rm conj_test.txt
 rm _pupmaskload.fits
 rm SVDmodes.log
 rm eigenv_*
-rm -rf eval1
-rm -rf eval2
 }
 
 

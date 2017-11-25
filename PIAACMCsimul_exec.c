@@ -568,20 +568,6 @@ int PIAAsimul_exec_mode02()
                 fprintf(fp," %+011.8lf", piaacmc[0].fpmaskamptransm);
                 fprintf(fp, " %12g  %8ld %12g %12g\n", val, iter, range, stepsize);
                 fclose(fp);
-
-				// Save image (testing)
-				system("mkdir -p testdir");
-				sprintf(fname, "testdir/psfi0_%+011.8f.fits",  piaacmc[0].fpmaskamptransm);
-				save_fits("psfi0", fname);
-/*				sprintf(fname, "testdir/fpma_%+011.8f.fits",  piaacmc[0].fpmaskamptransm);
-				save_fits("fpmatest", fname);
-				sprintf(fname, "testdir/fpmp_%+011.8f.fits",  piaacmc[0].fpmaskamptransm);
-				save_fits("fpmptest", fname);
-	*/			
-				sprintf(command, "mv test_piaacmcfpm_re.fits testdir/fpmre_%+011.8f.fits",  piaacmc[0].fpmaskamptransm);
-				system(command);
-				sprintf(command, "mv test_piaacmcfpm_im.fits testdir/fpmim_%+011.8f.fits",  piaacmc[0].fpmaskamptransm);
-				system(command);
 								
                 /// -  increment parameter
                 piaacmc[0].fpmaskamptransm += stepsize;

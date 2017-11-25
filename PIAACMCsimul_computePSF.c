@@ -608,7 +608,7 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
             linopt_imtools_Image_to_vec("psfc0", "pixindex", "pixmult", "imvect");
            
            
-            save_fits("imvect", "!test_imvect.fits");
+            save_fits("imvect", "!./testdir/test_imvect.fits");
             
             
             // extract amplitude and phase for diagnostics

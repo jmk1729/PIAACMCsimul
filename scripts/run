@@ -323,13 +323,13 @@ NBARGS=2
 if [ "$1" = "help" ] || [ "$#" -ne $NBARGS ]; then
         printhelp
 if [ "$#" -ne $NBARGS ]; then
-    printvarall > "varlog.txt"
+    printvarall > "log/varlog.txt"
     echo "Illegal number of parameters ($NBARGS params required, $# entered)"
 fi
         exit
 fi
 
-printvarall > "varlog.txt"
+printvarall > "log/varlog.txt"
 runoptcmd=$1
 
 

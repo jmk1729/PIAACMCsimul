@@ -675,7 +675,7 @@ checkFile "pup_$size.fits"
 
 # ============================= CHECK IF COMMANDS EXISTS ==========================
 
-if [ ! -f "step_setup.txt" ]; then
+if [ ! -f "runPIAACMCdesign" ]; then
 MKSETUP=1
 fi
 
@@ -692,7 +692,6 @@ ln -s $srcdir/PIAACMCsimul/scripts/syncscripts syncscripts
 # ./runopt
 # ./runPIAACMC
 # ./sim
-touch step_setup.txt
 echo "$srcdir/PIAACMCsimul/scripts/syncscripts"
 fi
 
@@ -727,7 +726,6 @@ checkCommand "./sim"
 if [ $EXITSTATUS -eq 1 ]; then
 echo ""
 echo "$(tput setaf 1)$(tput bold) REQUIRED FILES, COMMANDS NOT FOUND: EXITING $(tput sgr0)"
-rm step_setup.txt
 echo ""
 exit
 else
@@ -892,8 +890,8 @@ fi
 # this operation should take approximately 3mn15 (size = 1024)
 
 # The following files will be created:
-# Cmodes_<size>.fits : Cosine modes
-# Fmodes_<size>.fits : Fourier modes
+# ref/Cmodes_<size>.fits : Cosine modes
+# ref/Fmodes_<size>.fits : Fourier modes
 
 # in ./piaacmcconf_i000 directory :
 # WFamp0_xxx.fits and WFpha0_xxx.fits: amplitude and phase in specific planes

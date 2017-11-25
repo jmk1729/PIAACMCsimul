@@ -487,9 +487,10 @@ void PIAACMCsimul_init( OPTPIAACMCDESIGN *design, long index, double TTxld, doub
         optsyst[0].FOCMASKarray[0].fpmID = PIAACMCsimul_mkFocalPlaneMask("fpmzmap", "piaacmcfpm", piaacmcsimul_var.focmMode, savefpm); // if -1, this is 1-fpm; otherwise, this is impulse response from single zone
 
 		// TEST
+		
 		mk_reim_from_complex("piaacmcfpm", "piaacmcfpm_re", "piaacmcfpm_im", 0);
-        save_fits("piaacmcfpm_re", "!test_piaacmcfpm_re.fits");
-        save_fits("piaacmcfpm_im", "!test_piaacmcfpm_im.fits");
+        save_fits("piaacmcfpm_re", "!./testdir/test_piaacmcfpm_re.fits");
+        save_fits("piaacmcfpm_im", "!./testdir/test_piaacmcfpm_im.fits");
         delete_image_ID("piaacmcfpm_re");
         delete_image_ID("piaacmcfpm_im");
 		

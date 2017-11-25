@@ -43,18 +43,21 @@ This step takes a few minutes - most of the time is spent on iterations to compu
 After this step, the contrast will likely be around 1e-7 to 1e-8. The next step to improve this nominal design is to find the optimal locations for the Lyot stops.
 
 
-Output file                         | Description
-------------------------------------|--------------------------------------------------------------------------
-Cmodes_1024.fits                    | Cosine modes applied for PIAA optics shapes optimization
-Fmodes_1024.fits                    | Fourier modes applied for PIAA optics shapes optimization
-piaacmcconf_i000/WFamp0_xxx.fits    | Amplitude in plane xxx
-piaacmcconf_i000/WFpha0_xxx.fits    | Phase in plane xxx
-piaacmcconf_i000/conjugations.txt   | List of planes and conjugation distance to reference
-piaacmcconf_i000/apo2Drad.fits      | Amplitude apodization (entirely allocated to PIAA optics)
-piaacmcconf_i000/PIAA_Mshapes.txt   | aspheric optics shapes (r0 z0 r1 z1), unit [m]
-piaacmcconf_i000/piaam0z.fits       | first PIAA mirror sag [m]
-piaacmcconf_i000/piaam1z.fits       | second PIAA mirror sag [m]
-piaacmcconf_i000/psfi0_step000.fits | Coronagraphic PSF (flux normalized to total=1 without coronagraph)
+Output file                             | Description
+----------------------------------------|--------------------------------------------------------------------------
+ref/Cmodes_1024.fits                    | Cosine modes applied for PIAA optics shapes optimization
+ref/Fmodes_1024.fits                    | Fourier modes applied for PIAA optics shapes optimization
+piaacmcconf_i000/APLCapo.<X>.<Y>.info   | Apodization function info
+piaacmcconf_i000/WFamp0_xxx.fits        | Amplitude in plane xxx
+piaacmcconf_i000/WFpha0_xxx.fits        | Phase in plane xxx
+piaacmcconf_i000/conjugations.txt       | List of planes and conjugation distance to reference
+piaacmcconf_i000/apo2Drad.fits          | Amplitude apodization (entirely allocated to PIAA optics)
+piaacmcconf_i000/PIAA_Mshapes.txt       | Aspheric optics shapes (r0 z0 r1 z1), unit [m]
+piaacmcconf_i000/piaam0z.fits           | First PIAA mirror sag [m]
+piaacmcconf_i000/piaam1z.fits           | Second PIAA mirror sag [m]
+piaacmcconf_i000/psfi0_step000.fits     | Coronagraphic PSF (flux normalized to total=1 without coronagraph)
+log/varlog.txt                          | List of coronagraph parameters
+
 
 
 The conjugations.txt file should contain number, location and description of each plane:
@@ -81,56 +84,89 @@ The complex amplitude for each of these planes (files WFamp0_xxx.fits) should sh
 The script provides some approximate performance metrics upon normal exit:
 
 ~~~
-saved -> test_psfc0a.fits
+TOTAL = 0.002426
     FLUX   0    114332.0000 1.000000
     FLUX   1    114332.0000 1.000000
-    FLUX   2    114331.9875 1.000000
-    FLUX   3    114331.9736 1.000000
-    FLUX   4    114331.9445 1.000000
-    FLUX   5    114331.8632 0.999999
-    FLUX   6     36330.5968 0.317764
-    FLUX   7       552.3991 0.004832
-    FLUX   8        95.3810 0.000834
+    FLUX   2    114331.9872 1.000000
+    FLUX   3    114331.9668 1.000000
+    FLUX   4    114331.9357 0.999999
+    FLUX   5    114331.8634 0.999999
+    FLUX   6     23794.1440 0.208114
+    FLUX   7       551.2827 0.004822
+    FLUX   8       277.3360 0.002426
 COMPUTING UNRESOLVED SOURCE PSF -*- [0.000000 x 0.000000]
-Peak constrast (rough estimate)= 3617.04 -> 2.76706e-07
+SCORINGTOTAL = 2436.000000  2436.000000
+Peak constrast (rough estimate)= 26231.4 -> 2.00672e-06
 optsyst[0].flux[0]  = 114332
 SCORINGMASKTYPE = 0
-[0] Total light in scoring field = 1.32039e+06, peak PSF = -1, SCOTINGTOTAL = 2436   -> Average contrast = 4.14658e-08
+[0] Total light in scoring field = 8.58033e+06, peak PSF = -1, SCOTINGTOTAL = 2436   -> Average contrast = 2.69458e-07
 ~~~
 
 
+Runtime 00:01:35
+
+
+---
 
 
 ## STEP 001: Propagate solution and compute PSF
 
-The previous solution is propagated. This should yield the same result as step 0. This should take approximately 1mn.
+The previous solution is propagated. This should yield the same result as step 0. 
+
+Output file                             | Description
+----------------------------------------|--------------------------------------------------------------------------
+piaacmcconf_i000/WFamp0_xxx.fits        | Amplitude in plane xxx
+piaacmcconf_i000/WFpha0_xxx.fits        | Phase in plane xxx
+piaacmcconf_i000/psfi0_step001.fits     | On-axis PSF 
+
 
 ~~~
+TOTAL = 0.002387
     FLUX   0    114332.0000 1.000000
     FLUX   1    114332.0000 1.000000
-    FLUX   2    114331.9848 1.000000
-    FLUX   3    114331.9558 1.000000
-    FLUX   4    114331.9316 0.999999
-    FLUX   5     36329.5003 0.317754
-    FLUX   6       542.4649 0.004745
-    FLUX   7        96.0420 0.000840
+    FLUX   2    114331.9872 1.000000
+    FLUX   3    114331.9668 1.000000
+    FLUX   4    114331.9356 0.999999
+    FLUX   5    114331.9105 0.999999
+    FLUX   6     23785.0351 0.208035
+    FLUX   7       544.8861 0.004766
+    FLUX   8       272.9253 0.002387
 COMPUTING UNRESOLVED SOURCE PSF -*- [0.000000 x 0.000000]
-Peak constrast (rough estimate)= 3025.69 -> 2.31467e-07
+SCORINGTOTAL = 2436.000000  2436.000000
+Peak constrast (rough estimate)= 25740.7 -> 1.96918e-06
 optsyst[0].flux[0]  = 114332
 SCORINGMASKTYPE = 0
-[0] Total light in scoring field = 1.3261e+06, peak PSF = -1, SCOTINGTOTAL = 2436   -> Average contrast = 4.1645e-08
+[0] Total light in scoring field = 8.18737e+06, peak PSF = -1, SCOTINGTOTAL = 2436   -> Average contrast = 2.57118e-07
+saving contrast value [2.57118e-07] -> piaacmcconf_i000/contrast_ptsrc_sm0_s0_l0565_sr10_nbr001_mr000_minsag-10000_maxsag010000_fpmreg001000_ssr00_ssm0_Mirror_wb01.txt
 ~~~
 
+
+Runtime 00:00:07
+
+---
 
 ## STEP 002: Specify input pupil geometry
 
 The pupil geometry is copied to file `piaacmcconf_i000/pupa0_1024.fits`
 
+Runtime 00:00:00
+
+---
+
+
+
 
 
 ## STEP 003 (mode = 0): compute on-axis PSF for new pupil geometry
 
-Same as step 1, but taking into account the pupil geometry. With spiders or gaps in the pupil, the contrast will not be as good
+Same as step 1, but taking into account the pupil geometry. With spiders or gaps in the pupil, the contrast will not be as good.
+
+Output file                             | Description
+----------------------------------------|--------------------------------------------------------------------------
+piaacmcconf_i000/WFamp0_xxx.fits        | Amplitude in plane xxx
+piaacmcconf_i000/WFpha0_xxx.fits        | Phase in plane xxx
+piaacmcconf_i000/psfi0_step003.fits     | On-axis PSF 
+
 
 ~~~
     FLUX   0    416183.9306 1.000000
@@ -148,9 +184,9 @@ SCORINGMASKTYPE = 0
 [0] Total light in scoring field = 7.35517e+09, peak PSF = -1, SCOTINGTOTAL = 2436   -> Average contrast = 1.74319e-05
 ~~~
 
-This step should take approximately 1mn.
+Runtime 00:00:07
 
-
+---
 
 
 ## STEP 004 (mode = 5): Compute Lyot stops shapes and locations, 1st pass
