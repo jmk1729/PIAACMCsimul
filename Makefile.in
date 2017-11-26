@@ -137,6 +137,14 @@ am_libpiaacmcsimul_la_OBJECTS = PIAACMCsimul.lo \
 	PIAACMCsimul_exec.lo PIAACMCsimul_exec_compute_image.lo \
 	PIAACMCsimul_exec_optimize_lyot_stop_position.lo \
 	PIAACMCsimul_exec_optimize_fpmtransmission.lo \
+	PIAACMCsimul_exec_computePSF_no_fpm.lo \
+	PIAACMCsimul_exec_optimize_PIAA_shapes.lo \
+	PIAACMCsimul_exec_optimize_lyot_stops_shapes_positions.lo \
+	PIAACMCsimul_exec_multizone_fpm_calib.lo \
+	PIAACMCsimul_exec_optimize_fpm_zones.lo \
+	PIAACMCsimul_exec_optimize_PIAA_shapes_fpmtransm.lo \
+	PIAACMCsimul_measure_transm_curve.lo \
+	PIAACMCsimul_eval_poly_design.lo \
 	PIAACMCsimul_mkFocalPlaneMask.lo PIAACMCsimul_rings2sectors.lo \
 	PIAACMCsimul_makePIAAshapes.lo \
 	PIAACMCsimul_mkPIAAMshapes_from_RadSag.lo PIAACMCsimul_run.lo \
@@ -352,6 +360,14 @@ libpiaacmcsimul_la_SOURCES = PIAACMCsimul.c \
 	PIAACMCsimul_exec.c PIAACMCsimul_exec_compute_image.c \
 	PIAACMCsimul_exec_optimize_lyot_stop_position.c \
 	PIAACMCsimul_exec_optimize_fpmtransmission.c \
+	PIAACMCsimul_exec_computePSF_no_fpm.c \
+	PIAACMCsimul_exec_optimize_PIAA_shapes.c \
+	PIAACMCsimul_exec_optimize_lyot_stops_shapes_positions.c \
+	PIAACMCsimul_exec_multizone_fpm_calib.c \
+	PIAACMCsimul_exec_optimize_fpm_zones.c \
+	PIAACMCsimul_exec_optimize_PIAA_shapes_fpmtransm.c \
+	PIAACMCsimul_measure_transm_curve.c \
+	PIAACMCsimul_eval_poly_design.c \
 	PIAACMCsimul_mkFocalPlaneMask.c PIAACMCsimul_rings2sectors.c \
 	PIAACMCsimul_makePIAAshapes.c \
 	PIAACMCsimul_mkPIAAMshapes_from_RadSag.c PIAACMCsimul_run.c \
@@ -453,10 +469,17 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_achromFPMsol_eval.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_achromFPMsol_eval_zonezderivative.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_computePSF.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_eval_poly_design.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_exec.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_exec_computePSF_no_fpm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_exec_compute_image.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_exec_multizone_fpm_calib.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_exec_optimize_PIAA_shapes.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_exec_optimize_PIAA_shapes_fpmtransm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_exec_optimize_fpm_zones.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_exec_optimize_fpmtransmission.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_exec_optimize_lyot_stop_position.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_exec_optimize_lyot_stops_shapes_positions.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_free.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_init.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_init_geomPIAA_rad.Plo@am__quote@
@@ -464,6 +487,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_load2DRadialApodization.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_loadsavepiaacmcconf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_makePIAAshapes.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_measure_transm_curve.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_mkFPM_zonemap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_mkFocalPlaneMask.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_mkLyotMask.Plo@am__quote@

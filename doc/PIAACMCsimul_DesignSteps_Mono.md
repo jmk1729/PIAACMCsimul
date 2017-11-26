@@ -106,7 +106,7 @@ SCORINGMASKTYPE = 0
 ~~~
 
 
-Runtime 00:01:35
+Runtime 00:01:36 (size 1024)
 
 
 ---
@@ -152,7 +152,7 @@ Runtime 00:00:07
 
 The pupil geometry is copied to file `piaacmcconf_i000/pupa0_1024.fits`
 
-Runtime 00:00:00
+Runtime 00:00:00 (size 1024)
 
 ---
 
@@ -190,7 +190,7 @@ SCORINGMASKTYPE = 0
 [0] Total light in scoring field = 3.77881e+09, peak PSF = -1, SCOTINGTOTAL = 2436   -> Average contrast = 0.000146207
 ~~~
 
-Runtime 00:00:07
+Runtime 00:00:07 (size 1024)
 
 ---
 
@@ -220,7 +220,7 @@ BEST SOLUTION: 12.029246969065 / 12.274741805168    0.000001627893 / 0.000021030
 
 The optimal Lyot stop(s) conjugation(s) is written in file `piaacmcconf_i000/piaacmcparams_step004.conf`
 
-Runtime 00:53:49
+Runtime 00:53:49 (size 1024)
 
 ---
 
@@ -282,7 +282,7 @@ Optimizes the focal plane mask transmission. Results are written in file `piaacm
  +0.37573599  1.67367e-07         5     0.000729     0.000243
 ~~~
 
-Runtime 00:03:56
+Runtime 00:03:56 (size 1024)
 
 
 ---
@@ -290,6 +290,7 @@ Runtime 00:03:56
 
 ## STEP 006 (mode = 5): Compute Lyot stops shapes and locations, 2nd pass, 70% throughput
 
+Source code: 
 
 ~~~
 BEST SOLUTION: 30.006465758591 / 50.010776264318    0.000000319995 / 0.000021330725  -> 0.602147984170  0.001772430096
@@ -304,7 +305,7 @@ BEST SOLUTION: 46.009914163172 / 50.010776264318    0.000000383994 / 0.000021330
 
 
 
-Runtime 00:02:50
+Runtime 00:02:50 (size 1024)
 
 
 
@@ -314,7 +315,7 @@ Runtime 00:02:50
 
 ## STEP 007 (mode = 40): Tune PIAA shapes and focal plane mask transm, 10 cosine modes, 5 Fourier modes
 
-This takes approximately 20mn for size = 1024.
+
 
 Progress can be tracked by watching file :
 
@@ -322,8 +323,26 @@ Progress can be tracked by watching file :
 tail -f linoptval.txt
 ~~~
 
+The file shows contrast value improving. Lines starting with '##' are evaluations along lines of steepest gradient, and lines starting with `###` are evaluations of local derivatives.
 
+Last lines of file `linoptval.txt`:
 
+~~~
+##  1.000               0.123419                    2.12854e-08    (reg =            1            1   contrast =          2.12854e-08)       [0] [31] bestval =  2.12103e-08
+##  1.000               0.149303                    2.12684e-08    (reg =            1            1   contrast =          2.12684e-08)       [0] [31] bestval =  2.12103e-08
+##  1.000               0.180363                    2.12484e-08    (reg =            1            1   contrast =          2.12484e-08)       [0] [31] bestval =  2.12103e-08
+##  1.000               0.217636                    2.12264e-08    (reg =            1            1   contrast =          2.12264e-08)       [0] [31] bestval =  2.12103e-08
+##  1.000               0.262363                    2.12032e-08    (reg =            1            1   contrast =          2.12032e-08)       [0] [31]  -> BEST VECTOR =======
+##  1.000               0.316036                    2.11772e-08    (reg =            1            1   contrast =          2.11772e-08)       [0] [31]  -> BEST VECTOR =======
+##  1.000               0.380443                    2.11525e-08    (reg =            1            1   contrast =          2.11525e-08)       [0] [31]  -> BEST VECTOR =======
+##  1.000               0.457732                    2.11278e-08    (reg =            1            1   contrast =          2.11278e-08)       [0] [31]  -> BEST VECTOR =======
+##  1.000               0.550478                    2.11099e-08    (reg =            1            1   contrast =          2.11099e-08)       [0] [31]  -> BEST VECTOR =======
+##  1.000               0.661774                    2.11015e-08    (reg =            1            1   contrast =          2.11015e-08)       [0] [31]  -> BEST VECTOR =======
+##  1.000               0.795329                     2.1113e-08    (reg =            1            1   contrast =           2.1113e-08)       [0] [31] bestval =  2.11015e-08
+->     9             2.11015e-08 <-          2.14234e-07 
+~~~
+
+Runtime 01:30:31 (size 1024)
 
 
 ----
@@ -332,24 +351,40 @@ tail -f linoptval.txt
 ## STEP 008 (mode = 40): Tune PIAA shapes and focal plane mask transm,  20 cosine modes, 20 Fourier modes
 
 
+Progress can be tracked by watching file :
+
 ~~~
-    FLUX   0    416183.9306 1.000000
-    FLUX   1    416183.9306 1.000000
-    FLUX   2    416183.8669 1.000000
-    FLUX   3    416183.7608 1.000000
-    FLUX   4    416183.6991 0.999999
-    FLUX   5    189642.2892 0.455669
-    FLUX   6       216.7150 0.000521
-    FLUX   7       216.7150 0.000521
-COMPUTING UNRESOLVED SOURCE PSF -*- [0.000000 x 0.000000]
-Peak constrast (rough estimate)= 6272.06 -> 3.62109e-08
-optsyst[0].flux[0]  = 416184
-SCORINGMASKTYPE = 0
-[0] Total light in scoring field = 291196, peak PSF = -1, SCOTINGTOTAL = 2436   -> Average contrast = 6.90139e-10
+tail -f linoptval.txt
 ~~~
 
-This step takes 3 hr
+Last lines of file `linoptval.txt`:
 
+~~~
+### scanning gain 
+### <alphareg>  <gain>  <contrast>
+##  0.000               0.001000                    6.45963e-09    (reg =            1            1   contrast =          6.45963e-09)       [0] [81] ===== START POINT =====
+##  0.000               0.002400                    6.45963e-09    (reg =            1            1   contrast =          6.45963e-09)       [0] [81] bestval =  6.45963e-09
+##  0.200               0.001000                    6.45965e-09    (reg =            1            1   contrast =          6.45965e-09)       [0] [81] bestval =  6.45963e-09
+##  0.200               0.002400                    6.45968e-09    (reg =            1            1   contrast =          6.45968e-09)       [0] [81] bestval =  6.45963e-09
+##  0.400               0.001000                    6.45972e-09    (reg =            1            1   contrast =          6.45972e-09)       [0] [81] bestval =  6.45963e-09
+##  0.400               0.002400                    6.45991e-09    (reg =            1            1   contrast =          6.45991e-09)       [0] [81] bestval =  6.45963e-09
+##  0.600               0.001000                    6.45944e-09    (reg =            1            1   contrast =          6.45944e-09)       [0] [81]  -> BEST VECTOR =======
+##  0.600               0.002400                    6.45992e-09    (reg =            1            1   contrast =          6.45992e-09)       [0] [81] bestval =  6.45944e-09
+##  0.800               0.001000                    6.45954e-09    (reg =            1            1   contrast =          6.45954e-09)       [0] [81] bestval =  6.45944e-09
+##  0.800               0.002400                    6.45906e-09    (reg =            1            1   contrast =          6.45906e-09)       [0] [81]  -> BEST VECTOR =======
+##  0.800               0.004080                    6.45901e-09    (reg =            1            1   contrast =          6.45901e-09)       [0] [81]  -> BEST VECTOR =======
+##  0.800               0.006096                    6.45865e-09    (reg =            1            1   contrast =          6.45865e-09)       [0] [81]  -> BEST VECTOR =======
+##  0.800               0.008515                    6.45912e-09    (reg =            1            1   contrast =          6.45912e-09)       [0] [81] bestval =  6.45865e-09
+##  1.000               0.001000                    6.45904e-09    (reg =            1            1   contrast =          6.45904e-09)       [0] [81] bestval =  6.45865e-09
+##  1.000               0.002400                    6.45889e-09    (reg =            1            1   contrast =          6.45889e-09)       [0] [81] bestval =  6.45865e-09
+##  1.000               0.004080                    6.45891e-09    (reg =            1            1   contrast =          6.45891e-09)       [0] [81] bestval =  6.45865e-09
+->     3             6.45865e-09 <-          2.11015e-08 
+~~~
+
+Runtime 00:34:00 (size 1024)
+
+
+---
 
 
 ## STEP 009 (mode = 5): Compute Lyot stops shapes and locations, 2nd pass, 70% throughput
@@ -357,6 +392,8 @@ This step takes 3 hr
 
 This step takes approximately 4mn.
 
+
+---
 
 
 ## STEP 010 (mode = 1): Tune Lyot stops conjugations
@@ -384,6 +421,9 @@ SCORINGMASKTYPE = 0
 ~~~
 
 This step takes approximately 5mn.
+
+
+---
 
 
 ## STEP 011 (mode = 40): Tune PIAA shapes and focal plane mask transm,  20 cosine modes, 20 Fourier modes

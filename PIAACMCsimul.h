@@ -86,9 +86,33 @@ typedef struct {
 
 
 	// Linear Optimization
-	int LINOPT;            // 1 if linear optimization should be started
-	long number_param;     // number of optimization paramters
+	int LINOPT;                         // 1 if linear optimization should be started
+	long linopt_number_param;           // number of optimization paramters
+	int linopt_paramtype[10000];        // _DATATYPE_FLOAT or _DATATYPE_DOUBLE
+	float *linopt_paramvalf[10000];     // array of pointers, float
+	double *linopt_paramval[10000];     // array of pointers, double
+    double linopt_paramrefval[10000];
+ 
+    double linopt_paramdelta[10000];
+    double linopt_paramdeltaval[10000];
+    double linopt_parammaxstep[10000];  // maximum single iteration step
+    double linopt_parammin[10000];      // minimum value
+    double linopt_parammax[10000];      // maximum value
 
+	int linopt_REGPIAASHAPES;
+	float linopt_piaa0C_regcoeff;
+    float linopt_piaa1C_regcoeff;
+    float linopt_piaa0C_regcoeff_alpha;
+    float linopt_piaa1C_regcoeff_alpha;
+
+    float linopt_piaa0F_regcoeff;
+    float linopt_piaa1F_regcoeff;
+    float linopt_piaa0F_regcoeff_alpha;
+    float linopt_piaa1F_regcoeff_alpha;
+
+	int linopt_REGFPMSAG;
+	
+	long linopt_NBiter;
 
 	
 } PIAACMCsimul_varType;
@@ -404,6 +428,17 @@ int PIAACMCsimul_run(const char *confindex, long mode);
 int PIAACMCsimul_exec_compute_image();
 int PIAACMCsimul_exec_optimize_lyot_stop_position();
 int PIAACMCsimul_exec_optimize_fpmtransmission();
+double PIAACMCsimul_exec_computePSF_no_fpm();
+int PIAACMCsimul_exec_optimize_PIAA_shapes();
+int PIAACMCsimul_exec_optimize_lyot_stops_shapes_positions();
+int PIAACMCsimul_exec_multizone_fpm_calib();
+int PIAACMCsimul_exec_optimize_fpm_zones();
+int PIAACMCsimul_exec_optimize_PIAA_shapes_fpmtransm();
+
+int PIAACMCsimul_measure_transm_curve();
+int PIAACMCsimul_eval_poly_design();
+
+
 ///@}
 
 

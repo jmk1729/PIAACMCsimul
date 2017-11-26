@@ -6,10 +6,20 @@ libpiaacmcsimul_la_SOURCES += PIAACMCsimul_loadsavepiaacmcconf.c
 libpiaacmcsimul_la_SOURCES += PIAACMCsimul_init.c 
 libpiaacmcsimul_la_SOURCES += PIAACMCsimul_free.c
 libpiaacmcsimul_la_SOURCES += PIAACMCsimul_mkFPM_zonemap.c
+
 libpiaacmcsimul_la_SOURCES += PIAACMCsimul_exec.c
 libpiaacmcsimul_la_SOURCES += PIAACMCsimul_exec_compute_image.c
 libpiaacmcsimul_la_SOURCES += PIAACMCsimul_exec_optimize_lyot_stop_position.c
 libpiaacmcsimul_la_SOURCES += PIAACMCsimul_exec_optimize_fpmtransmission.c
+libpiaacmcsimul_la_SOURCES += PIAACMCsimul_exec_computePSF_no_fpm.c
+libpiaacmcsimul_la_SOURCES += PIAACMCsimul_exec_optimize_PIAA_shapes.c
+libpiaacmcsimul_la_SOURCES += PIAACMCsimul_exec_optimize_lyot_stops_shapes_positions.c
+libpiaacmcsimul_la_SOURCES += PIAACMCsimul_exec_multizone_fpm_calib.c
+libpiaacmcsimul_la_SOURCES += PIAACMCsimul_exec_optimize_fpm_zones.c
+libpiaacmcsimul_la_SOURCES += PIAACMCsimul_exec_optimize_PIAA_shapes_fpmtransm.c
+libpiaacmcsimul_la_SOURCES += PIAACMCsimul_measure_transm_curve.c
+libpiaacmcsimul_la_SOURCES += PIAACMCsimul_eval_poly_design.c
+
 libpiaacmcsimul_la_SOURCES += PIAACMCsimul_mkFocalPlaneMask.c
 libpiaacmcsimul_la_SOURCES += PIAACMCsimul_rings2sectors.c
 libpiaacmcsimul_la_SOURCES += PIAACMCsimul_makePIAAshapes.c
