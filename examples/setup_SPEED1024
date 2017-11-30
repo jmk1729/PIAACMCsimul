@@ -84,9 +84,9 @@ echo "-0.05" > ./conf/conf_LyotZmax.txt             # conjugation range for Lyot
 # ===========================================
 
 rm pup_1024.fits &> /dev/null
-cp examples/pupSPEED_2048_450.fits.gz .
-gunzip pupSPEED_2048_450.fits.gz
-cp pupSPEED_2048_450.fits pup_2048.fits
+cp examples/pupSPEED_1024_225.fits.gz .
+gunzip pupSPEED_1024_225.fits.gz
+cp pupSPEED_1024_225.fits pup_1024.fits
 
 
 
