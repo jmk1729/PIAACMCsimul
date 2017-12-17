@@ -63,6 +63,10 @@ rm conj_test.txt
 rm _pupmaskload.fits
 rm SVDmodes.log
 rm eigenv_*
+rm sag0.txt
+rm timeused.txt
+rm step200.txt
+rm fpsagtest.txt
 }
 
 

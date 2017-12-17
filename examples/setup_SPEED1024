@@ -91,6 +91,55 @@ cp pupSPEED_1024_225.fits pup_1024.fits
 
 
 
+exit 
 
+# =============== NOTES ==================================
+
+# After step 3
+# Average contrast = 3.77276e-05
+
+# step 4 takes 55mn
+# BEST SOLUTION: 13.256721149582 / 12.274741805168    0.000001060413 / 0.000023672850  -> 0.700170293288  0.015223838145
+
+# step 5
+# best solution: 
+# +0.34777401  5.49534e-07         5     0.000729     0.000243
+
+# step 6
+# BEST SOLUTION: 67.236710310916 / 74.707455901018    0.000000180322 / 0.000024925039  -> 0.600521312855  0.002950946329
+
+# step 7 takes 33mn
+# Average contrast = 2.37425e-07
+
+# step 8 takes 43mn
+# Average contrast = 2.00018e-07
+
+# step 9
+# BEST SOLUTION: 25.200020604773 / 27.391326744318    0.000000515976 / 0.000023885246  -> 0.650169651832  0.004193351711
+
+# step 10
+# Average contrast = 6.43535e-06
+
+# step 11
+# Average contrast = 2.50336e-07
+
+# step 12 ? takes 6h35mn
+# Average contrast = 2.26e-07
+
+# step 13
+# BEST SOLUTION: 14.102314473938 / 15.002462206317    0.000001047947 / 0.000023394554  -> 0.700011480409  0.009688432326
+
+# step 14
+# Average contrast = 7.80178e-06
+
+# step 15 takes 36 mn
+# Average contrast = 2.7011e-07
+
+# step 16 takes 103mn
+# Average contrast = 2.45855e-07
+
+
+# step 17 takes ?
+# Average contrast = 1.75886e-07
 
 

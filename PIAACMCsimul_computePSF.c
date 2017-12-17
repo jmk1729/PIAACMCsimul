@@ -474,8 +474,8 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
 			/// - If \c outsave = 1, save PSF to FITS file
             if(outsave==1)
             {
-                sprintf(fname, "!%s/psfi0_exsrc%3d_sm%d_s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d.fits", piaacmcsimul_var.piaacmcconfdir, sourcesize, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda);    
-                
+				PIAACMCsimul_update_fnamedescr();
+                sprintf(fname, "!%s/psfi0_exsrc%3d_sm%d.%s.fits", piaacmcsimul_var.piaacmcconfdir, sourcesize, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.fnamedescr);                    
                 save_fits("psfi0ext", fname);
             }
 
@@ -531,9 +531,9 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
             
 			/// - If \c outsave = 1, save flux to txt file
             if(outsave==1)
-            {
-                sprintf(fname, "!%s/flux_exsrc%3d_sm%d_s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d.txt", piaacmcsimul_var.piaacmcconfdir, sourcesize, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda); 
-                
+            {				
+                PIAACMCsimul_update_fnamedescr();
+                sprintf(fname, "!%s/flux_exsrc%3d_sm%d.%s.txt", piaacmcsimul_var.piaacmcconfdir, sourcesize, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.fnamedescr);                
                 fpflux = fopen(fname, "w");
                 for(elem=0; elem<optsyst[0].NBelem; elem++)
                     fprintf(fpflux, "%18.16lf %18.16lf  %d\n", optsyst[0].flux[elem], optsyst[0].flux[elem]/optsyst[0].flux[0], optsyst[0].nblambda);
@@ -554,6 +554,11 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
             {
                 sprintf(fname, "%s/CnormFactor.txt", piaacmcsimul_var.piaacmcconfdir);
                 fp = fopen(fname, "w");
+                fprintf(fp, "# Written by function PIAACMCsimul_computePSF()\n");
+                fprintf(fp, "# Cnormfactor = focscale*focscale*size*size*optsyst[0].flux[0]/optsyst[0].nblambda\n");
+                fprintf(fp, "# 0    focscale  size  flux[0]  nblambda\n");
+                fprintf(fp,"\n");
+
                 fprintf(fp, "%g\n", piaacmcsimul_var.CnormFactor);
                 fprintf(fp, "0      %g %ld %g %d\n", focscale, size, optsyst[0].flux[0], optsyst[0].nblambda);
                 fclose(fp);
@@ -568,8 +573,8 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
 
             if(outsave==1)
             {
-                sprintf(fname, "%s/contrast_exsrc%3d_sm%d_s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d.txt", piaacmcsimul_var.piaacmcconfdir, sourcesize, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda);    
-                
+				PIAACMCsimul_update_fnamedescr();				                                          
+                sprintf(fname, "%s/contrast_exsrc%3d_sm%d.%s.txt", piaacmcsimul_var.piaacmcconfdir, sourcesize, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.fnamedescr);                    
                 fp = fopen(fname, "w");
                 fprintf(fp, "%g", avContrast);
                 fclose(fp);
@@ -600,9 +605,9 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
 
             if(outsave==1)
             {
-              sprintf(fname, "!%s/psfi0_ptsrc_sm%d_s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda);    
-                
-               save_fits("psfi0", fname);
+				PIAACMCsimul_update_fnamedescr();
+				sprintf(fname, "!%s/psfi0_ptsrc_sm%d.%s.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.fnamedescr);    
+				save_fits("psfi0", fname);
             }
 
 
@@ -652,8 +657,8 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
 
             if(outsave==1)
             {
-                sprintf(fname, "%s/flux_ptsrc_sm%d_s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda); 
-
+				PIAACMCsimul_update_fnamedescr();
+                sprintf(fname, "%s/flux_ptsrc_sm%d.%s.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.fnamedescr); 
                 fpflux = fopen(fname, "w");
                 for(elem=0; elem<optsyst[0].NBelem; elem++)
                     fprintf(fpflux, "%18.16lf %18.16lf  %d\n", optsyst[0].flux[elem], optsyst[0].flux[elem]/optsyst[0].flux[0], optsyst[0].nblambda);
@@ -671,6 +676,10 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
             piaacmcsimul_var.CnormFactor = focscale*focscale*size*size*optsyst[0].flux[0]/optsyst[0].nblambda;
             sprintf(fname, "%s/CnormFactor.txt", piaacmcsimul_var.piaacmcconfdir);
             fp = fopen(fname, "w");
+            fprintf(fp, "# Written by function PIAACMCsimul_computePSF()\n");
+            fprintf(fp, "# Cnormfactor = focscale*focscale*size*size*optsyst[0].flux[0]/optsyst[0].nblambda\n");
+            fprintf(fp, "# 1    focscale  size  flux[0]  nblambda\n");
+            fprintf(fp,"\n");
             fprintf(fp, "%g\n", piaacmcsimul_var.CnormFactor);
             fprintf(fp, "1      %g %ld %g %d\n", focscale, size, optsyst[0].flux[0], optsyst[0].nblambda);
             fclose(fp);
@@ -720,7 +729,8 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
 
             if(outsave==1)
             {    
-                sprintf(fname, "%s/contrast_ptsrc_sm%d_s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda);    
+				PIAACMCsimul_update_fnamedescr();
+                sprintf(fname, "%s/contrast_ptsrc_sm%d.%s.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.fnamedescr); 
                 printf("saving contrast value [%g] -> %s\n", avContrast, fname);
                 
                 fp = fopen(fname, "w");

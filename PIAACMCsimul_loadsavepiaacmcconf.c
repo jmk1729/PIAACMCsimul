@@ -42,6 +42,11 @@ extern OPTPIAACMCDESIGN *piaacmc;
 
 
 
+
+
+
+
+
 int PIAACMCsimul_loadpiaacmcconf(const char *dname)
 {
     char command[1000];
@@ -150,14 +155,30 @@ int PIAACMCsimul_loadpiaacmcconf(const char *dname)
 
 
 
+int PIAACMCsimul_update_fnamedescr()
+{
+	sprintf(piaacmcsimul_var.fnamedescr, "s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d", piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda);
+	
+	return EXIT_SUCCESS;
+}
+
+
+
+
+
+//
+// Save PIAACMC optical design
+//
+
 int PIAACMCsimul_savepiaacmcconf(const char *dname)
 {
     char command[1000];
     int r;
     FILE *fp;
-    char fname[500];
+    char fname[1000];
     long i;
-
+    
+	
 
 	#ifdef PIAASIMUL_LOGFUNC0
 		PIAACMCsimul_logFunctionCall("PIAACMCsimul.fcall.log", __FUNCTION__, __LINE__, "");
@@ -167,12 +188,17 @@ int PIAACMCsimul_savepiaacmcconf(const char *dname)
     sprintf(command, "mkdir -p %s", dname);
     r = system(command);
 
+
+	  
+    
+    
+    // piaacmcparam.conf
+    
     sprintf(fname,"%s/piaacmcparams.conf", dname);
+
     fp = fopen(fname, "w");
 
-
     fprintf(fp, "%10ld   NBradpts\n", piaacmc[0].NBradpts);
-
     for(i=0; i<10; i++)
     {
         if(i<piaacmc[0].NBLyotStop)
@@ -185,6 +211,14 @@ int PIAACMCsimul_savepiaacmcconf(const char *dname)
         else
             fprintf(fp, "%10.6lf   LyotStop_zpos %ld\n", piaacmc[0].LyotStop_zpos[i], i);
     }
+    
+    fprintf(fp, "%10.6f    fpmaskamptransm\n", piaacmc[0].fpmaskamptransm);
+
+    fclose(fp);
+
+
+
+	// PIAACMC optics
 
     sprintf(fname, "!%s/piaa0Cmodes.fits", dname);
     if(piaacmc[0].piaa0CmodesID!=-1)
@@ -203,21 +237,22 @@ int PIAACMCsimul_savepiaacmcconf(const char *dname)
         save_fits(data.image[piaacmc[0].piaa1FmodesID].name, fname);
 
 
-    sprintf(fname, "!%s/fpm_zonez_s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda);
 
+
+
+	// Focal plane mask
+	PIAACMCsimul_update_fnamedescr();  
     
+    sprintf(fname, "!%s/fpm_zonez_%s.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
     if(piaacmc[0].zonezID!=-1)
         save_fits(data.image[piaacmc[0].zonezID].name, fname);
 
-    fprintf(fp, "%10.6f    fpmaskamptransm\n", piaacmc[0].fpmaskamptransm);
 
-    sprintf(fname, "!%s/fpm_zonea_s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda);
-
-    
+    sprintf(fname, "!%s/fpm_zonea_%s.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
     if(piaacmc[0].zoneaID!=-1)
         save_fits(data.image[piaacmc[0].zoneaID].name, fname);
 
-    fclose(fp);
+
 
     
 

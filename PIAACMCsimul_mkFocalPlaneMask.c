@@ -387,15 +387,16 @@ long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_na
    if(saveMask==1)
     {
         /* save mask sag */
-        save_fits("fpmsag", "!tmp_fpmsag.fits");
+        //save_fits("fpmsag", "!tmp_fpmsag.fits");
         
-        
-        sprintf(fname, "!%s/fpm_sagmap_s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda);
+        PIAACMCsimul_update_fnamedescr();
+        sprintf(fname, "!%s/fpm_sagmap2D.%s.fits.gz", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
 		save_fits("fpmsag", fname);
 
 
         /* save zones */
-        save_fits("fpmzone", "!tmp_fpmzone.fits");
+        sprintf(fname, "!%s/fpm_zonemap2D.%s.fits.gz", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
+        save_fits("fpmzone", fname);
 
 
         /* save mask transmission */
@@ -409,11 +410,14 @@ long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_na
                     // [re,im] = 1-fpm  -> fpm = [(1.0-re), im]
                 }
 
-
+		
         mk_amph_from_complex("fpmCA", "tfpma", "tfpmp", 0);
         delete_image_ID("fpmCA");
-        save_fits("tfpma", "!tmp_fpmCA_ampl.fits");
-        save_fits("tfpmp", "!tmp_fpmCA_pha.fits");
+        
+        sprintf(fname, "!%s/fpm_CAampmap2D.%s.fits.gz", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
+        save_fits("tfpma", fname);
+        sprintf(fname, "!%s/fpm_CAphamap2D.%s.fits.gz", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
+        save_fits("tfpmp", fname);
         delete_image_ID("tfpma");
         delete_image_ID("tfpmp");
     }

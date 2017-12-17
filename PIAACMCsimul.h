@@ -114,6 +114,9 @@ typedef struct {
 	
 	long linopt_NBiter;
 
+
+	char fnamedescr[800]; // File name descriptor, inserted inside output file names
+
 	
 } PIAACMCsimul_varType;
 
@@ -294,6 +297,9 @@ void PIAACMCsimul_init( OPTPIAACMCDESIGN *design, long index, double TTxld, doub
  * @brief initializes configuration
  */
 int PIAACMCsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0, double centobs1, int WFCmode, int load);
+
+
+int PIAACMCsimul_update_fnamedescr();
 
 /**
  * @brief Save configuration
