@@ -75,8 +75,6 @@ int PIAACMCsimul_makePIAAshapes(OPTPIAACMCDESIGN *design, long index)
 	if(piaacmc[0].PIAAmode==1)
 	{
 
-
-
     piaacmcsimul_var.MAKE_PIAA0shape = 0;
     if( piaacmcsimul_var.FORCE_MAKE_PIAA0shape == 0 )
     {

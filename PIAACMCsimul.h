@@ -115,7 +115,8 @@ typedef struct {
 	long linopt_NBiter;
 
 
-	char fnamedescr[800]; // File name descriptor, inserted inside output file names
+	char fnamedescr[800]; // File name descriptor for focal plane mask, inserted inside output file names
+	char fnamedescr_conf[800]; // File name descriptor for focal plane mask configuration, inserted inside output file names
 
 	
 } PIAACMCsimul_varType;
@@ -299,6 +300,7 @@ void PIAACMCsimul_init( OPTPIAACMCDESIGN *design, long index, double TTxld, doub
 int PIAACMCsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0, double centobs1, int WFCmode, int load);
 
 
+int PIAACMCsimul_update_fnamedescr_conf();
 int PIAACMCsimul_update_fnamedescr();
 
 /**

@@ -110,7 +110,7 @@ long PIAACMCsimul_mkFPM_zonemap(const char *IDname)
         break;
 
     case 1: // rings broken in sectors
-        sprintf(fname, "%s/fpmzones%d_%03ld.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.PIAACMC_FPMsectors, piaacmc[0].NBrings);
+        sprintf(fname, "%s/fpm_zonescoord_%d_%03ld.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.PIAACMC_FPMsectors, piaacmc[0].NBrings);
         fp = fopen(fname, "w");
         NBzones = 0;
         cnt = 0;
@@ -135,7 +135,7 @@ long PIAACMCsimul_mkFPM_zonemap(const char *IDname)
         break;
 
     case 2: // rings of hexagons
-         sprintf(fname, "%s/fpmzones%d_%03ld.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.PIAACMC_FPMsectors, piaacmc[0].NBrings);
+         sprintf(fname, "%s/fpm_zonescoord_%d_%03ld.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.PIAACMC_FPMsectors, piaacmc[0].NBrings);
         fp = fopen(fname, "w");
         fprintf(fp, "# focal plane mask zones geometry\n");
         fprintf(fp, "# hexagonal tiling\n");

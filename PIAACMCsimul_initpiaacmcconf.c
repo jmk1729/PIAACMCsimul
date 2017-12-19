@@ -749,6 +749,9 @@ int PIAACMCsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double cento
         linopt_imtools_makeCosRadModes("Cmodes", Cmsize, piaacmc[0].piaaNBCmodesmax, ApoFitCosFact*beamradpix, 2.0);
         piaacmc[0].CmodesID = image_ID("Cmodes");
         save_fits("Cmodes", fname);
+        
+        sprintf(command, "mv ModesExpr_CosRad.txt %s/", piaacmcsimul_var.piaacmcconfdir);
+        ret = system(command);
     }
     piaacmc[0].NBCmodes = data.image[piaacmc[0].CmodesID].md[0].size[2];
     piaacmc[0].Cmsize = data.image[piaacmc[0].CmodesID].md[0].size[0];
@@ -779,7 +782,6 @@ int PIAACMCsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double cento
         save_fits("Fmodes", fname);
 		save_fits("cpamodesfreq", "!cpamodesfreq.fits");
         sprintf(command, "mv ModesExpr_CPA.txt %s/", piaacmcsimul_var.piaacmcconfdir);
-        
         ret = system(command);
     }
     piaacmc[0].NBFmodes = data.image[piaacmc[0].FmodesID].md[0].size[2];
@@ -1108,6 +1110,16 @@ int PIAACMCsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double cento
 
 
     // ============ MAKE FOCAL PLANE MASK ===============
+
+	PIAACMCsimul_update_fnamedescr();
+	
+	sprintf(command, "echo \"%s\" > fpm_name.txt", piaacmcsimul_var.fnamedescr);
+	ret = system(command);
+	
+	sprintf(command, "echo \"%s\" > fpm_name_conf.txt", piaacmcsimul_var.fnamedescr_conf);
+	ret = system(command);
+	
+
 
     /*    piaacmcsimul_var.CREATE_fpmzmap = 0;
         if( piaacmcsimul_var.FORCE_CREATE_fpmzmap == 0 )

@@ -68,8 +68,6 @@ int PIAACMCsimul_loadpiaacmcconf(const char *dname)
 
     sprintf(fname,"%s/piaacmcparams.conf", dname);
     printf("%s\n", fname);
-
-
     fp = fopen(fname, "r");
     if(fp==NULL)
     {
@@ -151,13 +149,28 @@ int PIAACMCsimul_loadpiaacmcconf(const char *dname)
 
 
 
+/** @brief Assemble focal plane mask configuration name 
+ * 
+ */ 
+int PIAACMCsimul_update_fnamedescr_conf()
+{
+	sprintf(piaacmcsimul_var.fnamedescr_conf, "s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_ssr%02d_ssm%d_wb%02d", piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].nblambda);
+	
+	return EXIT_SUCCESS;
+}
 
 
-
-
+/** @brief Assemble focal plane mask name
+ * 
+ * 
+ */ 
 int PIAACMCsimul_update_fnamedescr()
 {
-	sprintf(piaacmcsimul_var.fnamedescr, "s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d", piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda);
+	PIAACMCsimul_update_fnamedescr_conf();
+	
+	sprintf(piaacmcsimul_var.fnamedescr, "%s.minsag%06ld_maxsag%06ld_fpmregc%06ld_fpmrega%06ld_%s", piaacmcsimul_var.fnamedescr_conf, (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1),  (long) (1000.0*piaacmc[0].fpmsagreg_alpha+0.1), piaacmc[0].fpmmaterial_name);
+	
+//	sprintf(piaacmcsimul_var.fnamedescr_old, "s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d", piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda);
 	
 	return EXIT_SUCCESS;
 }
@@ -243,12 +256,12 @@ int PIAACMCsimul_savepiaacmcconf(const char *dname)
 	// Focal plane mask
 	PIAACMCsimul_update_fnamedescr();  
     
-    sprintf(fname, "!%s/fpm_zonez_%s.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
+    sprintf(fname, "!%s/fpm_zonez.%s.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
     if(piaacmc[0].zonezID!=-1)
         save_fits(data.image[piaacmc[0].zonezID].name, fname);
 
 
-    sprintf(fname, "!%s/fpm_zonea_%s.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
+    sprintf(fname, "!%s/fpm_zonea.%s.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
     if(piaacmc[0].zoneaID!=-1)
         save_fits(data.image[piaacmc[0].zoneaID].name, fname);
 

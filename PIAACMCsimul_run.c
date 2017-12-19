@@ -64,7 +64,7 @@ int PIAACMCsimul_run(const char *confindex, long mode)
     char fnamebestval[500];
     double bestval = 1.0;
     int ret;
-    char command[1000]; 
+    char command[1000];
     long k;
     int fOK = 0;
     int bOK = 0;
@@ -324,23 +324,25 @@ int PIAACMCsimul_run(const char *confindex, long mode)
             printf("\n\n\n\n======= val = %g [%g]\n", piaacmcsimul_var.PIAACMCSIMUL_VAL, bestval);
             fflush(stdout);
 
-            if(piaacmcsimul_var.PIAACMCSIMUL_VAL<bestval) // piaacmcsimul_var.PIAACMCSIMUL_VAL was set in PIAACMCsimul_exec()
-            {
+            if(piaacmcsimul_var.PIAACMCSIMUL_VAL < bestval) // piaacmcsimul_var.PIAACMCSIMUL_VAL was set in PIAACMCsimul_exec()
+            {				
+				char command1[1000];
+				
 				//sprintf(command, "touch step05.iter%05ld.ttxt", i);
 				//ret = system(command);
 			
                 // we have a better solution!
                 bOK = 1;
                 bestval = piaacmcsimul_var.PIAACMCSIMUL_VAL; // record it
-                printf("============================================================   SAVING BEST MASK SOLUTION -> fpm_zonez.best.fits\n");
+                printf("============================================================   SAVING BEST MASK SOLUTION -> fpm_zonez.[name].best.fits\n");
                 fflush(stdout);
                 
                 // if a previous best solution has not been identified with an index, set its index
                 // by loading the current best solution.  This probably never happens
-                if(IDbestsol==-1)
-                {
+                if(IDbestsol == -1)
+                { 
 					PIAACMCsimul_update_fnamedescr();
-                   sprintf(fnamebestsol, "%s/fpm_zonez.%s.best.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
+					sprintf(fnamebestsol, "%s/fpm_zonez.%s.best.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
 
                     IDbestsol = load_fits(fnamebestsol, "fpmbestsol", 0);
                 }
@@ -354,16 +356,20 @@ int PIAACMCsimul_run(const char *confindex, long mode)
                 
                 // fname1 is the name of the current solution, which is now the best solution
                 PIAACMCsimul_update_fnamedescr();
-               sprintf(fname1, "%s/fpm_zonez.%s.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
+				sprintf(fname1, "%s/fpm_zonez.%s.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
 
                 // fnamebestsol is the name of the stored best solution, should always be the same
                 // as the name in line 8599 (if(IDbestsol==-1)...)
                 PIAACMCsimul_update_fnamedescr();
-               sprintf(fnamebestsol, "%s/fpm_zonez.%s.best.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
+				sprintf(fnamebestsol, "%s/fpm_zonez.%s.best.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
 
                 // copy the current solution to the best solution
                 sprintf(command, "cp %s %s", fname1, fnamebestsol);
                 ret = system(command);
+                
+				
+				sprintf(command1, "echo \"%s\" > cmdlogtest.txt", command);
+				ret = system(command1);
 
                 // write new best value in file
                 fp = fopen(fnamebestval, "w");

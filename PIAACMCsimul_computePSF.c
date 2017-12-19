@@ -527,8 +527,7 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
             for(elem=0; elem<optsyst[0].NBelem; elem++)
                 printf("    FLUX %3ld   %12.4lf %8.6lf\n", elem, optsyst[0].flux[elem], optsyst[0].flux[elem]/optsyst[0].flux[0]);
 
-            //            sprintf(fname,"%s/flux.txt", piaacmcsimul_var.piaacmcconfdir);
-            
+
 			/// - If \c outsave = 1, save flux to txt file
             if(outsave==1)
             {				
@@ -539,6 +538,9 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
                     fprintf(fpflux, "%18.16lf %18.16lf  %d\n", optsyst[0].flux[elem], optsyst[0].flux[elem]/optsyst[0].flux[0], optsyst[0].nblambda);
                 fprintf(fpflux, "W0  %d\n", optsyst[0].nblambda);
                 fclose(fpflux);
+                
+                sprintf(command, "cp %s %s/tmp_flux.txt", fname, piaacmcsimul_var.piaacmcconfdir);
+                ret = system(command);
             }
 
 
@@ -665,7 +667,7 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
                 fprintf(fpflux, "W1\n");
                 fclose(fpflux);
         
-                sprintf(command, "cp %s %s/flux.txt", fname, piaacmcsimul_var.piaacmcconfdir);
+                sprintf(command, "cp %s %s/tmp_flux.txt", fname, piaacmcsimul_var.piaacmcconfdir);
                 ret = system(command);
 
            }
