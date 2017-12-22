@@ -549,45 +549,7 @@ int PIAACMCsimul_exec(const char *confindex, long mode)
         break;
 
 
-    case 300 :
-        /**
-         * ---
-         *
-         * ## Mode 300: Import FPM configuration setting from parent directory
-         *
-         */
-        printf("=================================== mode 300 ===================================\n");
 
-        /*  sprintf(command, "cp conf_MASKRADLD.txt %s/", piaacmcsimul_var.piaacmcconfdir);
-          r = system(command);
-          sprintf(command, "cp conf_FPMsectors.txt %s/", piaacmcsimul_var.piaacmcconfdir);
-          r = system(command);
-          sprintf(command, "cp conf_NBrings.txt %s/", piaacmcsimul_var.piaacmcconfdir);
-          r = system(command);
-          sprintf(command, "cp conf_nblambda.txt %s/", piaacmcsimul_var.piaacmcconfdir);
-          r = system(command);
-          sprintf(command, "cp conf_resolved.txt %s/", piaacmcsimul_var.piaacmcconfdir);
-          r = system(command);
-          sprintf(command, "cp conf_extmode.txt %s/", piaacmcsimul_var.piaacmcconfdir);
-          r = system(command);*/
-        break;
-
-    case 301 : // remove configuration settings
-        printf("=================================== mode 301 ===================================\n");
-
-        /*   sprintf(command, "mv %s/conf_MASKRADLD.txt %s/saveconf/conf_MASKRADLD.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.piaacmcconfdir);
-           r = system(command);
-           sprintf(command, "mv %s/conf_FPMsectors.txt %s/saveconf/conf_FPMsectors.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.piaacmcconfdir);
-           r = system(command);
-           sprintf(command, "mv %s/conf_NBrings.txt %s/saveconf/conf_NBrings.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.piaacmcconfdir);
-           r = system(command);
-           sprintf(command, "mv %s/conf_nblambda.txt %s/saveconf/conf_nblambda.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.piaacmcconfdir);
-           r = system(command);
-           sprintf(command, "mv %s/conf_resolved.txt %s/saveconf/conf_resolved.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.piaacmcconfdir);
-           r = system(command);
-           sprintf(command, "mv %s/conf_extmode.txt %s/saveconf/conf_extmode.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.piaacmcconfdir);
-           r = system(command);*/
-        break;
 
     case 302 : // restore configuration settings
         printf("=================================== mode 302 ===================================\n");

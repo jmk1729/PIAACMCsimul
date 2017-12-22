@@ -57,7 +57,7 @@ double PIAACMCsimul_achromFPMsol_eval(double *fpmresp_array, double *zonez_array
 
     // axis 0: eval pts (ii)   size = data.image[IDfpmresp].md[0].size[0] -> vsize
     // axis 1: zones (mz)      size = data.image[piaacmc[0].zonezID].md[0].size[0]+1 = nbz+1
-    // axis 3: lambda (k)      size = piaacmc[0].nblambda -> nbl
+    // axis 2: lambda (k)      size = piaacmc[0].nblambda -> nbl
     //
     // indexing :  k*(data.image[piaacmc[0].zonezID].md[0].size[0]+1)*vsize + mz*vsize + ii
 
@@ -83,6 +83,7 @@ double PIAACMCsimul_achromFPMsol_eval(double *fpmresp_array, double *zonez_array
                 outtmp_array[evalk*vsize+2*evalii+1] = fpmresp_array[evalk*(nbz+1)*vsize+2*evalii+1];
             }
 
+			// mask zones
 			long evalmz, evalki1, evalkv;
 			double evalpha, evalcosp, evalsinp;
             for(evalmz=0; evalmz<nbz; evalmz++)

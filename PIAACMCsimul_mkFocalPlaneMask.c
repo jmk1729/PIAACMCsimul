@@ -170,7 +170,10 @@ long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_na
 			printf("     amp = %8.4f\n", aarray[piaacmc[0].focmNBzone*k+zi]);
 			fflush(stdout);			
 			
+			//
 			// compute phase from thickness
+			// phase sign is positive for outgoing beam element ahead of main beam
+			// 
 			phaarray[piaacmc[0].focmNBzone*k+zi] = OPTICSMATERIALS_pha_lambda(piaacmc[0].fpmmaterial_code, tarray[piaacmc[0].focmNBzone*k+zi], optsyst[0].lambdaarray[k]);
 			printf("     pha = %8.4f rad\n", phaarray[piaacmc[0].focmNBzone*k+zi]);
 			fflush(stdout);		
@@ -326,8 +329,8 @@ long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_na
 //									cospha = cosphaarray[piaacmc[0].focmNBzone*k+zi-1];
 //									sinpha = sinphaarray[piaacmc[0].focmNBzone*k+zi-1];
 
-                                    retmp += 1.0-amp*cospha;
-                                    imtmp += amp*sinpha;
+                                    retmp += 1.0 - amp*cospha;
+                                    imtmp += -amp*sinpha;
 
                                 }
                                 else // impulse response from single zone
@@ -362,7 +365,7 @@ long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_na
                         if(mode == -1)   // make 1-fpm
                         {
                             data.image[ID].array.CF[k*size2 + jj*size+ii].re =  1.0 - amp*cospha;
-                            data.image[ID].array.CF[k*size2 + jj*size + ii].im = amp*sinpha;
+                            data.image[ID].array.CF[k*size2 + jj*size + ii].im = -amp*sinpha;
                         }
                         else
                         {
@@ -405,9 +408,9 @@ long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_na
             for(ii=0; ii<size; ii++)
                 for(jj=0; jj<size; jj++)
                 {
-                    data.image[IDm].array.CF[k*size2+jj*size+ii].re = 1.0-data.image[ID].array.CF[k*size2+jj*size+ii].re;
-                    data.image[IDm].array.CF[k*size2+jj*size+ii].im = data.image[ID].array.CF[k*size2+jj*size+ii].im;
-                    // [re,im] = 1-fpm  -> fpm = [(1.0-re), im]
+                    data.image[IDm].array.CF[k*size2+jj*size+ii].re = 1.0 - data.image[ID].array.CF[k*size2+jj*size+ii].re;
+                    data.image[IDm].array.CF[k*size2+jj*size+ii].im = -data.image[ID].array.CF[k*size2+jj*size+ii].im;
+                    // [re,im] = 1-fpm  -> fpm = [(1.0-re), -im]
                 }
 
 		

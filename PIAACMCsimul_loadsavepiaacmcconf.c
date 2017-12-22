@@ -23,6 +23,8 @@
 //   core modules
 #include "CommandLineInterface/CLIcore.h"
 #include "COREMOD_iofits/COREMOD_iofits.h"
+#include "COREMOD_memory/COREMOD_memory.h"
+#include "image_basic/image_basic.h"
 //   other modules
 
 
@@ -169,9 +171,7 @@ int PIAACMCsimul_update_fnamedescr()
 	PIAACMCsimul_update_fnamedescr_conf();
 	
 	sprintf(piaacmcsimul_var.fnamedescr, "%s.minsag%06ld_maxsag%06ld_fpmregc%06ld_fpmrega%06ld_%s", piaacmcsimul_var.fnamedescr_conf, (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1),  (long) (1000.0*piaacmc[0].fpmsagreg_alpha+0.1), piaacmc[0].fpmmaterial_name);
-	
-//	sprintf(piaacmcsimul_var.fnamedescr_old, "s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_minsag%06ld_maxsag%06ld_fpmreg%06ld_ssr%02d_ssm%d_%s_wb%02d", piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].fpmmaterial_name, piaacmc[0].nblambda);
-	
+		
 	return EXIT_SUCCESS;
 }
 
@@ -266,8 +266,32 @@ int PIAACMCsimul_savepiaacmcconf(const char *dname)
         save_fits(data.image[piaacmc[0].zoneaID].name, fname);
 
 
+	
+	long IDfpmzmap1;
+	long ii;
+	long xsize, ysize, xysize;
 
-    
+	IDfpmzmap1 = image_ID("fpmzmap1");
+	if(IDfpmzmap1 == -1)
+	{
+		printf("Creating fpmzmap1 ...\n");
+		fflush(stdout);
+		IDfpmzmap1 = PIAACMCsimul_mkFPM_zonemap("fpmzmap1");
+		xsize = data.image[IDfpmzmap1].md[0].size[0];
+		ysize = data.image[IDfpmzmap1].md[0].size[1];
+		xysize = xsize * ysize;
+		
+		for(ii=0;ii<xysize;ii++)
+			data.image[IDfpmzmap1].array.UI16[ii] -= 1;
+	}
+	//list_image_ID();
+	//printf("data.image[piaacmc[0].zonezID].name = %s\n", data.image[piaacmc[0].zonezID].name);
+
+	
+	image_basic_indexmap("fpmzmap1", data.image[piaacmc[0].zonezID].name, "fpmsagmapHR");	
+    sprintf(fname, "!%s/fpm_sagmapHR.%s.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
+    save_fits("fpmsagmapHR", fname);
+	delete_image_ID("fpmsagmapHR");
 
     return(0);
 }

@@ -437,7 +437,10 @@ int PIAACMCsimul_run(const char *confindex, long mode)
             secs_used=(end.tv_sec - start.tv_sec); //avoid overflow by subtracting first
             micros_used= ((secs_used*1000000) + end.tv_usec) - (start.tv_usec);
 
-            fp=fopen("timeused.txt", "w");
+            fp = fopen("timeused.txt", "w");
+            fprintf(fp, "# Time used vs. time limit\n");
+            fprintf(fp, "# Time limit can be written in file searchtime.txt\n");
+            fprintf(fp, "\n");
             fprintf(fp, "%12.3f    %12.3f\n", 1.0e-6*micros_used, searchtime);
             fclose(fp);
 
