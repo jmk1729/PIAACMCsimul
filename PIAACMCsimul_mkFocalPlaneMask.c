@@ -50,7 +50,7 @@ extern OPTPIAACMCDESIGN *piaacmc;
  @param[in]  mode       if mode = -1, make whole 1-fpm, if mode = zone, make only 1 zone with CA = (1.0, 0.0)
  @param[in]  saveMask   1 if mask saved to file system
 
- makes 1-fpm CA
+if mode is invalid number, no focal plane mask, AND assume 1-fpm is computed
  
  zone numbering starts here from 1 (zone 1 = outermost ring)
 */
@@ -95,11 +95,17 @@ long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_na
 
 	long NBsubPix = 64;
 
+	int FPMmode = 0; // 1 if using 1-fpm
+	
+	
+	
 
 	#ifdef PIAASIMUL_LOGFUNC0
 		PIAACMCsimul_logFunctionCall("PIAACMCsimul.fcall.log", __FUNCTION__, __LINE__, "");
 	#endif
 
+
+	
 
     size = optsyst[0].size;
     size2 = size*size;
@@ -125,9 +131,14 @@ long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_na
 		OuterCone = 0;
     
 
-    printf("===================== Make focal plane mask  %s %s %d   [%d %d]\n", IDzonemap_name, ID_name, mode, CentCone, OuterCone);
 
-
+    printf("===================== Make focal plane mask  %s %s   mode=%d/%ld   [%d %d]\n", IDzonemap_name, ID_name, mode, piaacmc[0].focmNBzone, CentCone, OuterCone);
+	
+	if(mode==-1)
+		FPMmode = 1;
+	if(mode > piaacmc[0].focmNBzone)
+		FPMmode = 1;
+		
 
     fpscale = (2.0*piaacmc[0].beamrad/piaacmc[0].pixscale)/piaacmc[0].size/piaacmc[0].fpzfactor*optsyst[0].lambdaarray[0]*piaacmc[0].Fratio;
     printf("piaacmc[0].fpmRad = %g m    fpscale[0] = %g    mode = %d\n", piaacmc[0].fpmRad, fpscale, mode);
@@ -153,38 +164,38 @@ long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_na
 	for(k=0; k<nblambda; k++)
 		for(zi=0;zi<piaacmc[0].focmNBzone;zi++)
 		{
-			printf("lamdba %3ld  zone %4ld   ", k, zi);
-			fflush(stdout);
+			//printf("lamdba %3ld  zone %4ld   ", k, zi);
+			//fflush(stdout);
 	
-			printf("  ID=%3ld  zi=%3ld -> %4ld/%4ld :\n", piaacmc[0].zonezID, zi, piaacmc[0].focmNBzone*k+zi, piaacmc[0].focmNBzone*nblambda);
-			fflush(stdout);
+			//printf("  ID=%3ld  zi=%3ld -> %4ld/%4ld :\n", piaacmc[0].zonezID, zi, piaacmc[0].focmNBzone*k+zi, piaacmc[0].focmNBzone*nblambda);
+			//fflush(stdout);
 			
 			// print material thickness
 			tarray[piaacmc[0].focmNBzone*k+zi] = data.image[piaacmc[0].zonezID].array.D[zi];
-			printf("     thickness = %8.4g m\n", tarray[piaacmc[0].focmNBzone*k+zi]);
-			fflush(stdout);
+			//printf("     thickness = %8.4g m\n", tarray[piaacmc[0].focmNBzone*k+zi]);
+			//fflush(stdout);
 			
-			printf("     (ID = %3ld  zi = %3ld -> pix = %4ld/%4ld)\n", piaacmc[0].zoneaID, zi, piaacmc[0].focmNBzone*k+zi, piaacmc[0].focmNBzone*nblambda);
-			fflush(stdout);			
+			//printf("     (ID = %3ld  zi = %3ld -> pix = %4ld/%4ld)\n", piaacmc[0].zoneaID, zi, piaacmc[0].focmNBzone*k+zi, piaacmc[0].focmNBzone*nblambda);
+			//fflush(stdout);			
 			aarray[piaacmc[0].focmNBzone*k+zi] = data.image[piaacmc[0].zoneaID].array.D[zi];
-			printf("     amp = %8.4f\n", aarray[piaacmc[0].focmNBzone*k+zi]);
-			fflush(stdout);			
+			//printf("     amp = %8.4f\n", aarray[piaacmc[0].focmNBzone*k+zi]);
+			//fflush(stdout);			
 			
 			//
 			// compute phase from thickness
 			// phase sign is positive for outgoing beam element ahead of main beam
 			// 
 			phaarray[piaacmc[0].focmNBzone*k+zi] = OPTICSMATERIALS_pha_lambda(piaacmc[0].fpmmaterial_code, tarray[piaacmc[0].focmNBzone*k+zi], optsyst[0].lambdaarray[k]);
-			printf("     pha = %8.4f rad\n", phaarray[piaacmc[0].focmNBzone*k+zi]);
-			fflush(stdout);		
+			//printf("     pha = %8.4f rad\n", phaarray[piaacmc[0].focmNBzone*k+zi]);
+			//fflush(stdout);		
 
 			cosphaarray[piaacmc[0].focmNBzone*k+zi] = cosf(phaarray[piaacmc[0].focmNBzone*k+zi]);
 			sinphaarray[piaacmc[0].focmNBzone*k+zi] = sinf(phaarray[piaacmc[0].focmNBzone*k+zi]);
 		}
 
 
-	printf("Entering parallel loop\n");
-	fflush(stdout);
+	//printf("Entering parallel loop\n");
+	//fflush(stdout);
 	
 	
 	double x, y, r; // in meter
@@ -319,7 +330,7 @@ long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_na
                                 }
 
 
-                                if(mode == -1)   // make 1-fpm
+                                if(FPMmode == 1)   // make 1-fpm
                                 {
 /*                                    amp = a;
                                     pha = OPTICSMATERIALS_pha_lambda(piaacmc[0].fpmmaterial_code, t, optsyst[0].lambdaarray[k]);
@@ -341,8 +352,6 @@ long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_na
 //                                        pha = OPTICSMATERIALS_pha_lambda(piaacmc[0].fpmmaterial_code, t, optsyst[0].lambdaarray[k]);
 //										cospha = cosf(pha);
 //										sinpha = sinf(pha);
-
-										
                                         retmp += amp;
                                         imtmp += 0.0; 
                                     }
@@ -362,16 +371,18 @@ long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_na
                     }
                     else // coarse sampling, outside zones
                     {
-                        if(mode == -1)   // make 1-fpm
+                        if(FPMmode == 1)   // make 1-fpm
                         {
-                            data.image[ID].array.CF[k*size2 + jj*size+ii].re =  1.0 - amp*cospha;
+                            data.image[ID].array.CF[k*size2 + jj*size + ii].re =  1.0 - amp*cospha;
                             data.image[ID].array.CF[k*size2 + jj*size + ii].im = -amp*sinpha;
                         }
-                        else
+                        else // single zone
                         {
-                            data.image[ID].array.CF[k*size2+jj*size+ii].re = 0.0;
-                            data.image[ID].array.CF[k*size2+jj*size+ii].im = 0.0;
+							data.image[ID].array.CF[k*size2+jj*size+ii].re = 0.0;
+							data.image[ID].array.CF[k*size2+jj*size+ii].im = 0.0;
                         }
+                        
+                        
                         data.image[IDsag].array.F[k*size2+jj*size+ii] = t;
                         data.image[IDzone].array.F[k*size2+jj*size+ii] = 0.0;
                     }

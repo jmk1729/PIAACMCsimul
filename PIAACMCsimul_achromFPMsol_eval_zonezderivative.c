@@ -60,16 +60,24 @@ double PIAACMCsimul_achromFPMsol_eval_zonezderivative(long zone, double *fpmresp
         // compute derivative as
         // dphadz is a function of wavelength
         // zonez is the current zone thickness
-        // -zonez*dphadz sets the phase gives the resulting phase
-        // Re = Re * -dphadz*sin(-zonez*dphadz) - Im * dphadz*cos(-zonez*dphadz)
-        // Im = Re * dphadz*cos(-zonez*dphadz) + Im * -dphadz*sin(-zonez*dphadz)
+        // zonez*dphadz sets the phase gives the resulting phase
 
-        evalpha = -zonez_array[evalmz]*dphadz_array[evalk];
+		// old sign convention (before 2017-12-23) :
+		// -zonez*dphadz sets the phase gives the resulting phase
+        // Re1 = Re * -dphadz*sin(-zonez*dphadz) - Im * dphadz*cos(-zonez*dphadz)
+        // Im1 = Re * dphadz*cos(-zonez*dphadz) + Im * -dphadz*sin(-zonez*dphadz)
+
+		// new sign convention (after 2017-12-23) :
+		// zonez*dphadz sets the phase gives the resulting phase
+        // Re1 = Re * dphadz * sin(zonez*dphadz) - Im * dphadz * cos(zonez*dphadz)
+        // Im1 = Re * dphadz * cos(zonez*dphadz) + Im * dphadz * sin(zonez*dphadz)
+        
+        evalpha = zonez_array[evalmz]*dphadz_array[evalk];   // CHANGED sign to + on 2017-12-23 to adopt new sign convention
         // !!! note that cos is sin and sin is cos !!!
         // this implements a 90 degree pre-rotation so that this is a
         // derivative
-        evalcosp = sin(evalpha)*dphadz_array[evalk]; //cos(evalpha);
-        evalsinp = -cos(evalpha)*dphadz_array[evalk]; //sin(evalpha);
+        evalcosp = -sin(evalpha)*dphadz_array[evalk];  // z-derivative of cos(evalpha);   // CHANGED sign to - on 2017-12-23 to adopt new sign convention
+        evalsinp = cos(evalpha)*dphadz_array[evalk];   // z-derivative of sin(evalpha);  // CHANGED sign to + on 2017-12-23 to adopt new sign convention
         evalki1 = evalki + (evalmz+1)*vsize;
         evalkv = evalk*vsize;
 

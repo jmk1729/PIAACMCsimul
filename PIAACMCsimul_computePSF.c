@@ -279,6 +279,11 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
         /// Compute the PSF as the complex amplitude for the evaluation points on the focal plane
         /// for a given FPM zone thickness based on the FPMresp array computed in mode 11
         value1 = PIAACMCsimul_achromFPMsol_eval(piaacmcsimul_var.fpmresp_array, piaacmcsimul_var.zonez_array, piaacmcsimul_var.dphadz_array, piaacmcsimul_var.outtmp_array, piaacmcsimul_var.vsize, data.image[piaacmc[0].zonezID].md[0].size[0], optsyst[0].nblambda);
+
+//		printf("FAST FPMresp CALLED\n");
+//		sleep(1000000);//TEST
+		
+	
         ///
         /// PSF result is stored in outtmp_array
 
@@ -475,9 +480,11 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
             if(outsave==1)
             {
 				PIAACMCsimul_update_fnamedescr();
-                sprintf(fname, "!%s/psfi0_exsrc%3d_sm%d.%s.fits", piaacmcsimul_var.piaacmcconfdir, sourcesize, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.fnamedescr);                    
+                sprintf(fname, "!%s/psfi0_exsrc%03d_sm%d.%s.fits", piaacmcsimul_var.piaacmcconfdir, sourcesize, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.fnamedescr);                    
                 save_fits("psfi0ext", fname);
             }
+            
+      
 
             // get the number of elements in a single-PSF vector
             ID = image_ID("imvectp00");
@@ -532,7 +539,7 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
             if(outsave==1)
             {				
                 PIAACMCsimul_update_fnamedescr();
-                sprintf(fname, "!%s/flux_exsrc%3d_sm%d.%s.txt", piaacmcsimul_var.piaacmcconfdir, sourcesize, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.fnamedescr);                
+                sprintf(fname, "!%s/flux_exsrc%03d_sm%d.%s.txt", piaacmcsimul_var.piaacmcconfdir, sourcesize, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.fnamedescr);                
                 fpflux = fopen(fname, "w");
                 for(elem=0; elem<optsyst[0].NBelem; elem++)
                     fprintf(fpflux, "%18.16lf %18.16lf  %d\n", optsyst[0].flux[elem], optsyst[0].flux[elem]/optsyst[0].flux[0], optsyst[0].nblambda);
@@ -576,7 +583,7 @@ double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endele
             if(outsave==1)
             {
 				PIAACMCsimul_update_fnamedescr();				                                          
-                sprintf(fname, "%s/contrast_exsrc%3d_sm%d.%s.txt", piaacmcsimul_var.piaacmcconfdir, sourcesize, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.fnamedescr);                    
+                sprintf(fname, "%s/contrast_exsrc%03d_sm%d.%s.txt", piaacmcsimul_var.piaacmcconfdir, sourcesize, piaacmcsimul_var.SCORINGMASKTYPE, piaacmcsimul_var.fnamedescr);                    
                 fp = fopen(fname, "w");
                 fprintf(fp, "%g", avContrast);
                 fclose(fp);

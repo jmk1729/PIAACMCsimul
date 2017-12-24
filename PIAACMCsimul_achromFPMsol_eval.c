@@ -5,7 +5,7 @@
  * Can design both APLCMC and PIAACMC coronagraphs
  *  
  * @author  O. Guyon
- * @date    21 nov 2017
+ * @date    2017-12-23
  *
  * 
  * @bug No known bugs.
@@ -37,9 +37,9 @@ extern PIAACMCsimul_varType piaacmcsimul_var;
 /// solves for focal plane mask solution using pre-computed zone responses
 ///
 /// @param[in] fpmresp_array   Mask zones responses, double array
-/// @param[in] zonez_array     zone thicknesses, double array
-/// @param[in] dphadz_array    for each lambda, pha = thickness x dphadt_array[lambdaindex]
-/// @param[out] outtmp_array    output temp array
+/// @param[in] zonez_array     Zone thicknesses, double array
+/// @param[in] dphadz_array    For each lambda, pha = thickness x dphadt_array[lambdaindex]
+/// @param[out] outtmp_array   Output temp array
 ///
 /// written to be fast, no checking of array sizes
 /// all arrays pre-allocated outside this function
@@ -67,7 +67,7 @@ double PIAACMCsimul_achromFPMsol_eval(double *fpmresp_array, double *zonez_array
 	#endif
 
 
-    for(evalk=0; evalk<nbl; evalk++)
+    for(evalk=0; evalk<nbl; evalk++) // wavelength index
     {
 		long evalki;
 		
@@ -79,8 +79,8 @@ double PIAACMCsimul_achromFPMsol_eval(double *fpmresp_array, double *zonez_array
             long evalii;
             for(evalii=0; evalii<vsize/2; evalii++)
             {
-                outtmp_array[evalk*vsize+2*evalii] = fpmresp_array[evalk*(nbz+1)*vsize+2*evalii];
-                outtmp_array[evalk*vsize+2*evalii+1] = fpmresp_array[evalk*(nbz+1)*vsize+2*evalii+1];
+                outtmp_array[evalk*vsize+2*evalii] = fpmresp_array[evalk*(nbz+1)*vsize + 2*evalii]; // mz=0 -> mz*vsize not included in index
+                outtmp_array[evalk*vsize+2*evalii+1] = fpmresp_array[evalk*(nbz+1)*vsize + 2*evalii + 1];
             }
 
 			// mask zones
@@ -88,7 +88,7 @@ double PIAACMCsimul_achromFPMsol_eval(double *fpmresp_array, double *zonez_array
 			double evalpha, evalcosp, evalsinp;
             for(evalmz=0; evalmz<nbz; evalmz++)
             {
-                evalpha = -zonez_array[evalmz]*dphadz_array[evalk];
+                evalpha = zonez_array[evalmz]*dphadz_array[evalk];   // CHANGED sign to + on 2017-12-23 to adopt new sign convention
                 evalcosp = cos(evalpha);
                 evalsinp = sin(evalpha);
                 evalki1 = evalki + (evalmz+1)*vsize;

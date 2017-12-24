@@ -365,11 +365,17 @@ int PIAACMCsimul_run(const char *confindex, long mode)
 
                 // copy the current solution to the best solution
                 sprintf(command, "cp %s %s", fname1, fnamebestsol);
-                ret = system(command);
-                
-				
+                ret = system(command);				
 				sprintf(command1, "echo \"%s\" > cmdlogtest.txt", command);
 				ret = system(command1);
+
+				sprintf(fname1, "%s/fpm_sagmapHR.%s.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
+				sprintf(fnamebestsol, "%s/fpm_sagmapHR.%s.best.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
+				sprintf(command, "cp %s %s", fname1, fnamebestsol);
+                ret = system(command);				
+				sprintf(command1, "echo \"%s\" > cmdlogtest1.txt", command);
+				ret = system(command1);
+				
 
                 // write new best value in file
                 fp = fopen(fnamebestval, "w");

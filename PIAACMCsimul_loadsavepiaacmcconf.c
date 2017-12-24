@@ -199,10 +199,7 @@ int PIAACMCsimul_savepiaacmcconf(const char *dname)
 
     
     sprintf(command, "mkdir -p %s", dname);
-    r = system(command);
-
-
-	  
+    r = system(command);	  
     
     
     // piaacmcparam.conf

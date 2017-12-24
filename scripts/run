@@ -329,7 +329,7 @@ printhelpeval0 ()
 	echo "       [ZZZ]  Number of rings"
 	echo "     WRITTEN by function PIAACMCsimul_mkFPM_zonemap()"
 	echo ""
-	echo "- fpm_sagmapHR.[name].fits.gz              Focal plane mask zones geometry (hi-res)"
+	echo "- fpm_sagmapHR.[name].best.fits.gz         Focal plane mask zones geometry (hi-res)"
 	echo ""	
 	echo "- conf_fpmmaterial_code.txt                Code for focal plane mask material (for verification)"
 	echo "     WRITTEN by function PIAACMCsimul_initpiaacmcconf()"
@@ -640,7 +640,7 @@ find ./piaacmcconf_i000/scoring* -type f -newer run.cmd.tsart -print0 | xargs -0
 #find ./piaacmcconf_i000/ -type f -newer run.cmd.tsart -print0 | xargs -0 cp -t ./eval0/
 
 echo "cp piaacmcconf_i000/fpm_zone*$( cat fpm_name.txt )* ./eval0/" > tmpcmd
-echo "cp piaacmcconf_i000/fpm_sagmapHR*$( cat fpm_name.txt )* ./eval0/" >> tmpcmd
+echo "cp piaacmcconf_i000/fpm_sagmapHR*$( cat fpm_name.txt )*.best.fits ./eval0/" >> tmpcmd
 chmod +x tmpcmd
 ./tmpcmd
 
@@ -667,7 +667,7 @@ cd ../eval0
 gzip -f WFamp*.fits
 gzip -f WFpha*.fits
 gzip -f fpmzmap.fits
-gzip -f fpm_sagmapHR*.fits
+gzip -f fpm_sagmapHR*.best.fits
 cd ..
 fi
 
