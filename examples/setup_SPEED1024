@@ -29,6 +29,7 @@ echo "1000.0" > conf/conf_REGPIAAFCOEFF.txt
 
 
 # LYOT STOP(S) DESIGN: 
+echo "0.80" > ./conf/conf_LStransm.txt          # Lyot stop transmission
 echo "1650" > ./conf/conf_lambda.txt            # Wavelength for monochromatic design [nm]
 
  
@@ -37,9 +38,9 @@ echo "Mirror" > ./conf/conf_fpmmaterial.txt     # focal plane mask material
 echo "2" > ./conf/conf_FPMsectors.txt           # mask geometry: 0=disk, 1=sectors, 2=hexagonal tiling
 echo "20" > ./conf/conf_NBrings.txt             # number of rings in focal plane mask
 echo "2.00" > ./conf/conf_maskradld.txt         # mask outer radius at central wavelength [l/D]
-echo "-1.0e-6" > ./conf/conf_fpmminsag.txt      # min focal plane mask sag
-echo "1.0e-6" > ./conf/conf_fpmmaxsag.txt       # max focal plane mask sag
-echo "1.0" > ./conf/conf_fpmregsag_coeff.txt    # sag regularization coefficient
+echo "-4.25e-7" > ./conf/conf_fpmminsag.txt      # min focal plane mask sag
+echo "4.25e-7" > ./conf/conf_fpmmaxsag.txt       # max focal plane mask sag
+echo "0.001" > ./conf/conf_fpmregsag_coeff.txt    # sag regularization coefficient
 echo "1.0" > ./conf/conf_fpmregsag_alpha.txt    # sag regularization coefficient exponent
 echo "0" > ./conf/conf_fpmccnbr.txt             # how many central rings replaced by cone (set to 0 if no central cone)
 echo "0" > ./conf/conf_fpmccz.txt               # sag at cone center (sag at cone edge will be midpoint between minsag and maxsag)
@@ -68,6 +69,8 @@ echo "0.15" > ./conf/conf_PIAAsep.txt             # distance between PIAA elemen
 echo "0.00" > ./conf/conf_PIAA0pos.txt            # distance between PIAA elements
 echo "1.15" > ./conf/conf_PIAAr0lim.txt           # PIAA element 0 oversizing
 echo "1.50" > ./conf/conf_PIAAr1lim.txt           # PIAA element 1 oversizing
+echo "40" > ./conf/conf_piaaNBCmodesmax.txt       # maximum number of radial cosine modes for PIAA optics
+echo "10.0" > ./conf/conf_piaaCPAmax.txt           # maximum spatial frequency (CPA) for PIAA optics
 
 
 # LYOT STOP(s)

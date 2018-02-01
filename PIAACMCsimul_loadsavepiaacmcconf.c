@@ -170,7 +170,7 @@ int PIAACMCsimul_update_fnamedescr()
 {
 	PIAACMCsimul_update_fnamedescr_conf();
 	
-	sprintf(piaacmcsimul_var.fnamedescr, "%s.minsag%06ld_maxsag%06ld_fpmregc%06ld_fpmrega%06ld_%s", piaacmcsimul_var.fnamedescr_conf, (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1000.0*piaacmc[0].fpmsagreg_coeff+0.1),  (long) (1000.0*piaacmc[0].fpmsagreg_alpha+0.1), piaacmc[0].fpmmaterial_name);
+	sprintf(piaacmcsimul_var.fnamedescr, "%s.minsag%06ld_maxsag%06ld_fpmregc%08ld_fpmrega%06ld_%s", piaacmcsimul_var.fnamedescr_conf, (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1.0e9*piaacmc[0].fpmsagreg_coeff+0.1),  (long) (1000.0*piaacmc[0].fpmsagreg_alpha+0.1), piaacmc[0].fpmmaterial_name);
 		
 	return EXIT_SUCCESS;
 }
