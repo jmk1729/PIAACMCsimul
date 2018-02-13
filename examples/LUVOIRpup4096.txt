@@ -1,0 +1,4 @@
+LUVOIR pupil, 2018-02-13
+
+LUVOIR l/D units use D = 16.195m
+4096 x 4096 LUVOIR aperture files. Pixels are 4.207mm
