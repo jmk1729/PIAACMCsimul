@@ -141,7 +141,12 @@ int PIAACMCsimul_run(
 			fpmradld = data.variable[IDv].value.f;
 			printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
 		}
-	PIAACMCsimul_initpiaacmcconf(1, fpmradld, centobs0, centobs1, 0, 1);
+
+    piaacmcsimul_var.PIAACMC_fpmtype = 0; // idealized (default)
+    if((IDv=variable_ID("PIAACMC_fpmtype"))!=-1)
+        piaacmcsimul_var.PIAACMC_fpmtype = (int) (data.variable[IDv].value.f + 0.1);	
+	
+	PIAACMCsimul_initpiaacmcconf(piaacmcsimul_var.PIAACMC_fpmtype, fpmradld, centobs0, centobs1, 0, 1);
 	
     
     
