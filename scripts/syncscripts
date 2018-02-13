@@ -179,6 +179,7 @@ fi
 
 
 if [ $EXAMPLES = "1" ]; then
+echo "COPYING EXAMPLES  $srcdir/PIAACMCsimul/examples -> $destdir/"
 rsync -au --progress $srcdir/PIAACMCsimul/examples $destdir/
 fi
 

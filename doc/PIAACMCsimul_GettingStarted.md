@@ -1,18 +1,18 @@
 # Getting Started {#page_PIAACMCsimul_GettingStarted}
 
-
+*Source: PIAACMCsimul_GettingStarted.md in PIAACMCsimul/doc*
 
 
 ## Copy scripts to local directory
 
 Create symbolic link to CLI in system or user path:
 	
-	sudo ln -s /<fullpath>/bin/coffee /usr/local/bin/coffee
+	sudo ln -s /<srcdir>/bin/coffee /usr/local/bin/coffee
 
 Create symbolic link to syncscripts into work directory:
 
 	cd <workdir>
-	ln -s /<fullpath>/src/PIAACMCsimul/scripts/syncscripts .
+	ln -s /<srcdir>/src/PIAACMCsimul/scripts/syncscripts .
 
 Import and setup scripts in work directory (run from <workdir>):
 
@@ -22,6 +22,8 @@ Examples can be loaded in `./examples/` with:
 
 	./syncscripts -x
 
+
+***
 
 
 
@@ -52,11 +54,11 @@ If optimizing in APLC mode (no PIAA optics, type (after the -e command above):
 If examples are loaded, one of the `example/setup_XXXX` script can be copied in the working directory and executed to setup the corresponding configuration
 	
 
+***
 
 
 
-
-## Design
+## Full Design
 
 Design is done with the "-m" option. This command will execute all design steps from 0 to #step-1:
 
@@ -72,7 +74,7 @@ Note that this may take a long time to run ... (days ?). The polychromatic desig
 - Execute a search for best solution.
 
 
-
+***
 
 
 ## Focal plane optimization
@@ -93,6 +95,7 @@ You can also stop the search at anytime by:
 	touch piaacmcconf_i000/stoploop13.txt
 
 
+***
 
 
 ## Inspecting results

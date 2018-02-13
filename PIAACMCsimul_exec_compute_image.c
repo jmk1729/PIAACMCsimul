@@ -108,7 +108,7 @@ int PIAACMCsimul_exec_compute_image()
 
     // main initialization function to set up the piaacmc structure
     PIAACMCsimul_initpiaacmcconf(piaacmcsimul_var.PIAACMC_fpmtype, fpmradld, centobs0, centobs1, PIAACMC_WFCmode, 1);
-    // make the mirror or lenses shapes (only mirrors for WFIRST piaacmc)
+    // make the mirror or lenses shapes 
     PIAACMCsimul_makePIAAshapes(piaacmc, 0);
     optsyst[0].FOCMASKarray[0].mode = 1; // use 1-fpm normalization for efficiency
 

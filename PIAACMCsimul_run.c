@@ -50,12 +50,13 @@ extern OPTPIAACMCDESIGN *piaacmc;
 
 
 
-/// @param[in] confindex	configuration index (sets name of directory for results)
-/// @param[in] mode			operation to be executed
 /*
     entry point for PIAACMCsimul from the cli
 */
-int PIAACMCsimul_run(const char *confindex, long mode)
+int PIAACMCsimul_run(
+	const char *confindex,		/// @param[in] confindex	configuration index (sets name of directory for results) 
+	long mode					/// @param[in] mode			operation to be executed
+	)
 {
     long i;
     FILE *fp;
@@ -90,6 +91,7 @@ int PIAACMCsimul_run(const char *confindex, long mode)
 	#endif
 
     piaacmc = NULL; // set the pointer to the piaacmc structure to null
+    
 
     IDbestsol = -1; // data array index of current best solution
 
@@ -122,6 +124,26 @@ int PIAACMCsimul_run(const char *confindex, long mode)
     printf("mode = %ld\n", mode);
     
     
+    double fpmradld = 0.95;  // default
+    double centobs0 = 0.3;
+    double centobs1 = 0.2;
+
+    // set the result directories
+    sprintf( piaacmcsimul_var.piaacmcconfdir, "%s", confindex);
+  
+	// load some more cli variables
+		if( (IDv = variable_ID("PIAACMC_centobs0")) != -1)
+			centobs0 = data.variable[IDv].value.f;
+		if( (IDv = variable_ID("PIAACMC_centobs1")) != -1)
+			centobs1 = data.variable[IDv].value.f;
+		if( (IDv = variable_ID("PIAACMC_fpmradld")) != -1)
+		{
+			fpmradld = data.variable[IDv].value.f;
+			printf("MASK RADIUS = %lf lambda/D\n", fpmradld);
+		}
+	PIAACMCsimul_initpiaacmcconf(1, fpmradld, centobs0, centobs1, 0, 1);
+	
+    
     
 	// compute the material thickness producing a lambda phase shift at the center of the spectral band
 	sag0 = 1.0;
@@ -144,6 +166,10 @@ int PIAACMCsimul_run(const char *confindex, long mode)
             loopOK = 0;
         else
             loopOK = 1;
+            
+            
+        printf("loopOK = %d\n", loopOK);
+        fflush(stdout);
 
 
         gettimeofday(&start, NULL);
@@ -153,6 +179,9 @@ int PIAACMCsimul_run(const char *confindex, long mode)
 		//ret = system("touch start.loop.ttxt");
         while((loopOK==1)&&(i<1000000))
         {
+			printf("LOOP start\n");
+			fflush(stdout);
+		
 			//sprintf(command, "touch start.iter%05ld.ttxt", i);
 			//ret = system(command);
 			
@@ -165,7 +194,9 @@ int PIAACMCsimul_run(const char *confindex, long mode)
                 fclose(fp);
             }
 
-
+			printf("searchtime = %f sec\n", searchtime);
+			fflush(stdout);
+			
 			//sprintf(command, "touch step00.iter%05ld.ttxt", i);
 			//ret = system(command);
 
@@ -190,7 +221,7 @@ int PIAACMCsimul_run(const char *confindex, long mode)
             // zeroST = 1 => starting point is a mask that has no sag: blank focal plane mask
             // zeroST = 2 => starting point is best solution found so far
             //
-            // data.image[piaacmc[0].zonezID].array is ???? *******************************
+
             
             cnt00 = 0;
             cnt0 = 0;
@@ -199,6 +230,8 @@ int PIAACMCsimul_run(const char *confindex, long mode)
                 if((ran1()>0.5)&&(IDbestsol!=-1))
                 {
                     zeroST = 2; // starting point = optimal solution
+                    printf("[%d] Adopting best solution as starting point\n", __LINE__);
+                    fflush(stdout);
                     // copy the best solution to the current zoneID of array of sags
                     for(k=0; k<data.image[piaacmc[0].zonezID].md[0].size[0]; k++)
                         data.image[piaacmc[0].zonezID].array.D[k] = data.image[IDbestsol].array.D[k];                             
@@ -206,6 +239,10 @@ int PIAACMCsimul_run(const char *confindex, long mode)
                 else
                 {
                     zeroST = 1; // starting point = 0
+                    printf("[%d] Adopting zero as starting point\n", __LINE__);
+                    printf("piaacmc[0].zonezID = %ld\n", piaacmc[0].zonezID);
+                    list_image_ID();
+                    fflush(stdout);
                     // zero out the current zoneID of array of sags
                     for(k=0; k<data.image[piaacmc[0].zonezID].md[0].size[0]; k++)
                         data.image[piaacmc[0].zonezID].array.D[k] = 0.0;
@@ -221,12 +258,28 @@ int PIAACMCsimul_run(const char *confindex, long mode)
             // this flags that it's this value 'cause it's third iteration
             if(i==3)
             {
-                zeroST = 3;
-                for(k=0; k<data.image[piaacmc[0].zonezID].md[0].size[0]; k++)
-                    data.image[piaacmc[0].zonezID].array.D[k] = data.image[IDbestsol].array.D[k];
-                piaacmcsimul_var.MODampl = 0.0;
-            }
-            
+				if(IDbestsol!=-1)
+				{
+					printf("[%d] Adopting best solution as starting point\n", __LINE__);
+					fflush(stdout);
+				
+					zeroST = 3;
+					for(k=0; k<data.image[piaacmc[0].zonezID].md[0].size[0]; k++)
+						data.image[piaacmc[0].zonezID].array.D[k] = data.image[IDbestsol].array.D[k];
+					piaacmcsimul_var.MODampl = 0.0;
+				}
+				else
+				{
+                    zeroST = 1; // starting point = 0
+                    printf("[%d] Adopting zero as starting point\n", __LINE__);
+                    printf("piaacmc[0].zonezID = %ld\n", piaacmc[0].zonezID);
+                    list_image_ID();
+                    fflush(stdout);
+                    // zero out the current zoneID of array of sags
+                    for(k=0; k<data.image[piaacmc[0].zonezID].md[0].size[0]; k++)
+                        data.image[piaacmc[0].zonezID].array.D[k] = 0.0;
+				}
+			}
             
             if(i>0)
             {
@@ -257,6 +310,10 @@ int PIAACMCsimul_run(const char *confindex, long mode)
 										}
 								}
 						}
+			
+			
+				printf("Write sag values to file fpsagtest.txt\n");
+				fflush(stdout);
 
 				fp = fopen("fpsagtest.txt", "w");
 				fprintf(fp, "# %9.6f\n", sag0*1.0e6);
@@ -266,6 +323,7 @@ int PIAACMCsimul_run(const char *confindex, long mode)
 						fprintf(fp, "%5ld %9.6f\n", k, data.image[piaacmc[0].zonezID].array.D[k]*1.0e6);
 					}
 				fclose(fp);
+				
 
             }
             
@@ -274,10 +332,14 @@ int PIAACMCsimul_run(const char *confindex, long mode)
             
 
             // actually do the optmization
+            printf("Execute optimization\n");
+            fflush(stdout);
             PIAACMCsimul_exec(confindex, mode);
             bOK = 0; // initialize have better value flag for printing "best" in a nice place
 			
 			printf("%g m  -> %g rad\n", sag0, (double) OPTICSMATERIALS_pha_lambda(piaacmc[0].fpmmaterial_code, sag0, piaacmc[0].lambda));
+			fflush(stdout);
+			
 			sag0 = sag0 / (OPTICSMATERIALS_pha_lambda(piaacmc[0].fpmmaterial_code, sag0, piaacmc[0].lambda) / 2.0 / M_PI);
 			printf("======================= sag0 = %g m  -> %g rad\n", sag0, (double) OPTICSMATERIALS_pha_lambda(piaacmc[0].fpmmaterial_code, sag0, (double) piaacmc[0].lambda));
 			
@@ -390,9 +452,11 @@ int PIAACMCsimul_run(const char *confindex, long mode)
 				//ret = system(command);
             }
 
-            // add current solution (possibly not best) to the mode13...opt.txt file
+            // Add current solution (possibly not best) to the mode13...opt.txt file
             PIAACMCsimul_update_fnamedescr();
             sprintf(fname, "%s/mode13.%s.opt.txt", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
+			printf("Add current solution (possibly not best) to file: %s\n", fname);
+			fflush(stdout);
 
             // first time through, open mode13...opt.txt for additional writing
             // for additional writing.  possibly redundant on next line.
@@ -423,15 +487,18 @@ int PIAACMCsimul_run(const char *confindex, long mode)
             // stop iterations if stopfile exists
             if(file_exists(stopfile)==1)
             {
-                printf("FILE \"%s\" found\n", stopfile);
+                printf("FILE \"%s\" found -> stopping\n", stopfile);
                 loopOK = 0;
                 ret = system("touch stop.stopfile.txt");
                 sprintf(command, "rm %s", stopfile);
                 ret = system(command);
             }
             else
-                printf("File \"%s\" not found\n", stopfile);
-
+                printf("File \"%s\" not found -> continuing\n", stopfile);
+            
+            
+            fflush(stdout);
+            
 			//sprintf(command, "touch step08.iter%05ld.ttxt", i);
 			//ret = system(command);
 
@@ -462,6 +529,8 @@ int PIAACMCsimul_run(const char *confindex, long mode)
 			
 			//sprintf(command, "touch step10.iter%05ld.ttxt", i);
 			//ret = system(command);
+			printf("End of loop\n");
+			fflush(stdout);
         }
 
 
