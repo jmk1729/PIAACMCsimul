@@ -23,7 +23,7 @@ eval "$1=$var"
 
 function printvar() {
 eval "var=${!1}"
-printf "%20s  [%10s]  %s\n" "$1" "$var" "$2"
+printf "\033[1;34m%20s\033[0m  [\033[1;32m%10s\033[0m]  %s\n" "$1" "$var" "$2"
 }
 
 
@@ -102,82 +102,193 @@ function printvarall() {
 
 echo -e "\033[1m          CURRENT PARAMETERS VALUES :\033[0m"
 echo " "
-echo -e "\033[1m OPTICAL DESIGN: \033[0m"
+
+tput rev
+echo " OPTICAL DESIGN:"
+tput sgr0
+
 echo " File conjugations.txt in piaacmcconf directory lists optical design elements and location"
 echo ""
 
-echo -e "\033[1m PIAA OPTICS DESIGN: \033[0m"
+tput rev
+echo " PIAA OPTICS DESIGN:"
+tput sgr0
 
-printvar "PIAAmode" "PIAA mode (0: classical apodization, 1: PIAA)"
-printvar "fpmradld" "focal plane mask radius [l/D]"
+printvar "PIAAmode" 		"PIAA mode (0: Classical apodization/APLCMC, 1: PIAA)"
+
+printvar "fpmradld" 		"Focal plane mask radius [l/D] for ideal monochromatic design."
+echo "					Usually between 0.7 and 2.0."
+echo "					Will define target IWA for the coronagraph design."
+
 if [ "$PIAAmode" -eq "1" ]; then
-printvar "PIAAcoeff" "fraction of PIAA apodization"
-printvar "coin" "central obstruction at input beam [beam radius]"
-printvar "coout" "central obstruction at output beam [beam radius]"
-printvar "PIAAmaterial" "PIAA optics material"
-printvar "PIAAcirc" "FLAG: 1 if PIAA shapes are circular (no Fourier modes)"
-printvar "REGPIAACCOEFF" "PIAA regularization amplitude, cosine modes"
-printvar "REGPIAACALPHA" "PIAA regularization power law, cosine modes"
-printvar "REGPIAAFCOEFF" "PIAA regularization amplitude, Fourier modes"
-printvar "REGPIAAFALPHA" "PIAA regularization power law, Fourier modes"
+
+printvar "PIAAcoeff" 		"Fraction of PIAA apodization (usually 1.0)."
+echo "					If less than 1.0, some of the apodization will be done classically."
+
+printvar "coin" 			"Central obstruction at input beam [unit: beam radius]"
+echo "					For example: 0.3 means 30% central obstruction."
+echo "					Should be set to be at least as large as input pupil central obstruction"
+
+printvar "coout" 			"Central obstruction at output beam [unit: beam radius]"
+echo "					The PIAA-remapped beam may have a different central obstruction."
+echo "					Usually, this should be set to approximately half of the input central obstruction, "
+echo "					otherwise, the remapping will induce stronger distortions near central obstruction."
+
+printvar "PIAAmaterial" 	"PIAA optics material"
+echo "					Applies to both PIAA optics."
+echo "					Examples: Mirror, CaF2, SiO2"
+
+printvar "PIAAcirc" 		"FLAG: 1 if PIAA shapes are circular (no Fourier modes)"
+echo "					Setting this parameter to 1 forces PIAA shapes to be defined by a 1D radial sag profile."
+
+printvar "REGPIAACCOEFF" 	"PIAA regularization amplitude, cosine modes"
+echo "					Damping parameter to keep cosine (=1D radial sag) terms small."
+
+printvar "REGPIAACALPHA" 	"PIAA regularization power law, cosine modes"
+echo "					Power law defines relative damping between low and high spatial frequencies."
+echo "					High value keeps high spatial frequencies terms small."
+
+printvar "REGPIAAFCOEFF" 	"PIAA regularization amplitude, Fourier modes"
+echo "					Damping parameter to keep Fourier modes (=2D sag terms) small."
+
+printvar "REGPIAAFALPHA" 	"PIAA regularization power law, Fourier modes"
+echo "					Power law defines relative damping between low and high spatial frequencies."
+echo "					High value keeps high spatial frequencies terms small."
+
 fi
 
-echo -e "\033[1m LYOT STOP(S) DESIGN: \033[0m"
+echo ""
+tput rev
+echo " LYOT STOP(S) DESIGN:"
+tput sgr0
+
 if [ "$PIAAmode" -eq "1" ]; then
+
 printvar "LStransm" "Lyot stop transmission"
-printvar "NBls" "Number of Lyot stops"
+echo "					Example: 0.80 for 80% goal transmission."
+
+printvar "NBls" 			"Number of Lyot stops"
+echo "					1 or 2 usually works well. Sometimes 3 helps."
+
 fi
-printvar "lambda" "Wavelength for monochromatic design [nm]"
+printvar "lambda" 			"Wavelength for monochromatic design [nm]"
+echo "					Monochromatic propagations to optimize PIAA optics will be performed at this wavelength."
+
+echo ""
+tput rev
+echo " FOCAL PLANE MASK DESIGN:"
+tput sgr0
+
+printvar "fpmmaterial" 		"Focal plane mask material"
+echo "					Examples: Mirror, CaF2, SiO2"
+
+printvar "FPMsectors" 		"Mask geometry: 0=disk, 1=sectors, 2=hexagonal tiling"
+
+printvar "NBrings" 			"Number of rings in focal plane mask"
+
+printvar "maskradld" 		"Mask outer radius at central wavelength [l/D]"
+
+printvar "fpmminsag" 		"Min focal plane mask sag"
+
+printvar "fpmmaxsag" 		"Max focal plane mask sag"
+
+printvar "fpmregsag_coeff" 	"Sag regularization coefficient"
+
+printvar "fpmregsag_alpha" 	"Sag regularization coefficient exponent"
+
+printvar "fpmccnbr" 		"How many central rings replaced by cone (set to 0 if no central cone)"
+echo "					The focal plane mask can be designed with an inner cone to diffract more light close to pupil edge (LOWFS)"
+echo "					When enabling this feature, the central ring(s) will be replaced by a cone."
+echo "					Set to 0 if no inner cone needed."
+
+printvar "fpmccz" 			"Sag at cone center (sag at cone edge will be midpoint between minsag and maxsag)"
+
+printvar "fpmocradld" 		"Outer cone outer radius [l/D]"
+echo "					The focal plane mask can be designed with an outer cone to diffract more light close to pupil edge (LOWFS)"
+echo "					Set to 0 if no outer cone needed. Set to value larger than maskradld otherwise"
+echo "					WARNING: Enabling this feature may reduce planet throughput"
+
+printvar "fpmocz" 			"Sag at inner edge of outer cone (sag = 0 at outer edge), set to 0 if no outer cone"
+
+echo ""
+tput rev
+echo "OPTIMIZATION PARAMETERS:"
+tput sgr0
+
+printvar "mlambda" 			"Central wavelength for polychromatic design [nm]"
+
+printvar "mlambdaB" 		"Spectral bandwidth [%]"
+
+printvar "nblambda" 		"Number of wavelength values"
+
+printvar "ssize" 			"Source angular size for mask optimization (20: 0.01 l/D; 10: 0.1 l/D)"
+echo "					Any strictly positive value between 01 and 99 is valid."
+echo "					This parameter will be ignored if extmode=0"
+
+printvar "extmode" 			"Source extent mode (0: 1 point, 1: 3 points; 2: 6 points)"
+echo "					0: point source will be considered and ssize parameter will be ignored."
+echo "					1: three points, equilateral triangle around optical axis"
+
+echo ""
+tput rev
+echo " OPTICAL DESIGN:"
+tput sgr0
+
+echo "	Note: PIAA0 = first PIAA element, PIAA1 = second PIAA element."
+echo "	Note: Unfolded collimated beam layout considered here."
+
+printvar "size" 			"Array size"
+echo "					Large value will slow down computations"
+echo "					Usually 1024, 2048 or 4096."
+
+printvar "beamrad" 			"Beam radius [m]"
+echo "					Physical size of input beam."
+echo "					Note: pscale and beamrad are used together to compute beam size in pixel."
+
+printvar "pscale" 			"Pixel scale in pupil [m/pix]"
+echo "					Note: pscale and beamrad are used together to compute beam size in pixel."
+
+printvar "Fratio" 			"F ratio at focal plane mask"
+echo "					Defines physical scale of focal plane mask."
 
 
-echo -e "\033[1m FOCAL PLANE MASK DESIGN: \033[0m"
-
-printvar "fpmmaterial" "focal plane mask material"
-printvar "FPMsectors" "mask geometry: 0=disk, 1=sectors, 2=hexagonal tiling"
-printvar "NBrings" "number of rings in focal plane mask"
-printvar "maskradld" "mask outer radius at central wavelength [l/D]"
-printvar "fpmminsag" "min focal plane mask sag"
-printvar "fpmmaxsag" "max focal plane mask sag"
-printvar "fpmregsag_coeff" "sag regularization coefficient"
-printvar "fpmregsag_alpha" "sag regularization coefficient exponent"
-printvar "fpmccnbr" "how many central rings replaced by cone (set to 0 if no central cone)"
-printvar "fpmccz" "sag at cone center (sag at cone edge will be midpoint between minsag and maxsag)"
-printvar "fpmocradld" "outer cone outer radius [l/D]"
-printvar "fpmocz" "sag at inner edge of outer cone (sag = 0 at outer edge), set to 0 if no outer cone"
-
-
-echo -e "\033[1m OPTIMIZATION PARAMETERS: \033[0m"
-
-printvar "mlambda" "central wavelength for polychromatic design [nm]"
-printvar "mlambdaB" "spectral bandwidth [%]"
-printvar "nblambda" "Number of wavelength values"
-printvar "ssize" "source angular size for mask optimization (20: 0.01 l/D; 10: 0.1 l/D)"
-printvar "extmode" "source extent mode (0: 1 point, 1: 3 points; 2: 6 points)"
-
-
-echo -e "\033[1m OPTICAL DESIGN: \033[0m"
-
-printvar "size" "array size"
-printvar "beamrad" "beam radius [mm]"
-printvar "pscale" "pixel scale in pupil [m/pix]"
-printvar "Fratio" "F ratio at focal plane mask"
 if [ "$PIAAmode" -eq "1" ]; then
-printvar "PIAAr0lim" "outer edge of PIAA optic 0 [beam radius unit]"
-printvar "PIAAr1lim" "outer edge of PIAA optic 1 [beam radius unit]"
-printvar "PIAAsep" "distance between PIAA optics [m]"
-printvar "PIAA0pos" "PIAA optic 0 distance from pupil plane [m]"
-printvar "invPIAAmode" "0: no inv PIAA, 1: inv PIAA after Lyot stops, 2: inv PIAA before Lyot stops"
+
+printvar "PIAAr0lim" 		"Outer edge of PIAA optic 0 [beam radius unit]"
+echo "					Should be larger than 1.0 to extend PIAA optic 0 shape beyond geometrical beam size."
+echo "					PIAA optic 0 shape will be extended past geometrical beam size to gently handle diffraction."
+
+printvar "PIAAr1lim" 		"Outer edge of PIAA optic 1 [beam radius unit]"
+echo "					Should be larger than 1.0 to extend PIAA optic 1 shape beyond geometrical beam size."
+echo "					PIAA optic 1 shape will be extended past geometrical beam size to gently handle diffraction."
+echo "					Note: PIAA remapping will map r0lim to r1lim."
+
+printvar "PIAAsep" 			"Distance between PIAA optics [m]"
+
+printvar "PIAA0pos" 		"PIAA optic 0 distance from pupil plane [m]"
+
+printvar "invPIAAmode" 		"0: no inv PIAA, 1: inv PIAA after Lyot stops, 2: inv PIAA before Lyot stops"
+
 fi
 
-printvar "prePIAA0maskpos" "pre-PIAA optic 0 mask distance from pupil plane [m] (if prePIAA0mask.fits exists)"
+printvar "prePIAA0maskpos" 	"Pre-PIAA optic 0 mask distance from pupil plane [m] (if prePIAA0mask.fits exists)"
+
 if [ "$PIAAmode" -eq "1" ]; then
-printvar "postPIAA0maskpos" "post-PIAA optic 0 mask distance from pupil plane [m] (if postPIAA0mask.fits exits)"
-printvar "piaaNBCmodesmax" "maximum number of radial cosine modes for PIAA optics"
-printvar "piaaCPAmax" "maximum spatial frequency (CPA) for PIAA optics"
-printvar "LyotZmin" "minimum value for Lyot stop(s) conjugation range [m] - relative to element named \"post focal plane mask pupil\""
-printvar "LyotZmax" "maximum value for Lyot stop(s) conjugation range [m] - relative to element named \"post focal plane mask pupil\""
+
+printvar "postPIAA0maskpos" "Post-PIAA optic 0 mask distance from pupil plane [m] (if postPIAA0mask.fits exits)"
+
+printvar "piaaNBCmodesmax" 	"Maximum number of radial cosine modes for PIAA optics"
+
+printvar "piaaCPAmax" 		"Maximum spatial frequency (CPA) for PIAA optics"
+
+printvar "LyotZmin" 		"Minimum value for Lyot stop(s) conjugation range [m]"
+echo "					Relative to element named \"post focal plane mask pupil\""
+
+printvar "LyotZmax" 		"Maximum value for Lyot stop(s) conjugation range [m]"
+echo "					Relative to element named \"post focal plane mask pupil\""
+
 fi
-printvar "pupoutmaskrad" "output pupil mask radius (scaled to pupil radius)"
+printvar "pupoutmaskrad" 	"Output pupil mask radius (scaled to pupil radius)"
 echo " "
 }
 
