@@ -14,6 +14,13 @@
 
 
 
+/* =============================================================================================== */
+/* =============================================================================================== */
+/*                                        HEADER FILES                                             */
+/* =============================================================================================== */
+/* =============================================================================================== */
+
+// System includes
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -32,6 +39,7 @@
 
 
 
+
 extern DATA data;   
 
 extern PIAACMCsimul_varType piaacmcsimul_var;
@@ -41,6 +49,14 @@ extern OPTSYST *optsyst;
 extern OPTPIAACMCDESIGN *piaacmc;
 
 
+
+
+
+/* =============================================================================================== */
+/* =============================================================================================== */
+/*                                    FUNCTION(S) SOURCE CODE                                      */
+/* =============================================================================================== */
+/* =============================================================================================== */
 
 /**
  * @brief Lyot stops positions from zmin to zmax relative to current, working back (light goes from 0 to zmax)
@@ -56,7 +72,16 @@ extern OPTPIAACMCDESIGN *piaacmc;
  * 
 */
 
-double PIAACMCsimul_optimizeLyotStop(const char *IDamp_name, const char *IDpha_name, const char *IDincohc_name, float zmin, float zmax, double throughput, long NBz, long NBmasks)
+double PIAACMCsimul_optimizeLyotStop(
+	const char *IDamp_name, 
+	const char *IDpha_name, 
+	const char *IDincohc_name, 
+	float zmin, 
+	float zmax, 
+	double throughput, 
+	long NBz, 
+	long NBmasks
+	)
 {
     // initial guess places Lyot stops regularly from zmin to zmax
     // light propagates from zmin to zmax

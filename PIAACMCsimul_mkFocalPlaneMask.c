@@ -13,6 +13,13 @@
  */
 
 
+/* =============================================================================================== */
+/* =============================================================================================== */
+/*                                        HEADER FILES                                             */
+/* =============================================================================================== */
+/* =============================================================================================== */
+
+// System includes
 #include <stdlib.h>
 #include <stdint.h>
 #include <math.h>
@@ -25,12 +32,16 @@
 #include "OpticsMaterials/OpticsMaterials.h"
 
 
-
 #include "OptSystProp/OptSystProp.h"
 #include "PIAACMCsimul/PIAACMCsimul.h"
 
 
 
+/* =============================================================================================== */
+/* =============================================================================================== */
+/*                                  GLOBAL DATA DECLARATION                                        */
+/* =============================================================================================== */
+/* =============================================================================================== */
 
 extern DATA data;   
 
@@ -41,6 +52,14 @@ extern OPTSYST *optsyst;
 extern OPTPIAACMCDESIGN *piaacmc;
 
 
+
+
+
+/* =============================================================================================== */
+/* =============================================================================================== */
+/*                                    FUNCTIONS SOURCE CODE                                        */
+/* =============================================================================================== */
+/* =============================================================================================== */
 
 /**
  * @brief Make complex amplitude focal plane mask
@@ -55,7 +74,12 @@ if mode is invalid number, no focal plane mask, AND assume 1-fpm is computed
  zone numbering starts here from 1 (zone 1 = outermost ring)
 */
 
-long PIAACMCsimul_mkFocalPlaneMask(const char *IDzonemap_name, const char *ID_name, int mode, int saveMask)
+long PIAACMCsimul_mkFocalPlaneMask(
+	const char *IDzonemap_name, 
+	const char *ID_name, 
+	int mode, 
+	int saveMask
+	)
 {
 	double eps = 1.0e-12;
     long ID, IDm;

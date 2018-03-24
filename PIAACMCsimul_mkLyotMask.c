@@ -4,8 +4,11 @@
  * 
  * Can design both APLCMC and PIAACMC coronagraphs
  *  
+ * 
+ * ## Change log
+ * - 20180323  Guyon   minor syntax cleanup   
+ * 
  * @author  O. Guyon
- * @date    21 nov 2017
  *
  * 
  * @bug No known bugs.
@@ -14,10 +17,16 @@
 
 
 
+
+/* =============================================================================================== */
+/* =============================================================================================== */
+/*                                        HEADER FILES                                             */
+/* =============================================================================================== */
+/* =============================================================================================== */
+
+// System includes
 #include <stdlib.h>
 #include <stdio.h>
-
-
 
 
 // milk includes
@@ -30,11 +39,23 @@
 #include "PIAACMCsimul/PIAACMCsimul.h"
 
 
+/* =============================================================================================== */
+/* =============================================================================================== */
+/*                                  GLOBAL DATA DECLARATION                                        */
+/* =============================================================================================== */
+/* =============================================================================================== */
+
 extern DATA data;   
 extern OPTPIAACMCDESIGN *piaacmc;
 
 
 
+
+/* =============================================================================================== */
+/* =============================================================================================== */
+/*                                    FUNCTIONS SOURCE CODE                                        */
+/* =============================================================================================== */
+/* =============================================================================================== */
 
 /// Make Lyot stop geometry
 /// param[in] IDincoh_name   Incoherent Lyot pupil intensity response to off-axis sources
@@ -45,7 +66,13 @@ extern OPTPIAACMCDESIGN *piaacmc;
 /// (2) keeps pixels for which onaxisLight < v0
 /// selects the mask that achieves the strongest on-axis rejection while satifying the throughput constraint
 
-long PIAACMCsimul_mkLyotMask(const char *IDincoh_name, const char *IDmc_name, const char *IDzone_name, double throughput, const char *IDout_name)
+long PIAACMCsimul_mkLyotMask(
+	const char *IDincoh_name, 
+	const char *IDmc_name, 
+	const char *IDzone_name, 
+	double throughput, 
+	const char *IDout_name
+	)
 {
     long ID, ID1;
     long IDmc, IDincoh, IDzone;
