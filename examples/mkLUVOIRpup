@@ -1,0 +1,32 @@
+#!/bin/bash
+
+coffee << EOF
+loadfits "LUVOIRpup4096.fits.gz" pup
+
+imcontract pup pupc 5 5
+pupcn=pupc/25
+listim
+creaim im0 2048 2048
+addim im0 pupcn pupcn1 615 615
+savefits pupcn1 "!pupLUVOIRap6.2048.370.fits"
+rm pupc
+rm pupcn
+rm im0
+rm pupcn1
+
+imcontract pup pupc 9 9
+pupcn=pupc/81
+listim
+creaim im0 1024 1024
+addim im0 pupcn pupcn1 285 285
+savefits pupcn1 "!pupLUVOIRap6.1024.208.fits"
+
+exitCLI
+EOF
+
+rm pupLUVOIRap6.2048.370.fits.gz
+gzip pupLUVOIRap6.2048.370.fits
+
+rm pupLUVOIRap6.1024.208.fits.gz
+gzip pupLUVOIRap6.1024.208.fits
+

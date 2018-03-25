@@ -3,7 +3,7 @@
 *Source: PIAACMCsimul_GettingStarted.md in PIAACMCsimul/doc*
 
 
-## Copy scripts to local directory
+## 1. Copy scripts to local directory
 
 Create symbolic link to CLI in system or user path:
 	
@@ -27,10 +27,10 @@ Examples can be loaded in `./examples/` with:
 
 
 
-## Configuration Setup
+## 2. Configuration Setup
 
 
-### Setup from main script pre-defined configurations
+### 2.1. Setup from main script pre-defined configurations
 
 Print help for top level script:
 
@@ -49,7 +49,7 @@ If optimizing in APLC mode (no PIAA optics, type (after the -e command above):
 	./runPIAACMCdesign -a
 	
 	
-### Setup from example script
+### 2.2. Setup from example script
 
 If examples are loaded, one of the `example/setup_XXXX` script can be copied in the working directory and executed to setup the corresponding configuration
 	
@@ -58,7 +58,7 @@ If examples are loaded, one of the `example/setup_XXXX` script can be copied in 
 
 
 
-## Full Design
+## 3. Full Design
 
 Design is done with the "-m" option. This command will execute all design steps from 0 to #step-1:
 
@@ -77,7 +77,7 @@ Note that this may take a long time to run ... (days ?). The polychromatic desig
 ***
 
 
-## Focal plane optimization
+## 4. Focal plane optimization
 
 In the focal plane optimization mode, the search status appears in files:
 
@@ -98,7 +98,7 @@ You can also stop the search at anytime by:
 ***
 
 
-## Inspecting results
+## 5. Inspecting results
 
 Modes 300 and 400-402 are used to evaluate solution performance:
 

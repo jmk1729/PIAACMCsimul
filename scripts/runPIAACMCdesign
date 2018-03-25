@@ -286,12 +286,12 @@ set_pupil=1
 
 
 function loadPup_LUVOIR1024 {
-exampledir="$srcdir/PIAACMCsimul/local"
-cp $exampledir/pup_LUVOIR_1024.fits.gz pup_1024.fits.gz
+exampledir="$srcdir/PIAACMCsimul/examples"
+cp $exampledir/pupLUVOIRap6.1024.208.fits.gz pup_1024.fits.gz
 rm pup_1024.fits 2> /dev/null
 gunzip pup_1024.fits.gz
-coin="0.185"
-coout="0.16"
+coin="0.11"
+coout="0.08"
 pupoutmaskrad="0.98"
 set_pupil=1
 }
@@ -624,7 +624,20 @@ fi
 if [ "$DesignExampleIndex" -eq 3 ]; then
 loadPup_LUVOIR1024
 SetConfig_PIAACMCvisMirrorGregorian1024
-SetOptParam
+lambda="650"
+lambdaB="10"    # spectral band (%)
+mlambdaB="$lambdaB"
+fpmradld="1.2"
+fpmmaterial="Mirror"
+ssize="20"
+NBrings="12"
+maskradld="2.00"
+fpmminsag="-0.5e-6"
+fpmmaxsag="0.5e-6"
+fpmregsag_coeff="1.0"
+fpmregsag_alpha="1.0"
+NBls="2"
+set_optparam="1"
 fi
 
 
