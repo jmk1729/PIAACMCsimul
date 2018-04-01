@@ -33,8 +33,6 @@
 
 
 
-extern DATA data;   
-
 extern PIAACMCsimul_varType piaacmcsimul_var;
 
 extern OPTSYST *optsyst;
@@ -61,7 +59,9 @@ extern OPTPIAACMCDESIGN *piaacmc;
  * 
 */
 
-long PIAACMCsimul_optimizeLyotStop_offaxis_min(const char *IDincohc_name)
+long PIAACMCsimul_optimizeLyotStop_offaxis_min(
+		const char *IDincohc_name
+		)
 {
     long IDincohc;
     

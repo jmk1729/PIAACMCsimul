@@ -24,7 +24,6 @@
 
 
 
-extern DATA data; 
 extern OPTSYST *optsyst;
 
 
@@ -37,7 +36,14 @@ extern OPTSYST *optsyst;
  * 
  */
   
-long PIAACMCsimul_CA2propCubeInt(const char *IDamp_name, const char *IDpha_name, float zmin, float zmax, long NBz, const char *IDout_name)
+long PIAACMCsimul_CA2propCubeInt(
+		const char *IDamp_name, 
+		const char *IDpha_name, 
+		float zmin, 
+		float zmax, 
+		long NBz, 
+		const char *IDout_name
+		)
 {
     long IDout;
     long l;

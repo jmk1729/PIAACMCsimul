@@ -28,12 +28,6 @@
 
 
 
-extern DATA data;   
-
-
-
-
-
 
 
 

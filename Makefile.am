@@ -38,6 +38,7 @@ libpiaacmcsimul_la_SOURCES += PIAACMCsimul_mkLyotMask.c
 libpiaacmcsimul_la_SOURCES += PIAACMCsimul_mkSimpleLyotStop.c
 libpiaacmcsimul_la_SOURCES += PIAACMCsimul_init_geomPIAA_rad.c
 libpiaacmcsimul_la_SOURCES += PIAACMCsimul_load2DRadialApodization.c
+libpiaacmcsimul_la_SOURCES += PIAACMCsimul_geomProp.c
 
 libpiaacmcsimul_la_SOURCES += PIAACMCsimul.h
 

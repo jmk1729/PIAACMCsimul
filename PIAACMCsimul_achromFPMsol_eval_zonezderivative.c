@@ -27,9 +27,15 @@
 
 
 
-
-
-double PIAACMCsimul_achromFPMsol_eval_zonezderivative(long zone, double *fpmresp_array, double *zonez_array, double *dphadz_array, double *outtmp_array, long vsize, long nbz, long nbl)
+double PIAACMCsimul_achromFPMsol_eval_zonezderivative(
+		long zone, 
+		double* restrict fpmresp_array, 
+		double* restrict zonez_array, 
+		double* restrict dphadz_array, 
+		double* restrict outtmp_array, 
+		long vsize, 
+		long nbz, 
+		long nbl)
 {
 	long evalk;
 

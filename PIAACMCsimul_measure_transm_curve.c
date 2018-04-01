@@ -49,8 +49,6 @@
 /* =============================================================================================== */
 
 // externs
-extern DATA data;   
-
 extern PIAACMCsimul_varType piaacmcsimul_var;
 
 extern OPTSYST *optsyst;

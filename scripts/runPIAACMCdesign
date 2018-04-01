@@ -623,8 +623,28 @@ fi
 # LUVOIR
 if [ "$DesignExampleIndex" -eq 3 ]; then
 loadPup_LUVOIR1024
-SetConfig_PIAACMCvisMirrorGregorian1024
+
+size="1024"
+invPIAAmode=0
 lambda="650"
+PIAAmaterial="Mirror"
+beamrad="0.0188474"
+pscale="0.00011"
+Fratio="85.9"
+PIAAsep="0.405"
+PIAAr0lim="1.15"
+PIAAr1lim="1.21" # 45mm physical
+# CENTRAL PUPIL BLACK CIRCLE r = 2mm ON BOTH PIAA MIRRORs
+PIAA0pos="0.0"
+prePIAA0maskpos="0.0" # optional
+postPIAA0maskpos="0.0" # optional
+LyotZmin="-0.2"
+LyotZmax="0.2"
+pupoutmaskrad="0.95"
+
+fpmmaterial="Mirror"
+FPMsectors="2"
+
 lambdaB="10"    # spectral band (%)
 mlambdaB="$lambdaB"
 fpmradld="1.2"

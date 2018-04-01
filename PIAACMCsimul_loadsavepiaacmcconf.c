@@ -35,8 +35,6 @@
 
 
 
-extern DATA data;   
-
 extern PIAACMCsimul_varType piaacmcsimul_var;
 
 extern OPTPIAACMCDESIGN *piaacmc;
@@ -49,7 +47,9 @@ extern OPTPIAACMCDESIGN *piaacmc;
 
 
 
-int PIAACMCsimul_loadpiaacmcconf(const char *dname)
+int PIAACMCsimul_loadpiaacmcconf(
+		const char *dname
+		)
 {
     char command[1000];
     int r;

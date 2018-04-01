@@ -86,8 +86,7 @@ int clock_gettime(int clk_id, struct mach_timespec *t){
 
 
 
-/// All global images and variables 
-extern DATA data;   
+
 
 
 PIAACMCsimul_varType piaacmcsimul_var; 
@@ -148,6 +147,18 @@ int_fast8_t PIAACMCsimul_rings2sectors_cli(){
     if(CLI_checkarg(1,4)+CLI_checkarg(2,3)+CLI_checkarg(3,3)==0)    {
         PIAACMCsimul_rings2sectors(data.cmdargtoken[1].val.string, data.cmdargtoken[2].val.string, data.cmdargtoken[3].val.string);
         return 0;    }    else        return 1;
+}
+
+
+/* =============================================================================================== */
+/*  4. Lyot Stop(s)                                                              */
+/* =============================================================================================== */
+
+int_fast8_t PIAACMCsimul_geomProp_cli(){
+	if(CLI_checkarg(1,4)+CLI_checkarg(2,4)+CLI_checkarg(3,3)+CLI_checkarg(4,3)+CLI_checkarg(5,1)+CLI_checkarg(6,1)+CLI_checkarg(7,1)+CLI_checkarg(8,1)+CLI_checkarg(9,1)+CLI_checkarg(10,1)==0)    {
+		PIAACMCsimul_geomProp(data.cmdargtoken[1].val.string, data.cmdargtoken[2].val.string, data.cmdargtoken[3].val.string, data.cmdargtoken[4].val.string, data.cmdargtoken[5].val.numf, data.cmdargtoken[6].val.numf, data.cmdargtoken[7].val.numf, data.cmdargtoken[8].val.numf, data.cmdargtoken[9].val.numf, data.cmdargtoken[10].val.numf);
+	} else return 1;
+		
 }
 
 
@@ -266,6 +277,14 @@ int_fast8_t init_PIAACMCsimul()
     strcpy(data.cmd[data.NBcmd].Ccall,"long PIAACMC_FPM_process(const char *FPMsag_name, const char *zonescoord_name, long NBexp, const char *outname)");
     data.NBcmd++;
 
+    strcpy(data.cmd[data.NBcmd].key,"piaacmcgeomprop");
+    strcpy(data.cmd[data.NBcmd].module, __FILE__);
+    data.cmd[data.NBcmd].fp = PIAACMCsimul_geomProp_cli;
+    strcpy(data.cmd[data.NBcmd].info,"Geometric propagation from surface");
+    strcpy(data.cmd[data.NBcmd].syntax,"<input map> <input sag> <output map> <output map counter> <delta refractive index> <pixel scale> <propagation dist> <kernel radius> <kernel step> <clear aperture>");
+    strcpy(data.cmd[data.NBcmd].example,"piaacmcgeomprop pupin piaa0z pupout cntout 2.0 0.00011 2.302606 3.0 0.5 200.0");
+	strcpy(data.cmd[data.NBcmd].Ccall,"long PIAACMCsimul_geomProp(const char *IDin_name, const char *IDsag_name, const char *IDout_name, const char *IDoutcnt_name, float drindex, float pscale, float zprop, float krad, float kstep, float rlim)");
+	data.NBcmd++;
 
 
 	piaacmcsimul_var.optsystinit = 0;

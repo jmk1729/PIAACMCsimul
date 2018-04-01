@@ -32,7 +32,6 @@
 
 
 
-extern DATA data;   
 extern PIAACMCsimul_varType piaacmcsimul_var;
 
 
@@ -43,7 +42,11 @@ extern PIAACMCsimul_varType piaacmcsimul_var;
 // load and fit radial apodization profile
 // modal basis is mk(r) : cos(r*k*M_PI/1.3)
 //
-uint_fast8_t PIAACMCsimul_load2DRadialApodization(const char *IDapo_name, float beamradpix, const char *IDapofit_name)
+uint_fast8_t PIAACMCsimul_load2DRadialApodization(
+		const char *IDapo_name, 
+		float beamradpix, 
+		const char *IDapofit_name
+		)
 {
     long NBpts;
     long IDm;

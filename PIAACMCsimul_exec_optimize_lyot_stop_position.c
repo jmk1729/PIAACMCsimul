@@ -31,10 +31,6 @@
 #include "PIAACMCsimul/PIAACMCsimul.h"
 
 
-
-
-extern DATA data;   
-
 extern PIAACMCsimul_varType piaacmcsimul_var;
 
 extern OPTSYST *optsyst;

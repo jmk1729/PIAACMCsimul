@@ -27,9 +27,6 @@
 
 
 
-extern DATA data;   
-
-
 
 
 /**
@@ -40,7 +37,11 @@ extern DATA data;
  * @param[out] IDout_name	output sector mask design
  * 
  */ 
-long PIAACMCsimul_rings2sectors(const char *IDin_name, const char *sectfname, const char *IDout_name)
+long PIAACMCsimul_rings2sectors(
+		const char *IDin_name, 
+		const char *sectfname, 
+		const char *IDout_name
+		)
 {
     long IDin, IDout;
     FILE *fp;

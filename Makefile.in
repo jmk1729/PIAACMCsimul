@@ -156,7 +156,8 @@ am_libpiaacmcsimul_la_OBJECTS = PIAACMCsimul.lo \
 	PIAACMCsimul_optimizeLyotStop.lo PIAACMCsimul_mkLyotMask.lo \
 	PIAACMCsimul_mkSimpleLyotStop.lo \
 	PIAACMCsimul_init_geomPIAA_rad.lo \
-	PIAACMCsimul_load2DRadialApodization.lo
+	PIAACMCsimul_load2DRadialApodization.lo \
+	PIAACMCsimul_geomProp.lo
 libpiaacmcsimul_la_OBJECTS = $(am_libpiaacmcsimul_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -381,7 +382,8 @@ libpiaacmcsimul_la_SOURCES = PIAACMCsimul.c \
 	PIAACMCsimul_optimizeLyotStop.c PIAACMCsimul_mkLyotMask.c \
 	PIAACMCsimul_mkSimpleLyotStop.c \
 	PIAACMCsimul_init_geomPIAA_rad.c \
-	PIAACMCsimul_load2DRadialApodization.c PIAACMCsimul.h
+	PIAACMCsimul_load2DRadialApodization.c PIAACMCsimul_geomProp.c \
+	PIAACMCsimul.h
 EXTRA_DIST = scripts
 AM_CPPFLAGS = -I@abs_top_srcdir@/src -fopenmp
 all: all-am
@@ -483,6 +485,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_exec_optimize_lyot_stop_position.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_exec_optimize_lyot_stops_shapes_positions.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_free.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_geomProp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_init.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_init_geomPIAA_rad.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PIAACMCsimul_initpiaacmcconf.Plo@am__quote@

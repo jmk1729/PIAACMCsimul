@@ -30,9 +30,6 @@
 
 
 
-
-extern DATA data;   
-
 extern PIAACMCsimul_varType piaacmcsimul_var;
 
 extern OPTPIAACMCDESIGN *piaacmc;
@@ -47,7 +44,10 @@ extern OPTPIAACMCDESIGN *piaacmc;
 /// piaa0Cz + piaa0Fz -> piaam0z
 ///
 
-int PIAACMCsimul_makePIAAshapes(OPTPIAACMCDESIGN *design, long index)
+int PIAACMCsimul_makePIAAshapes(
+		OPTPIAACMCDESIGN *design, 
+		long index
+		)
 {
     long ID, ID0, ID1;
     long size, size0, size1;

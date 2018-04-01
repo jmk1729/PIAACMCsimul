@@ -88,8 +88,6 @@ int clock_gettime(int clk_id, struct mach_timespec *t){
 
 /// All global images and variables 
 
-extern DATA data;   
-
 extern PIAACMCsimul_varType piaacmcsimul_var;
 
 extern OPTSYST *optsyst;
@@ -231,7 +229,14 @@ extern OPTPIAACMCDESIGN *piaacmc;
  * 
  */
 
-int PIAACMCsimul_initpiaacmcconf(long piaacmctype, double fpmradld, double centobs0, double centobs1, int WFCmode, int load)
+int PIAACMCsimul_initpiaacmcconf(
+		long piaacmctype, 
+		double fpmradld, 
+		double centobs0, 
+		double centobs1, 
+		int WFCmode, 
+		int load
+		)
 {
     FILE *fp;
     float beamradpix;

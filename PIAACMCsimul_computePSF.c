@@ -33,8 +33,6 @@
 
 
 
-extern DATA data;
-
 extern PIAACMCsimul_varType piaacmcsimul_var;
 
 extern OPTSYST *optsyst;
@@ -51,14 +49,6 @@ extern OPTPIAACMCDESIGN *piaacmc;
  * 
  * @return Average contrast in evaluation zone
  * 
- * @param[in]   xld         float: Source X position [l/D]
- * @param[in]   yld         float: Source Y position [l/D]
- * @param[in]   startelem   long : First element in propagation
- * @param[in]   endelem     long : Last element in propagation
- * @param[in]   savepsf     int  : Save PSF flag
- * @param[in]   sourcezise  int  : Source size (10x log10)
- * @param[in]   extmode     int  : Source extended type
- * @param[in]   outsave     int  : Save output flag
  * 
  *  
  * Source is defined by parameters sourcesize and extmode :
@@ -92,7 +82,16 @@ extern OPTPIAACMCDESIGN *piaacmc;
 
 
 
-double PIAACMCsimul_computePSF(float xld, float yld, long startelem, long endelem, int savepsf, int sourcesize, int extmode, int outsave)
+double PIAACMCsimul_computePSF(
+		float xld, 			/// @param[in]   xld         float: Source X position [l/D]
+		float yld, 			/// @param[in]   yld         float: Source Y position [l/D]
+		long startelem, 	/// @param[in]   startelem   long : First element in propagation
+		long endelem, 		/// @param[in]   endelem     long : Last element in propagation
+		int savepsf, 		/// @param[in]   savepsf     int  : Save PSF flag
+		int sourcesize, 	/// @param[in]   sourcezise  int  : Source size (10x log10)
+		int extmode, 		/// @param[in]   extmode     int  : Source extended type
+		int outsave			/// @param[in]   outsave     int  : Save output flag
+		)
 {
     FILE *fp;
     FILE *fpflux;

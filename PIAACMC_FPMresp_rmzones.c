@@ -27,11 +27,6 @@
 
 
 
-extern DATA data;   
-
-
-
-
 
 
 

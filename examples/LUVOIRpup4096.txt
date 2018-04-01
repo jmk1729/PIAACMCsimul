@@ -2,3 +2,8 @@ LUVOIR pupil, 2018-02-13
 
 LUVOIR l/D units use D = 16.195m
 4096 x 4096 LUVOIR aperture files. Pixels are 4.207mm
+
+
+distance between bottom and lower lines in pupil: 3780.8 pix = 15.9058256 m
+On PIAACMC implementation, this should be equal to 9mm on DM (30 actuators)
+

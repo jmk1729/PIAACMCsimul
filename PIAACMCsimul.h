@@ -374,6 +374,8 @@ double PIAACMCsimul_optimizeLyotStop(const char *IDamp_name, const char *IDpha_n
 
 long PIAACMCsimul_mkLyotMask(const char *IDincoh_name, const char *IDmc_name, const char *IDzone_name, double throughput, const char *IDout_name);
 
+long PIAACMCsimul_geomProp(const char *IDin_name, const char *IDsag_name, const char *IDout_name, const char *IDoutcnt_name, float drindex, float pscale, float zprop, float krad, float kstep, float rlim);
+
 ///@}
 
 

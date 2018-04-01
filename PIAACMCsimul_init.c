@@ -31,10 +31,6 @@
 #include "PIAACMCsimul/PIAACMCsimul.h"
 
 
-
-
-extern DATA data;   
-
 extern PIAACMCsimul_varType piaacmcsimul_var;
 
 extern OPTSYST *optsyst;
@@ -62,7 +58,12 @@ extern OPTPIAACMCDESIGN *piaacmc;
  * @note Index allows multiple configurations, but it's always 0.  Nonzero values are untested
  * 
  */
-void PIAACMCsimul_init( OPTPIAACMCDESIGN *design, long index, double TTxld, double TTyld )
+void PIAACMCsimul_init(
+		OPTPIAACMCDESIGN *design, 
+		long index, 
+		double TTxld, 
+		double TTyld 
+		)
 {
     FILE *fp;
     FILE *fpri;

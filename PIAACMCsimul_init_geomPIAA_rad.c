@@ -27,7 +27,6 @@
 #include "PIAACMCsimul/PIAACMCsimul.h"
 
 
-extern DATA data;  
 extern OPTPIAACMCDESIGN *piaacmc;
 extern PIAACMCsimul_varType piaacmcsimul_var;
 
@@ -41,7 +40,9 @@ extern PIAACMCsimul_varType piaacmcsimul_var;
  * this function only works for circular PIAA
  * uses radial PIAACMC design to initialize PIAA optics shapes and focal plane mask
  */
-int PIAACMCsimul_init_geomPIAA_rad(const char *IDapofit_name)
+int PIAACMCsimul_init_geomPIAA_rad(
+		const char *IDapofit_name
+		)
 {
     long i, ii, k;
     double *pup0;

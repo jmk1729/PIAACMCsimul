@@ -36,15 +36,18 @@ extern PIAACMCsimul_varType piaacmcsimul_var;
 ///
 /// solves for focal plane mask solution using pre-computed zone responses
 ///
-/// @param[in] fpmresp_array   Mask zones responses, double array
-/// @param[in] zonez_array     Zone thicknesses, double array
-/// @param[in] dphadz_array    For each lambda, pha = thickness x dphadt_array[lambdaindex]
-/// @param[out] outtmp_array   Output temp array
 ///
 /// written to be fast, no checking of array sizes
 /// all arrays pre-allocated outside this function
 ///
-double PIAACMCsimul_achromFPMsol_eval(double *fpmresp_array, double *zonez_array, double *dphadz_array, double *outtmp_array, long vsize, long nbz, long nbl)
+double PIAACMCsimul_achromFPMsol_eval(
+		double* restrict fpmresp_array, 	/// @param[in] fpmresp_array   Mask zones responses, double array
+		double* restrict zonez_array, 		/// @param[in] zonez_array     Zone thicknesses, double array
+		double* restrict dphadz_array,		/// @param[in] dphadz_array    For each lambda, pha = thickness x dphadt_array[lambdaindex]
+		double* restrict outtmp_array, 		/// @param[out] outtmp_array   Output temp array
+		long vsize, 
+		long nbz, 
+		long nbl)
 {
 	
 	double evalval;
