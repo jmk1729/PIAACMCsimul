@@ -291,11 +291,29 @@ cp $exampledir/pupLUVOIRap6.1024.208.fits.gz pup_1024.fits.gz
 rm pup_1024.fits 2> /dev/null
 gunzip pup_1024.fits.gz
 coin="0.11"
-coout="0.08"
 pupoutmaskrad="0.98"
 set_pupil=1
 }
 
+function loadPup_LUVOIR2048 {
+exampledir="$srcdir/PIAACMCsimul/examples"
+cp $exampledir/pupLUVOIRap6.2048.474.fits.gz pup_2048.fits.gz
+rm pup_2048.fits 2> /dev/null
+gunzip pup_2048.fits.gz
+coin="0.11"
+pupoutmaskrad="0.98"
+set_pupil=1
+}
+
+function loadPup_LUVOIR4096 {
+exampledir="$srcdir/PIAACMCsimul/examples"
+cp $exampledir/pupLUVOIRap6.4096.948.fits.gz pup_4096.fits.gz
+rm pup_4096.fits 2> /dev/null
+gunzip pup_4096.fits.gz
+coin="0.11"
+pupoutmaskrad="0.98"
+set_pupil=1
+}
 
 
 
@@ -359,7 +377,7 @@ echo "     $(tput bold)-e$(tput sgr0) <index>      setup example #<index> (WILL 
 echo "                           0 : Subaru PIAACMC, H band, 2048 pix array"
 echo "                           1 : WFIST PIAACMC, visible (default), 1024 pix array"
 echo "                           2 : PIAACMC on 3-rings segmented aperture, visible, 1024 pix array"
-echo "                           3 : LUVOIR visible, 1024 pix array"
+echo "                           3 : LUVOIR visible, 4096 pix array"
 echo "                           4 : Subaru APLCMC, H band, 1024 pix array (-a not needed), 2% band"
 echo "     $(tput bold)-l$(tput sgr0)              List design parameters"
 echo "     $(tput bold)-m$(tput sgr0) <step>       Design PIAACMC step <step>"
@@ -622,25 +640,31 @@ fi
 
 # LUVOIR
 if [ "$DesignExampleIndex" -eq 3 ]; then
-loadPup_LUVOIR1024
+loadPup_LUVOIR2048
 
-size="1024"
+size="2048"
 invPIAAmode=0
-lambda="650"
+lambda="1300"
 PIAAmaterial="Mirror"
 beamrad="0.0188474"
-pscale="0.00011"
+
+pscale="0.00003916814414" 
+# 2048: "0.00003916814414"
+# 4096: "0.00001958407207"
+
 Fratio="85.9"
 PIAAsep="0.405"
 PIAAr0lim="1.15"
 PIAAr1lim="1.21" # 45mm physical
 # CENTRAL PUPIL BLACK CIRCLE r = 2mm ON BOTH PIAA MIRRORs
+coin="0.1061154324"
+coout="0.1061154324"
 PIAA0pos="0.0"
 prePIAA0maskpos="0.0" # optional
 postPIAA0maskpos="0.0" # optional
 LyotZmin="-0.2"
 LyotZmax="0.2"
-pupoutmaskrad="0.95"
+pupoutmaskrad="0.98"
 
 fpmmaterial="Mirror"
 FPMsectors="2"

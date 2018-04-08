@@ -3,6 +3,29 @@
 coffee << EOF
 loadfits "LUVOIRpup4096.fits.gz" pup
 
+creaim im0b 8192 8192
+addim im0b pup pupb 2051 2051
+imcontract pupb pupc 2 2
+pupcn=pupc/4
+listim
+savefits pupcn "!pupLUVOIRap6.4096.948.fits"
+rm im0b
+rm pupb
+rm pupc
+rm pupcn
+
+
+creaim im0b 8192 8192
+addim im0b pup pupb 2051 2051
+imcontract pupb pupc 4 4
+pupcn=pupc/16
+listim
+savefits pupcn "!pupLUVOIRap6.2048.474.fits"
+rm im0b
+rm pupb
+rm pupc
+rm pupcn
+
 imcontract pup pupc 5 5
 pupcn=pupc/25
 listim
@@ -23,6 +46,12 @@ savefits pupcn1 "!pupLUVOIRap6.1024.208.fits"
 
 exitCLI
 EOF
+
+rm pupLUVOIRap6.4096.948.fits.gz
+gzip pupLUVOIRap6.4096.948.fits
+
+rm pupLUVOIRap6.2048.474.fits.gz
+gzip pupLUVOIRap6.2048.474.fits
 
 rm pupLUVOIRap6.2048.370.fits.gz
 gzip pupLUVOIRap6.2048.370.fits
