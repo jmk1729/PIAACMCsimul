@@ -41,10 +41,10 @@ extern PIAACMCsimul_varType piaacmcsimul_var;
 /// all arrays pre-allocated outside this function
 ///
 double PIAACMCsimul_achromFPMsol_eval(
-		double* restrict fpmresp_array, 	/// @param[in] fpmresp_array   Mask zones responses, double array
-		double* restrict zonez_array, 		/// @param[in] zonez_array     Zone thicknesses, double array
-		double* restrict dphadz_array,		/// @param[in] dphadz_array    For each lambda, pha = thickness x dphadt_array[lambdaindex]
-		double* restrict outtmp_array, 		/// @param[out] outtmp_array   Output temp array
+		double* fpmresp_array, 	/// @param[in] fpmresp_array   Mask zones responses, double array
+		double* zonez_array, 		/// @param[in] zonez_array     Zone thicknesses, double array
+		double* dphadz_array,		/// @param[in] dphadz_array    For each lambda, pha = thickness x dphadt_array[lambdaindex]
+		double* outtmp_array, 		/// @param[out] outtmp_array   Output temp array
 		long vsize, 
 		long nbz, 
 		long nbl)
