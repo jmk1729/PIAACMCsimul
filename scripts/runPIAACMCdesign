@@ -377,7 +377,7 @@ echo "     $(tput bold)-e$(tput sgr0) <index>      setup example #<index> (WILL 
 echo "                           0 : Subaru PIAACMC, H band, 2048 pix array"
 echo "                           1 : WFIST PIAACMC, visible (default), 1024 pix array"
 echo "                           2 : PIAACMC on 3-rings segmented aperture, visible, 1024 pix array"
-echo "                           3 : LUVOIR visible, 4096 pix array"
+echo "                           3 : LUVOIR visible, 2048 pix array"
 echo "                           4 : Subaru APLCMC, H band, 1024 pix array (-a not needed), 2% band"
 echo "     $(tput bold)-l$(tput sgr0)              List design parameters"
 echo "     $(tput bold)-m$(tput sgr0) <step>       Design PIAACMC step <step>"
