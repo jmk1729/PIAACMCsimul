@@ -638,6 +638,7 @@ SetOptParam
 fi
 
 
+
 # LUVOIR
 if [ "$DesignExampleIndex" -eq 3 ]; then
 loadPup_LUVOIR2048
@@ -662,8 +663,8 @@ coout="0.1061154324"
 PIAA0pos="0.0"
 prePIAA0maskpos="0.0" # optional
 postPIAA0maskpos="0.0" # optional
-LyotZmin="-0.2"
-LyotZmax="0.2"
+LyotZmin="-0.5"
+LyotZmax="0.0"
 pupoutmaskrad="0.98"
 
 fpmmaterial="Mirror"
@@ -683,6 +684,8 @@ fpmregsag_alpha="1.0"
 NBls="2"
 set_optparam="1"
 fi
+
+
 
 
 # Subaru APLCMC
