@@ -32,7 +32,7 @@ The monochromatic PIAACMC design process is as follows:
 
 ## STEP 000 (MODE=0): Create an idealized centrally obscured apodized PIAACMC monochromatic design
 
-This is meant as a starting point for the PIAACMC, which will then be optimized further. This step takes a few minutes, and upon normal completion, display: 
+This is meant as a starting point for the PIAACMC, which will then be optimized further. This step takes a few minutes, and upon normal completion, displays: 
 
 ~~~
 ./runPIAACMC REACHED STATE EXIT POINT (1)

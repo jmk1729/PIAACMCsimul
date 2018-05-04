@@ -565,7 +565,7 @@ int PIAACMCsimul_initpiaacmcconf(
             piaacmc[0].fpmsagreg_coeff = 1.0;
             piaacmc[0].fpmsagreg_alpha = 1.0;
             piaacmc[0].fpmRad = 0.5*( piaacmcsimul_var.LAMBDASTART + piaacmcsimul_var.LAMBDAEND)*piaacmc[0].Fratio*fpmradld;  // [l/D] radius
-            printf("Idealized focal plane mask  radius = %f l/D  = %g m    [lambda = %g - %g]\n", fpmradld, piaacmc[0].fpmRad, piaacmcsimul_var.LAMBDASTART, piaacmcsimul_var.LAMBDAEND);
+            printf("Idealized focal plane mask  radius = %f l/D  = %g m    [lambda = %g (%g - %g)] [Fratio = %f]\n", fpmradld, piaacmc[0].fpmRad, 0.5*(piaacmcsimul_var.LAMBDASTART + piaacmcsimul_var.LAMBDAEND), piaacmcsimul_var.LAMBDASTART, piaacmcsimul_var.LAMBDAEND, piaacmc[0].Fratio);
         }
         else
         {
@@ -573,7 +573,7 @@ int PIAACMCsimul_initpiaacmcconf(
                 piaacmcsimul_var.PIAACMC_MASKRADLD = 0.1*( (long) (10.0*1.2*fpmradld)); // 1.2x nominal radius, rounded to nearest 0.1 l/D
 
             piaacmc[0].fpmRad = 0.5*(piaacmcsimul_var.LAMBDASTART + piaacmcsimul_var.LAMBDAEND)*piaacmc[0].Fratio * piaacmcsimul_var.PIAACMC_MASKRADLD;
-            printf("Physical focal plane mask - rad = %f l/D -> %g    [lambda = %g - %g]\n", piaacmcsimul_var.PIAACMC_MASKRADLD, piaacmc[0].fpmRad, piaacmcsimul_var.LAMBDASTART, piaacmcsimul_var.LAMBDAEND);
+            printf("Physical focal plane mask - rad = %f l/D -> %g m   [lambda = %g (%g - %g)] [Fratio = %f]\n", piaacmcsimul_var.PIAACMC_MASKRADLD, piaacmc[0].fpmRad, 0.5*(piaacmcsimul_var.LAMBDASTART + piaacmcsimul_var.LAMBDAEND), piaacmcsimul_var.LAMBDASTART, piaacmcsimul_var.LAMBDAEND, piaacmc[0].Fratio);
         }
 
         piaacmc[0].CmodesID = -1; // Cosine radial mode
@@ -585,6 +585,7 @@ int PIAACMCsimul_initpiaacmcconf(
         piaacmc[0].zonezID = -1;  // focm zone material thickness, double precision image
         piaacmc[0].zoneaID = -1;  // focm zone amplitude transmission, double precision image
     }
+    
 
     piaacmc[0].fpmCentConeRad = piaacmc[0].fpmRad*piaacmc[0].NBringCentCone/piaacmc[0].NBrings;
 

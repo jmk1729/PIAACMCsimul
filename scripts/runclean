@@ -67,6 +67,11 @@ rm sag0.txt
 rm timeused.txt
 rm step200.txt
 rm fpsagtest.txt
+rm fpm_name.txt
+rm fpm_name_conf.txt
+rm ModesExpr_CosRad.txt
+rm FPmask.tmp.fits
+rm APLCapo.*.info
 }
 
 

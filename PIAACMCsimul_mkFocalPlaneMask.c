@@ -139,10 +139,6 @@ long PIAACMCsimul_mkFocalPlaneMask(
     IDsag = create_3Dimage_ID("fpmsag", size, size, nblambda);
     IDzone = create_3Dimage_ID("fpmzone", size, size, nblambda);
 
-/*    printf("Saving image %s\n", IDzonemap_name);
-    save_fits(IDzonemap_name, "!__test_zonemap_02.fits");
-    sleep(10);//TEST
-  */
     
     if(piaacmc[0].NBrings>2)
     {
@@ -161,10 +157,9 @@ long PIAACMCsimul_mkFocalPlaneMask(
 	if(mode > piaacmc[0].focmNBzone)
 		FPMmode = 1;
 		
-
+	// pixel scale [m/pix] at first wavelength in array
     fpscale = (2.0*piaacmc[0].beamrad/piaacmc[0].pixscale)/piaacmc[0].size/piaacmc[0].fpzfactor*optsyst[0].lambdaarray[0]*piaacmc[0].Fratio;
-    printf("piaacmc[0].fpmRad = %g m    fpscale[0] = %g    mode = %d\n", piaacmc[0].fpmRad, fpscale, mode);
-
+    printf("piaacmc[0].fpmRad = %g m    fpscale[0] = %g m/pix   mode = %d\n", piaacmc[0].fpmRad, fpscale, mode);
     
     printf("Allocate memory\n");
 	fflush(stdout);
