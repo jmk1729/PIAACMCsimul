@@ -85,7 +85,7 @@ int clock_gettime(int clk_id, struct mach_timespec *t){
 
 
 
-
+static int INITSTATUS_PIAACMCsimul = 0;
 
 
 
@@ -206,8 +206,12 @@ int_fast8_t PIAACMCsimul_run_cli(){
 
 void __attribute__ ((constructor)) libinit_PIAACMCsimul()
 {
-	init_PIAACMCsimul();
-//	printf(" ...... Loading module %s\n", __FILE__);
+	if ( INITSTATUS_PIAACMCsimul == 0 )
+	{
+		init_PIAACMCsimul();
+		RegisterModule(__FILE__, "coffee", "PIAACMC system simulation");
+		INITSTATUS_info = 1; 
+	}
 }
 
 
@@ -225,11 +229,6 @@ int_fast8_t init_PIAACMCsimul()
 		PIAACMCsimul_logFunctionCall("PIAACMCsimul.fcall.log", __FUNCTION__, __LINE__, "");
 	#endif
 	
-    strcpy(data.module[data.NBmodule].name, __FILE__);
-    strcpy(data.module[data.NBmodule].package, "coffee");
-    strcpy(data.module[data.NBmodule].info, "PIAACMC system simulation");
-    data.NBmodule++;
-
     strcpy(data.cmd[data.NBcmd].key,"piaacmcsimring2sect");
     strcpy(data.cmd[data.NBcmd].module, __FILE__);
     data.cmd[data.NBcmd].fp = PIAACMCsimul_rings2sectors_cli;
