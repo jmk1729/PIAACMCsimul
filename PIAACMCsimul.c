@@ -210,7 +210,7 @@ void __attribute__ ((constructor)) libinit_PIAACMCsimul()
 	{
 		init_PIAACMCsimul();
 		RegisterModule(__FILE__, "coffee", "PIAACMC system simulation");
-		INITSTATUS_info = 1; 
+		INITSTATUS_PIAACMCsimul = 1; 
 	}
 }
 
