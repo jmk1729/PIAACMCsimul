@@ -78,7 +78,7 @@ int PIAACMCsimul_exec_optimize_fpm_zones()
     long k;
 
     long IDstatus;
-    char fname[1000];
+    char fname[1500];
 
     FILE *fp;
 

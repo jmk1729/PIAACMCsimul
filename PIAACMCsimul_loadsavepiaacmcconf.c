@@ -54,8 +54,8 @@ int PIAACMCsimul_loadpiaacmcconf(
     char command[1000];
     int r;
     FILE *fp;
-    char fname[500];
-    char imname[500];
+    char fname[1500];
+    char imname[1500];
     long i;
 
     int tmpi;
@@ -188,7 +188,7 @@ int PIAACMCsimul_savepiaacmcconf(const char *dname)
     char command[1000];
     int r;
     FILE *fp;
-    char fname[1000];
+    char fname[1500];
     long i;
     
 	

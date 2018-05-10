@@ -62,7 +62,7 @@ int PIAACMCsimul_exec_multizone_fpm_calib()
     double centobs0 = 0.3;
     double centobs1 = 0.2;
     long index;
-    char fname[1000];
+    char fname[1500];
     char fnamet[1000];
     char fnametmp[1000];
     char fname1[500];
@@ -86,7 +86,7 @@ int PIAACMCsimul_exec_multizone_fpm_calib()
 
     int r;
 
-    char fnamecomb[1000];
+    char fnamecomb[1500];
     long ID1;
 
     long IDfpmresp;

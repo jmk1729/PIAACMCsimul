@@ -58,9 +58,9 @@ int PIAACMCsimul_run(
 {
     long i;
     FILE *fp;
-    char fname[500];
-    char fname1[500];
-    char fnamebestval[500];
+    char fname[1500];
+    char fname1[1500];
+    char fnamebestval[1500];
     double bestval = 1.0;
     int ret;
     char command[1000];
@@ -73,7 +73,7 @@ int PIAACMCsimul_run(
     char stopfile[500];
     long IDv;
     long IDbestsoltmp, IDbestsol;
-    char fnamebestsol[500];
+    char fnamebestsol[1500];
     int loopin = 0;
     struct timeval start, end;
     long secs_used,micros_used;

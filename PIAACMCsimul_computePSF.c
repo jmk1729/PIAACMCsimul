@@ -109,7 +109,7 @@ double PIAACMCsimul_computePSF(
     char fname_piaa2z[500];
     char fname_pupa0[500];
     char fname_pupp0[500];
-    char fname[500];
+    char fname[1500];
 
     long ID;
     long index;

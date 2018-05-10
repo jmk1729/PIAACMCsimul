@@ -101,7 +101,7 @@ long PIAACMCsimul_mkFocalPlaneMask(
 
     uint_fast8_t CentCone = 0;
     uint_fast8_t OuterCone = 0;
-	char fname[1000];
+	char fname[1500];
 
 	double *tarray;
 	double *aarray;

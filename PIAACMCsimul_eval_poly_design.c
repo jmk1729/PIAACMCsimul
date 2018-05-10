@@ -52,7 +52,7 @@ int PIAACMCsimul_eval_poly_design()
     double valref;
 
     long ID;
-    char fname[1000];
+    char fname[1500];
     long xsize, ysize, zsize;
 
     float *peakarray;

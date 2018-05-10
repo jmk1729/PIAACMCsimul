@@ -79,8 +79,8 @@ int PIAACMCsimul_measure_transm_curve()
     double centobs1 = 0.2;
     double ldoffset;
     double valref;
-    char fname[1000];
-    char fnametransm[1000];
+    char fname[1500];
+    char fnametransm[1500];
 
     printf("=================================== mode 101 ===================================\n");
 

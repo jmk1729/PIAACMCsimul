@@ -251,7 +251,7 @@ int PIAACMCsimul_initpiaacmcconf(
     double rad;
     char command[1000];
     long IDv1, IDv2;
-    char fname[500];
+    char fname[1500];
     char name[500];
     float tmpf;
     double pha0, t0, t;
