@@ -304,7 +304,10 @@ long PIAACMCsimul_regularization_PIAAshapes_add1Dvector(long ID1D, long index0)
  *
  */
 
-int PIAACMCsimul_exec(const char *confindex, long mode)
+int PIAACMCsimul_exec(
+	const char *confindex, 
+	long mode
+	)
 {
     FILE *fp;
     char command[1000];

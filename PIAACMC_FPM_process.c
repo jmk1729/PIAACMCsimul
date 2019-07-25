@@ -3,10 +3,6 @@
  * @brief   PIAA-type coronagraph design
  * 
  * Can design both APLCMC and PIAACMC coronagraphs
- *  
- * @author  O. Guyon
- * @date    21 nov 2017
- *
  * 
  * @bug No known bugs.
  * 
@@ -55,7 +51,7 @@ long PIAACMC_FPM_process(const char *FPMsag_name, const char *zonescoord_name, l
 	
 	IDin = image_ID(FPMsag_name);
 	NBzones = data.image[IDin].md[0].size[0];
-	atype = data.image[IDin].md[0].atype;
+	atype = data.image[IDin].md[0].datatype;
 	
 	switch (atype) {
 		case _DATATYPE_DOUBLE:

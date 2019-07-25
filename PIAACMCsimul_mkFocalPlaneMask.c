@@ -4,9 +4,6 @@
  * 
  * Can design both APLCMC and PIAACMC coronagraphs
  *  
- * @author  O. Guyon
- * @date    21 nov 2017
- *
  * 
  * @bug No known bugs.
  * 
@@ -366,7 +363,7 @@ long PIAACMCsimul_mkFocalPlaneMask(
                                     if(mode == zi)
                                     {
                                         amp = 1.0;
-//                                        pha = OPTICSMATERIALS_pha_lambda(piaacmc[0].fpmmaterial_code, t, optsyst[0].lambdaarray[k]);
+//                                      pha = OPTICSMATERIALS_pha_lambda(piaacmc[0].fpmmaterial_code, t, optsyst[0].lambdaarray[k]);
 //										cospha = cosf(pha);
 //										sinpha = sinf(pha);
                                         retmp += amp;

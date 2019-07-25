@@ -365,6 +365,8 @@ double PIAACMCsimul_computePSF(
             // propagate it (optsyst is a global), output in psfc0 (complex amlitude)
             // and psfi0 (intensity)
             OptSystProp_run(optsyst, 0, startelem, optsyst[0].NBelem, piaacmcsimul_var.piaacmcconfdir, 0);
+
+
             // convert the image to the vector
             linopt_imtools_Image_to_vec("psfc0", "pixindex", "pixmult", imname);
             // save the intensity of the first point

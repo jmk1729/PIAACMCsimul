@@ -143,6 +143,48 @@ set_optconfig=1
 }
 
 
+# refractive PIAA lenses in collimated beam, SiO2 focal plane mask
+function SetConfig_MagAOX_APLCMC_1024 {
+size="1024"
+invPIAAmode=0
+lambda="800"
+PIAAmaterial="Mirror"
+beamrad="0.00430"
+pscale="0.0000215"
+Fratio="30.0"
+PIAAsep="0.06"
+PIAA0pos="0.0"
+LyotZmin="-0.1"
+LyotZmax="0.1"
+pupoutmaskrad="0.98"
+
+fpmmaterial="SiO2"
+FPMsectors="2"
+
+# LYOT STOP(S) DESIGN
+LStransm="0.99"
+NBls="1"
+
+    echo "setting APLC mode (no PIAA optics)"
+    APLCMC="1"
+    PIAAmode="0"
+    echo "$PIAAmode" > ./conf/conf_PIAAmode.txt
+    PIAAmode="0"
+	prePIAA0maskpos="0"
+	echo "$prePIAA0maskpos" > ./conf/conf_prePIAA0maskpos.txt
+	pupoutmaskrad="1.0"
+	echo "$pupoutmaskrad" > ./conf/conf_pupoutmaskrad.txt
+
+set_optconfig=1
+}
+
+
+
+
+
+
+
+
 
 # refractive PIAA lenses in collimated beam, SiO2 focal plane mask
 
@@ -257,6 +299,20 @@ coout="0.2"
 pupoutmaskrad="0.95"
 set_pupil=1
 }
+
+
+function loadPup_MagAOX1024 {
+exampledir="$srcdir/PIAACMCsimul/examples"
+cp $exampledir/pupMagAOXM_1024_200.fits.gz pup_1024.fits.gz
+rm pup_1024.fits 2> /dev/null
+gunzip pup_1024.fits.gz
+coin="0.33"
+coout="0.2"
+pupoutmaskrad="0.95"
+set_pupil=1
+}
+
+
 
 
 function loadPup_Subaru2048 {
@@ -378,9 +434,11 @@ echo "     $(tput bold)-e$(tput sgr0) <index>      setup example #<index> (WILL 
 echo "                           0 : Subaru PIAACMC, H band, 2048 pix array"
 echo "                           1 : WFIST PIAACMC, visible (default), 1024 pix array"
 echo "                           2 : PIAACMC on 3-rings segmented aperture, visible, 1024 pix array"
-echo "                           3 : LUVOIR 1300nm, 1024 pix array"
-echo "                           4 : LUVOIR 1300nm, 2048 pix array"
-echo "                           5 : Subaru APLCMC, H band, 1024 pix array (-a not needed), 2% band"
+echo "                           3 : PIAACMC 1024  LUVOIR     1300nm"
+echo "                           4 : PIAACMC 2018  LUVOIR     1300nm"
+echo "                           5 : APLCMC  1024  Subaru     H band   (-a not needed), 2% band"
+echo "                           6 : APLCMC  1024  Clear pup  H band   (-a not needed), 2% band"
+echo "                           7 : APLCMC  1024  MagAO-X    800nm    (-a not needed), 2% band"
 echo "     $(tput bold)-l$(tput sgr0)              List design parameters"
 echo "     $(tput bold)-m$(tput sgr0) <step>       Design PIAACMC step <step>"
 echo "                      1-18 : design monochromatic PIAACMC up to this step"
@@ -763,6 +821,23 @@ fpmmaterial="CstPha"
 fpmminsag="-0.5e-6"
 fpmmaxsag="0.5e-6"
 lambdaB="10"    # spectral band (%)
+mlambdaB="$lambdaB"
+fi
+
+
+
+# MagAO-X APLCMC
+if [ "$DesignExampleIndex" -eq 7 ]; then
+loadPup_MagAOX1024
+SetConfig_MagAOX_APLCMC_1024
+SetOptParam
+NBrings="12"
+fpmradld="0.8"
+maskradld="1.2"
+fpmmaterial="SiO2"
+fpmminsag="-0.6e-6"
+fpmmaxsag="0.6e-6"
+lambdaB="2"    # spectral band (%)
 mlambdaB="$lambdaB"
 fi
 

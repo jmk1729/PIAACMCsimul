@@ -595,8 +595,8 @@ fi
 
 if [ 210 -eq ${state} ]; then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step210  Tune PIAA shapes and focal plane mask zones, 10 cosine modes, 5 Fourier modes"
-echo "$datestr  step210  Tune PIAA shapes and focal plane mask zones, 10 cosine modes, 5 Fourier modes" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step210  Tune PIAA shapes and focal plane mask zones, 10 cosine modes, 5 Fourier modes"
+echo "$datestr  $0  LINE $LINENO    step210  Tune PIAA shapes and focal plane mask zones, 10 cosine modes, 5 Fourier modes" >> cmdlog.txt
  echo "step 210"
 echo "210" > ./$1/runstep
 touch ./$1/step210.run.txt
@@ -661,8 +661,8 @@ fi
 if [ 500 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step500  Copy point source mask to extended mask"
-echo "$datestr  step500  Copy point source mask to extended mask" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step500  Copy point source mask to extended mask"
+echo "$datestr  $0  LINE $LINENO    step500  Copy point source mask to extended mask" >> cmdlog.txt
 echo "cp fpm_zonea00_20_001_001.fits fpm_zonea10_20_001_001.fits"
 echo "cp fpm_zonez00_20_001_001.fits fpm_zonez10_20_001_001.fits"
 printf "Copy monochromatic mask to polychromatic extended mask\n" 
@@ -687,8 +687,8 @@ fi
 if [ 699 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step699  Compute on-axis monochromatic PSF- idealized PIAACMC - no focal plane mask"
-echo "$datestr  step699  Compute on-axis monochromatic PSF- idealized PIAACMC - no focal plane mask" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step699  Compute on-axis monochromatic PSF- idealized PIAACMC - no focal plane mask"
+echo "$datestr  $0  LINE $LINENO    step699  Compute on-axis monochromatic PSF- idealized PIAACMC - no focal plane mask" >> cmdlog.txt
 echo "699" > ./$1/runstep
 touch ./$1/step699.run.txt
 cp ./$1/piaacmcparams_idealmonomask.conf ./$1/piaacmcparams.conf
@@ -728,8 +728,8 @@ fi
 if [ 700 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step700  Compute on-axis monochromatic PSF - idealized PIAACMC"
-echo "$datestr  step700  Compute on-axis monochromatic PSF - idealized PIAACMC" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step700  Compute on-axis monochromatic PSF - idealized PIAACMC"
+echo "$datestr  $0  LINE $LINENO    step700  Compute on-axis monochromatic PSF - idealized PIAACMC" >> cmdlog.txt
 echo "700" > ./$1/runstep
 touch ./$1/step700.run.txt
 cp ./$1/piaacmcparams_idealmonomask.conf ./$1/piaacmcparams.conf
@@ -760,8 +760,8 @@ fi
 if [ 701 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step701  Eval monochromatic contrast for on-axis PSF, and pointing sensitivity - idealized PIAACMC"
-echo "$datestr  step701  Eval monochromatic contrast for on-axis PSF, and pointing sensitivity - idealized PIAACMC" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step701  Eval monochromatic contrast for on-axis PSF, and pointing sensitivity - idealized PIAACMC"
+echo "$datestr  $0  LINE $LINENO    step701  Eval monochromatic contrast for on-axis PSF, and pointing sensitivity - idealized PIAACMC" >> cmdlog.txt
  if [ ! -f ./$1/step007.txt ]
  then
  echo "====================== step 701 requires step 007 ======================================="
@@ -793,8 +793,8 @@ fi
 if [ 702 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step702  Compute on-axis monochromatic PSF - extended source"
-echo "$datestr  step702  Compute on-axis monochromatic PSF - extended source"  >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step702  Compute on-axis monochromatic PSF - extended source"
+echo "$datestr  $0  LINE $LINENO    step702  Compute on-axis monochromatic PSF - extended source"  >> cmdlog.txt
 echo "702" > ./$1/runstep
 touch ./$1/step702.run.txt
 $execnamestring -n step702 << EOF
@@ -822,8 +822,8 @@ fi
 if [ 720 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step720  Compute on-axis polychromatic PSF"
-echo "$datestr  step720  Compute on-axis polychromatic PSF" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step720  Compute on-axis polychromatic PSF"
+echo "$datestr  $0  LINE $LINENO    step720  Compute on-axis polychromatic PSF" >> cmdlog.txt
 echo "720" > ./$1/runstep
 touch ./$1/step720.run.txt
 $execnamestring -n step720 << EOF
@@ -848,8 +848,8 @@ fi
 if [ 721 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  721  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.01 l/D"
-echo "$datestr  721  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.01 l/D" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step721  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.01 l/D"
+echo "$datestr  $0  LINE $LINENO    step721  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.01 l/D" >> cmdlog.txt
 if [ ! -f ./$1/step007.txt ]
  then
  echo "====================== step 721 requires step 007 ======================================="
@@ -881,8 +881,8 @@ fi
 if [ 722 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step722  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.03 l/D"
-echo "$datestr  step722  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.03 l/D" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step722  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.03 l/D"
+echo "$datestr  $0  LINE $LINENO    step722  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.03 l/D" >> cmdlog.txt
  if [ ! -f ./$1/step007.txt ]
  then
  echo "====================== step 722 requires step 007 ======================================="
@@ -912,8 +912,8 @@ fi
 if [ 723 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step723  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.001 l/D"
-echo "$datestr  step723  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.001 l/D" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step723  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.001 l/D"
+echo "$datestr  $0  LINE $LINENO    step723  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.001 l/D" >> cmdlog.txt
  if [ ! -f ./$1/step007.txt ]
  then
  echo "====================== step 723 requires step 007 ======================================="
@@ -943,8 +943,8 @@ fi
 if [ 724 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step724  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.003 l/D"
-echo "$datestr  step724  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.003 l/D" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step724  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.003 l/D"
+echo "$datestr  $0  LINE $LINENO    step724  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.003 l/D" >> cmdlog.txt
  if [ ! -f ./$1/step007.txt ]
  then
  echo "====================== step 724 requires step 007 ======================================="
@@ -974,8 +974,8 @@ fi
 if [ 725 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step725  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.0001 l/D"
-echo "$datestr  step725  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.0001 l/D" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step725  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.0001 l/D"
+echo "$datestr  $0  LINE $LINENO    step725  Eval polychromatic contrast for on-axis PSF, and pointing sensitivity, 0.0001 l/D" >> cmdlog.txt
  if [ ! -f ./$1/step007.txt ]
  then
  echo "====================== step 725 requires step 007 ======================================="
@@ -1022,8 +1022,8 @@ fi
 if [ 730 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step730  Compute on-axis polychromatic PSF, includes WFC with 1 DM"
-echo "$datestr  step730  Compute on-axis polychromatic PSF, includes WFC with 1 DM" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step730  Compute on-axis polychromatic PSF, includes WFC with 1 DM"
+echo "$datestr  $0  LINE $LINENO    step730  Compute on-axis polychromatic PSF, includes WFC with 1 DM" >> cmdlog.txt
 echo "730" > ./$1/runstep
 touch ./$1/step730.run.txt
 $execnamestring -n step730 << EOF
@@ -1043,8 +1043,8 @@ fi
 if [ 740 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step740  Compute on-axis polychromatic PSF, includes WFC with 2 DMs"
-echo "$datestr  step740  Compute on-axis polychromatic PSF, includes WFC with 2 DMs" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step740  Compute on-axis polychromatic PSF, includes WFC with 2 DMs"
+echo "$datestr  $0  LINE $LINENO    step740  Compute on-axis polychromatic PSF, includes WFC with 2 DMs" >> cmdlog.txt
 echo "740" > ./$1/runstep
 touch ./$1/step740.run.txt
 $execnamestring -n step740 << EOF
@@ -1069,8 +1069,8 @@ fi
 if [ 750 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step750  transmission curve"
-echo "$datestr  step750  transmission curve" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step750  transmission curve"
+echo "$datestr  $0  LINE $LINENO    step750  transmission curve" >> cmdlog.txt
  if [ ! -f ./$1/step007.txt ]
  then
  echo "====================== step 750 requires step 007 ======================================="
@@ -1103,8 +1103,8 @@ fi
 if [ 771 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step771  eval polychromatic contrast for on-axis PSF, and pointing sensitivity"
-echo "$datestr  step771  eval polychromatic contrast for on-axis PSF, and pointing sensitivity" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step771  eval polychromatic contrast for on-axis PSF, and pointing sensitivity"
+echo "$datestr  $0  LINE $LINENO    step771  eval polychromatic contrast for on-axis PSF, and pointing sensitivity" >> cmdlog.txt
 echo "111" > ./$1/runstep
 touch ./$1/step111.run.txt
 $execnamestring -n step111 << EOF
@@ -1123,8 +1123,8 @@ fi
 if [ 772 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step772  Eval monochromatic contrast for on-axis PSF, and pointing sensitivity"
-echo "$datestr  step772  Eval monochromatic contrast for on-axis PSF, and pointing sensitivity" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step772  Eval monochromatic contrast for on-axis PSF, and pointing sensitivity"
+echo "$datestr  $0  LINE $LINENO    step772  Eval monochromatic contrast for on-axis PSF, and pointing sensitivity" >> cmdlog.txt
 echo "112" > ./$1/runstep
 touch ./$1/step112.run.txt
 $execnamestring -n step112 << EOF
@@ -1145,8 +1145,8 @@ fi
 if [ 773 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step773  Eval monochromatic contrast for on-axis PSF, and pointing sensitivity"
-echo "$datestr  step773  Eval monochromatic contrast for on-axis PSF, and pointing sensitivity" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step773  Eval monochromatic contrast for on-axis PSF, and pointing sensitivity"
+echo "$datestr  $0  LINE $LINENO    step773  Eval monochromatic contrast for on-axis PSF, and pointing sensitivity" >> cmdlog.txt
 echo "113" > ./$1/runstep
 touch ./$1/step113.run.txt
 $execnamestring -n step113 << EOF
@@ -1166,8 +1166,8 @@ fi
 if [ 774 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step774  Eval monochromatic transmission curve"
-echo "$datestr  step774  Eval monochromatic transmission curve" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step774  Eval monochromatic transmission curve"
+echo "$datestr  $0  LINE $LINENO    step774  Eval monochromatic transmission curve" >> cmdlog.txt
 echo "114" > ./$1/runstep
 touch ./$1/step114.run.txt
 $execnamestring -n step114 << EOF
@@ -1208,8 +1208,8 @@ fi
 if [ 800 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step800  Import FPM configuration setting from parent directory"
-echo "$datestr  step800  Import FPM configuration setting from parent directory" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step800  Import FPM configuration setting from parent directory"
+echo "$datestr  $0  LINE $LINENO    step800  Import FPM configuration setting from parent directory" >> cmdlog.txt
 touch ./$1/step800.run.txt
 echo "800" > ./$1/runstep
 $execnamestring -n step800 << EOF
@@ -1228,8 +1228,8 @@ fi
 if [ 801 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step801  Remove FPM configuration settings"
-echo "$datestr  step801  Remove FPM configuration settings" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step801  Remove FPM configuration settings"
+echo "$datestr  $0  LINE $LINENO    step801  Remove FPM configuration settings" >> cmdlog.txt
 echo "801" > ./$1/runstep
 touch ./$1/step801.run.txt
 $execnamestring -n step801 << EOF
@@ -1248,8 +1248,8 @@ fi
 if [ 802 -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step802  Restore FPM configuration settings"
-echo "$datestr  step802  Restore FPM configuration settings" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step802  Restore FPM configuration settings"
+echo "$datestr  $0  LINE $LINENO    step802  Restore FPM configuration settings" >> cmdlog.txt
 echo "802" > ./$1/runstep
 touch ./$1/step802.run.txt
 $execnamestring -n step802 << EOF
@@ -1323,11 +1323,15 @@ then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
  if [ ! -f ./$1/step000.txt ]
  then
- echo "$datestr  step000  Compute PSF"
- echo "$datestr  step000  Compute PSF" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    step000  Compute PSF"
+ echo "$datestr  $0  LINE $LINENO    step000  Compute PSF" >> cmdlog.txt
 echo "000" > ./$1/runstep
 touch ./$1/step000.run.txt
 
+
+#
+# in APLC mode, skip steps 1 to 17
+#
 if [ "$PIAAmode" -eq "0" ]; then
 touch ./$1/step001.txt
 touch ./$1/step002.txt
@@ -1366,8 +1370,8 @@ EOF
 mv ./$1/psfi0.fits ./$1/psfi0_step000.fits 
 touch ./$1/step000.txt
 else
- echo "$datestr  skip step 000 [  0] (Compute on-axis PSF, monochromatic, idealized PIAACMC, first iteration)"
- echo "$datestr  skip step 000 [  0] (Compute on-axis PSF, monochromatic, idealized PIAACMC, first iteration)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 000 [  0] (Compute on-axis PSF, monochromatic, idealized PIAACMC, first iteration)"
+ echo "$datestr  $0  LINE $LINENO    skip step 000 [  0] (Compute on-axis PSF, monochromatic, idealized PIAACMC, first iteration)" >> cmdlog.txt
   fi
 state=001
 
@@ -1411,8 +1415,8 @@ then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
  if [ ! -f ./$1/step001.txt ]
  then
-echo "$datestr  step001  Compute on-axis PSF"
-echo "$datestr  step001  Compute on-axis PSF" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step001  Compute on-axis PSF"
+echo "$datestr  $0  LINE $LINENO    step001  Compute on-axis PSF" >> cmdlog.txt
  echo "001" > ./$1/runstep
  touch ./$1/step001.run.txt
 $execnamestring -n step001 << EOF
@@ -1433,8 +1437,8 @@ EOF
  cp ./$1/piaa1Fmodes.fits ./$1/piaa1Fmodes_step001.fits
  touch ./$1/step001.txt
  else
- echo "$datestr  skip step 001 [  0] (Compute on-axis PSF, monochromatic, idealized PIAACMC)" 
- echo "$datestr  skip step 001 [  0] (Compute on-axis PSF, monochromatic, idealized PIAACMC)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 001 [  0] (Compute on-axis PSF, monochromatic, idealized PIAACMC)" 
+ echo "$datestr  $0  LINE $LINENO    skip step 001 [  0] (Compute on-axis PSF, monochromatic, idealized PIAACMC)" >> cmdlog.txt
  fi
 state="002"
 fi
@@ -1457,14 +1461,14 @@ then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
  if [ ! -f ./$1/step002.txt ]
  then
-echo "$datestr  step002  Specify input pupil geometry"
-echo "$datestr  step002  Specify input pupil geometry" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step002  Specify input pupil geometry"
+echo "$datestr  $0  LINE $LINENO    step002  Specify input pupil geometry" >> cmdlog.txt
  echo $4
  cp $4 ./$1/pupa0_$2.fits
  touch ./$1/step002.txt
  else
- echo "$datestr  skip step 002       (load pupil geometry)"
- echo "$datestr  skip step 002       (load pupil geometry)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 002       (load pupil geometry)"
+ echo "$datestr  $0  LINE $LINENO    skip step 002       (load pupil geometry)" >> cmdlog.txt
  fi
 state="003"
 fi
@@ -1485,8 +1489,8 @@ then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
  if [ ! -f ./$1/step003.txt ]
  then
-echo "$datestr  step003  compute on-axis PSF"
-echo "$datestr  step003  compute on-axis PSF" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step003  compute on-axis PSF"
+echo "$datestr  $0  LINE $LINENO    step003  compute on-axis PSF" >> cmdlog.txt
 echo "003" > ./$1/runstep
 touch ./$1/step003.run.txt
 $execnamestring -n step003 << EOF
@@ -1502,8 +1506,8 @@ EOF
 mv ./$1/psfi0.fits ./$1/psfi0_step003.fits
 touch ./$1/step003.txt
  else
- echo "$datestr  skip step 003 [  0] (Compute on-axis PSF)"
- echo "$datestr  skip step 003 [  0] (Compute on-axis PSF)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 003 [  0] (Compute on-axis PSF)"
+ echo "$datestr  $0  LINE $LINENO    skip step 003 [  0] (Compute on-axis PSF)" >> cmdlog.txt
  fi
 state="004"
 fi
@@ -1531,8 +1535,8 @@ then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
  if [ ! -f ./$1/step004.txt ]
  then
-echo "$datestr  step004  Compute Lyot stops shapes and locations"
-echo "$datestr  step004  Compute Lyot stops shapes and locations" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step004  Compute Lyot stops shapes and locations"
+echo "$datestr  $0  LINE $LINENO    step004  Compute Lyot stops shapes and locations" >> cmdlog.txt
 echo "004" > ./$1/runstep
 touch ./$1/step004.run.txt
 $execnamestring -n step004 << EOF
@@ -1559,8 +1563,8 @@ cp ./$1/LyotStop3.fits ./$1/LyotStop3_step004.fits
 cp ./$1/piaacmcparams.conf ./$1/piaacmcparams_step004.conf
 touch ./$1/step004.txt
  else
- echo "$datestr  skip step 004 [  5] (Compute Lyot stops shapes and locations, 1st pass)"
- echo "$datestr  skip step 004 [  5] (Compute Lyot stops shapes and locations, 1st pass)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 004 [  5] (Compute Lyot stops shapes and locations, 1st pass)"
+ echo "$datestr  $0  LINE $LINENO    skip step 004 [  5] (Compute Lyot stops shapes and locations, 1st pass)" >> cmdlog.txt
  fi
 state="005"
 fi
@@ -1581,8 +1585,8 @@ then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
  if [ ! -f ./$1/step005.txt ]
  then
-echo "$datestr  step005  Optimize focal plane mask transm"
-echo "$datestr  step005  Optimize focal plane mask transm" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step005  Optimize focal plane mask transm"
+echo "$datestr  $0  LINE $LINENO    step005  Optimize focal plane mask transm" >> cmdlog.txt
 echo "005" > ./$1/runstep
 touch ./$1/step005.run.txt
 $execnamestring -n step005 << EOF
@@ -1599,8 +1603,8 @@ mv ./$1/psfi0.fits ./$1/psfi0_step005.fits
 cp ./$1/piaacmcparams.conf ./$1/piaacmcparams_step005.conf
 touch ./$1/step005.txt
  else
- echo "$datestr  skip step 005 [  2] (optimize focal plane mask transm, 1st pass - see result_fpmt.log for results)"
- echo "$datestr  skip step 005 [  2] (optimize focal plane mask transm, 1st pass - see result_fpmt.log for results)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 005 [  2] (optimize focal plane mask transm, 1st pass - see result_fpmt.log for results)"
+ echo "$datestr  $0  LINE $LINENO    skip step 005 [  2] (optimize focal plane mask transm, 1st pass - see result_fpmt.log for results)" >> cmdlog.txt
  fi
 state="006"
 fi
@@ -1624,8 +1628,8 @@ then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
  if [ ! -f ./$1/step006.txt ]
  then
-echo "$datestr  step006  Compute Lyot stops shapes and locations, 2nd pass, 70%% throughput"
-echo "$datestr  step006  Compute Lyot stops shapes and locations, 2nd pass, 70%% throughput" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step006  Compute Lyot stops shapes and locations, 2nd pass, 70%% throughput"
+echo "$datestr  $0  LINE $LINENO    step006  Compute Lyot stops shapes and locations, 2nd pass, 70%% throughput" >> cmdlog.txt
 echo "006" > ./$1/runstep
 touch ./$1/step006.run.txt
 $execnamestring -n step006 << EOF
@@ -1651,8 +1655,8 @@ cp ./$1/LyotStop3.fits ./$1/LyotStop3_step006.fits
 
 touch ./$1/step006.txt
  else
- echo "$datestr  skip step 006 [  5] (Compute Lyot stops shapes and locations, 2nd pass, 70%% throughput)"
- echo "$datestr  skip step 006 [  5] (Compute Lyot stops shapes and locations, 2nd pass, 70%% throughput)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 006 [  5] (Compute Lyot stops shapes and locations, 2nd pass, 70%% throughput)"
+ echo "$datestr  $0  LINE $LINENO    skip step 006 [  5] (Compute Lyot stops shapes and locations, 2nd pass, 70%% throughput)" >> cmdlog.txt
  fi
 state=007
 fi
@@ -1681,8 +1685,8 @@ then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
  if [ ! -f ./$1/step007.txt ]
  then
- echo "$datestr  step007  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF"
- echo "$datestr  step007  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    step007  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF"
+ echo "$datestr  $0  LINE $LINENO    step007  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF" >> cmdlog.txt
  echo "step 007"
 echo "007" > ./$1/runstep
 touch ./$1/step007.run.txt
@@ -1724,8 +1728,8 @@ cp ./$1/fpm_zonea.fits ./$1/fpm_zonea_step$step.fits
 cp ./$1/linoptval.txt ./$1/linoptval_step007.txt
 touch ./$1/step007.txt
  else
- echo "$datestr  skip step 007 [ 40] (tune PIAA shapes and focal plane mask transm # modes: 10, 5)"
- echo "$datestr  skip step 007 [ 40] (tune PIAA shapes and focal plane mask transm # modes: 10, 5)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 007 [ 40] (tune PIAA shapes and focal plane mask transm # modes: 10, 5)"
+ echo "$datestr  $0  LINE $LINENO    skip step 007 [ 40] (tune PIAA shapes and focal plane mask transm # modes: 10, 5)" >> cmdlog.txt
  fi
 state="008"
 fi
@@ -1752,8 +1756,8 @@ if [ "008" -eq ${state} ]
 then
 if [ ! -f ./$1/step008.txt ]
  then
-echo "$datestr  step008  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF"
-echo "$datestr  step008  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step008  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF"
+echo "$datestr  $0  LINE $LINENO    step008  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF" >> cmdlog.txt
 echo "008" > ./$1/runstep
 touch ./$1/step008.run.txt
 $execnamestring -n step008 << EOF
@@ -1793,8 +1797,8 @@ cp ./$1/fpm_zonea.fits ./$1/fpm_zonea_step008.fits
 cp ./$1/linoptval.txt ./$1/linoptval_step008.txt
 touch ./$1/step008.txt
  else
- echo "$datestr  skip step 008 [ 40] (tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF)"
- echo "$datestr  skip step 008 [ 40] (tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 008 [ 40] (tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF)"
+ echo "$datestr  $0  LINE $LINENO    skip step 008 [ 40] (tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF)" >> cmdlog.txt
  fi
 state="009"
 fi
@@ -1814,8 +1818,8 @@ then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
  if [ ! -f ./$1/step009.txt ]
  then
-echo "$datestr  step009  Compute Lyot stops shapes and locations, 3nd pass, $LStransm1 throughput"
-echo "$datestr  step009  Compute Lyot stops shapes and locations, 3nd pass, $LStransm1 throughput" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step009  Compute Lyot stops shapes and locations, 3nd pass, $LStransm1 throughput"
+echo "$datestr  $0  LINE $LINENO    step009  Compute Lyot stops shapes and locations, 3nd pass, $LStransm1 throughput" >> cmdlog.txt
 step="009"
 echo "$step" > ./$1/runstep
 touch ./$1/step$step.run.txt
@@ -1843,8 +1847,8 @@ cp ./$1/LyotStop3.fits ./$1/LyotStop3_step009.fits
 
 touch ./$1/step009.txt
  else
- echo "skip step 009 [  5] (Compute Lyot stops shapes and locations, 3nd pass, $LStransm1 throughput)"
- echo "skip step 009 [  5] (Compute Lyot stops shapes and locations, 3nd pass, $LStransm1 throughput)" >> cmdlog.txt
+ echo "datestr  $0  LINE $LINENO    skip step 009 [  5] (Compute Lyot stops shapes and locations, 3nd pass, $LStransm1 throughput)"
+ echo "datestr  $0  LINE $LINENO    skip step 009 [  5] (Compute Lyot stops shapes and locations, 3nd pass, $LStransm1 throughput)" >> cmdlog.txt
  fi
 state="010"
 fi
@@ -1864,8 +1868,8 @@ then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
  if [ ! -f ./$1/step010.txt ]
  then
-echo "$datestr  step010  Tune Lyot stops conjugations"
-echo "$datestr  step010  Tune Lyot stops conjugations" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step010  Tune Lyot stops conjugations"
+echo "$datestr  $0  LINE $LINENO    step010  Tune Lyot stops conjugations" >> cmdlog.txt
 step="010"
 echo "$step" > ./$1/runstep
 touch ./$1/step$step.run.txt
@@ -1888,8 +1892,8 @@ mv ./$1/psfi0.fits ./$1/psfi0_step010.fits
 cp ./$1/piaacmcparams.conf ./$1/piaacmcparams_step010.conf
 touch ./$1/step010.txt
  else
- echo "skip step 010 [  1] (Tune Lyot stops conjugations)"
- echo "skip step 010 [  1] (Tune Lyot stops conjugations)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 010 [  1] (Tune Lyot stops conjugations)"
+ echo "$datestr  $0  LINE $LINENO    skip step 010 [  1] (Tune Lyot stops conjugations)" >> cmdlog.txt
  fi
 state="011"
 fi
@@ -1915,8 +1919,8 @@ then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
  if [ ! -f ./$1/step011.txt ]
  then
-echo "$datestr  step011  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF"
-echo "$datestr  step011  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step011  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF"
+echo "$datestr  $0  LINE $LINENO    step011  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF" >> cmdlog.txt
 step="011"
 echo "$step" > ./$1/runstep
 touch ./$1/step$step.run.txt
@@ -1959,8 +1963,8 @@ cp ./$1/fpm_zonea.fits ./$1/fpm_zonea_step$step.fits
 cp ./$1/linoptval.txt ./$1/linoptval_step011.txt
 touch ./$1/step011.txt
  else
- echo "$datestr  skip step 011 [ 40] (Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF)"
- echo "$datestr  skip step 011 [ 40] (Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 011 [ 40] (Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF)"
+ echo "$datestr  $0  LINE $LINENO    skip step 011 [ 40] (Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF)" >> cmdlog.txt
  fi
 state="012"
 fi
@@ -1993,8 +1997,8 @@ datestr=`date -u +%Y-%m-%d_%H:%M:%S`
 step="012"
  if [ ! -f ./$1/step012.txt ]
  then
-echo "$datestr  step$step  Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF"
-echo "$datestr  step$step  Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step$step  Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF"
+echo "$datestr  $0  LINE $LINENO    step$step  Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF" >> cmdlog.txt
 echo "$step" > ./$1/runstep
 touch ./$1/step$step.run.txt
 $execnamestring -n step012 << EOF
@@ -2036,8 +2040,8 @@ cp ./$1/linoptval.txt ./$1/linoptval_step012.txt
 cp ./$1/piaacmcparams.conf ./$1/piaacmcparams_idealmonomask.conf
 touch ./$1/step012.txt
  else
- echo "$datestr  skip step 012 [ 40] (Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF)"
- echo "$datestr  skip step 012 [ 40] (Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 012 [ 40] (Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF)"
+ echo "$datestr  $0  LINE $LINENO    skip step 012 [ 40] (Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF)" >> cmdlog.txt
  fi
 state="013"
 fi
@@ -2059,8 +2063,8 @@ datestr=`date -u +%Y-%m-%d_%H:%M:%S`
 step="013"
  if [ ! -f ./$1/step013.txt ]
  then
-echo "$datestr  step$step  Compute Lyot stops shapes and locations, 4rth pass, $LStransm2 throughput"
-echo "$datestr  step$step  Compute Lyot stops shapes and locations, 4rth pass, $LStransm2 throughput" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step$step  Compute Lyot stops shapes and locations, 4rth pass, $LStransm2 throughput"
+echo "$datestr  $0  LINE $LINENO    step$step  Compute Lyot stops shapes and locations, 4rth pass, $LStransm2 throughput" >> cmdlog.txt
 echo "$step" > ./$1/runstep
 touch ./$1/step$step.run.txt
 $execnamestring -n step013 << EOF
@@ -2089,8 +2093,8 @@ cp ./$1/LyotStop3.fits ./$1/LyotStop3_step013.fits
 
 touch ./$1/step013.txt
  else
- echo "$datestr  skip step 013 [  5] (Compute Lyot stops shapes and locations, 4rth pass, $LStransm2 throughput)"
- echo "$datestr  skip step 013 [  5] (Compute Lyot stops shapes and locations, 4rth pass, $LStransm2 throughput)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 013 [  5] (Compute Lyot stops shapes and locations, 4rth pass, $LStransm2 throughput)"
+ echo "$datestr  $0  LINE $LINENO    skip step 013 [  5] (Compute Lyot stops shapes and locations, 4rth pass, $LStransm2 throughput)" >> cmdlog.txt
  fi
 state="014"
 fi
@@ -2110,8 +2114,8 @@ datestr=`date -u +%Y-%m-%d_%H:%M:%S`
 step="014"
  if [ ! -f ./$1/step014.txt ]
  then
-echo "$datestr  step$step  Tune Lyot stops conjugations"
-echo "$datestr  step$step  Tune Lyot stops conjugations" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step$step  Tune Lyot stops conjugations"
+echo "$datestr  $0  LINE $LINENO    step$step  Tune Lyot stops conjugations" >> cmdlog.txt
 echo "$step" > ./$1/runstep
 touch ./$1/step$step.run.txt
 $execnamestring -n step014 << EOF
@@ -2135,8 +2139,8 @@ cp ./$1/piaacmcparams.conf ./$1/piaacmcparams_step$step.conf
 cp ./$1/piaacmcparams.conf ./$1/piaacmcparams_idealmonomask.conf
 touch ./$1/step014.txt
  else
- echo "$datestr  skip step 014 [  1] (Tune Lyot stops conjugations)\n"
- echo "$datestr  skip step 014 [  1] (Tune Lyot stops conjugations)\n" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 014 [  1] (Tune Lyot stops conjugations)\n"
+ echo "$datestr  $0  LINE $LINENO    skip step 014 [  1] (Tune Lyot stops conjugations)\n" >> cmdlog.txt
  fi
 state="015"
 fi
@@ -2164,8 +2168,8 @@ datestr=`date -u +%Y-%m-%d_%H:%M:%S`
 step=015
  if [ ! -f ./$1/step015.txt ]
  then
-echo "$datestr  step$step  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF"
-echo "$datestr  step$step  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step$step  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF"
+echo "$datestr  $0  LINE $LINENO    step$step  Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF" >> cmdlog.txt
 echo "$step" > ./$1/runstep
 touch ./$1/step$step.run.txt
 $execnamestring -n step015 << EOF
@@ -2207,8 +2211,8 @@ cp ./$1/linoptval.txt ./$1/linoptval_step015.txt
 cp ./$1/piaacmcparams.conf ./$1/piaacmcparams_idealmonomask.conf
 touch ./$1/step015.txt
  else
- echo "$datestr  skip step 015 [ 40] (Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF)"
- echo "$datestr  skip step 015 [ 40] (Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 015 [ 40] (Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF)"
+ echo "$datestr  $0  LINE $LINENO    skip step 015 [ 40] (Tune PIAA shapes and focal plane mask transm # modes: $kmaxC, $kmaxF)" >> cmdlog.txt
  fi
 state="016"
 fi
@@ -2238,8 +2242,8 @@ datestr=`date -u +%Y-%m-%d_%H:%M:%S`
 step="016"
  if [ ! -f ./$1/step016.txt ]
  then
-echo "$datestr  step$stepT  une PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF"
-echo "$datestr  step$stepT  une PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step$stepT  une PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF"
+echo "$datestr  $0  LINE $LINENO    step$stepT  une PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF" >> cmdlog.txt
 echo "$step" > ./$1/runstep
 touch ./$1/step$step.run.txt
 $execnamestring -n step016 << EOF
@@ -2281,8 +2285,8 @@ cp ./$1/linoptval.txt ./$1/linoptval_step016.txt
 cp ./$1/piaacmcparams.conf ./$1/piaacmcparams_idealmonomask.conf
 touch ./$1/step016.txt
  else
- echo "$datestr  skip step 016 [ 40] (Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF)"
- echo "$datestr  skip step 016 [ 40] (Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 016 [ 40] (Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF)"
+ echo "$datestr  $0  LINE $LINENO    skip step 016 [ 40] (Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF)" >> cmdlog.txt
  fi
 state="017"
 fi
@@ -2309,8 +2313,8 @@ datestr=`date -u +%Y-%m-%d_%H:%M:%S`
 step=017
  if [ ! -f ./$1/step017.txt ]
  then
-echo "$datestr  step$step  Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF"
-echo "$datestr  step$step  Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step$step  Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF"
+echo "$datestr  $0  LINE $LINENO    step$step  Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF" >> cmdlog.txt
 echo "$step" > ./$1/runstep
 touch ./$1/step$step.run.txt
 $execnamestring -n step017 << EOF
@@ -2352,8 +2356,8 @@ cp ./$1/linoptval.txt ./$1/linoptval_step017.txt
 cp ./$1/piaacmcparams.conf ./$1/piaacmcparams_idealmonomask.conf
 touch ./$1/step017.txt
  else
- echo "$datestr  skip step 017 [ 40] (Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF)"
- echo "$datestr  skip step 017 [ 40] (Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF)" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 017 [ 40] (Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF)"
+ echo "$datestr  $0  LINE $LINENO    skip step 017 [ 40] (Tune PIAA shapes and focal plane mask transm, # modes: $kmaxC, $kmaxF)" >> cmdlog.txt
  fi
 state="018"
 fi
@@ -2369,7 +2373,7 @@ if [ "018" -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
 step=018
-echo "$datestr  step$step  --" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step$step  --" >> cmdlog.txt
 echo "$step" > ./$1/runstep
 touch ./$1/step$step.run.txt
 state="100"
@@ -2400,8 +2404,8 @@ then
 step="100"
     if [ ! -f ./$1/step100.txt ]
     then
-    echo "$datestr  step100  Turn focal plane mask into physical mask with zones, Compute polychromatic response to zones, store result in FPMresp"
-    echo "$datestr  step100  Turn focal plane mask into physical mask with zones, Compute polychromatic response to zones, store result in FPMresp" >> cmdlog.txt
+    echo "$datestr  $0  LINE $LINENO    step100  Turn focal plane mask into physical mask with zones, Compute polychromatic response to zones, store result in FPMresp"
+    echo "$datestr  $0  LINE $LINENO    step100  Turn focal plane mask into physical mask with zones, Compute polychromatic response to zones, store result in FPMresp" >> cmdlog.txt
     echo "$step" > ./$1/runstep
     touch ./$1/step$step.run.txt
 
@@ -2500,8 +2504,8 @@ fi
 
 #mv ./$1/psfi0.fits ./$1/psfi0_step100.fits
  else
- echo "$datestr  skip step 100 [ 11] turn focal plane mask into zones, Compute polychromatic response to zones, store result in FPMresp" 
- echo "$datestr  skip step 100 [ 11] turn focal plane mask into zones, Compute polychromatic response to zones, store result in FPMresp" >> cmdlog.txt
+ echo "$datestr  $0  LINE $LINENO    skip step 100 [ 11] turn focal plane mask into zones, Compute polychromatic response to zones, store result in FPMresp" 
+ echo "$datestr  $0  LINE $LINENO    skip step 100 [ 11] turn focal plane mask into zones, Compute polychromatic response to zones, store result in FPMresp" >> cmdlog.txt
  fi
 state="101"
 fi
@@ -2521,8 +2525,8 @@ datestr=`date -u +%Y-%m-%d_%H:%M:%S`
 echo "entering step 101"
 if [ ! -f ./$1/step101.txt ]
  then
-echo "$datestr  step101  Search for optimal FPM solution"
-echo "$datestr  step101  Search for optimal FPM solution" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step101  Search for optimal FPM solution"
+echo "$datestr  $0  LINE $LINENO    step101  Search for optimal FPM solution" >> cmdlog.txt
 step="101"
 echo "$step" > ./$1/runstep
 touch ./$1/step$step.run.txt
@@ -2538,8 +2542,8 @@ piaacmcsimrun $1 13
 exit
 EOF
  else
-echo "$datestr  skip step 101 [ 13] search for optimal solution"
-echo "$datestr  skip step 101 [ 13] search for optimal solution" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    skip step 101 [ 13] search for optimal solution"
+echo "$datestr  $0  LINE $LINENO    skip step 101 [ 13] search for optimal solution" >> cmdlog.txt
 fi
 #touch ./$1/step101.txt
 state="102"
@@ -2557,8 +2561,8 @@ checkexit
 if [ "102" -eq ${state} ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
-echo "$datestr  step102  END"
-echo "$datestr  step102  END" >> cmdlog.txt
+echo "$datestr  $0  LINE $LINENO    step102  END"
+echo "$datestr  $0  LINE $LINENO    step102  END" >> cmdlog.txt
 cleanup
 exit
 fi

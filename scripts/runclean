@@ -29,6 +29,10 @@ rm -rf status
 rm -rf piaacmcconf_*
 rm -rf eval*
 
+rm stop.time_elapsed.ttxt
+rm cmdlogtest.txt
+rm cmdlogtest1.txt
+rm tmpcmd
 rm ModesExpr_CPA.txt
 rm prePIAA0mask.fits
 rm prePIAA1mask.fits

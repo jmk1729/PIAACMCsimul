@@ -4,10 +4,14 @@
 
 
 
-## Overview
+## 1. Overview
 
 
-The design proceeds in discrete steps. The example scripts show the individual steps, and each step is executed with a separate command line. 
+The design proceeds in discrete steps. The example scripts show the individual steps, and each step is executed with a separate command line with :
+
+	./runPIAACMCdesign -m <STEPNUMBER+1>
+
+Note that the above command will execute all steps up to and including step STEPNUMBER. For example, to run steps 0 to 5 (included), you must run `./runPIAACMCdesign -m 6`.
 
 Steps from 0 to 99 are executed sequentially to design a monochromatic PIAACMC. For these steps, the user may run multiple steps with a single command. For example, running step 18 will execute all steps from 0 to 17 included. If a step has already been completed, it will not be re-run.
 
@@ -30,7 +34,7 @@ The monochromatic PIAACMC design process is as follows:
 
 
 
-## STEP 000 (MODE=0): Create an idealized centrally obscured apodized PIAACMC monochromatic design
+## 2. STEP 000 (MODE=0): Create an idealized centrally obscured apodized PIAACMC monochromatic design
 
 This is meant as a starting point for the PIAACMC, which will then be optimized further. This step takes a few minutes, and upon normal completion, displays: 
 

@@ -721,7 +721,21 @@ echo "$datestr  ./runopt $runoptcmd $pscale $coin $coout $fpmradld $lambda $PIAA
 
 touch run.cmd.tsart
 
+
+# THIS IS THE MAIN COMMAND
+
+
 ./runopt $runoptcmd $pscale $coin $coout $fpmradld $lambda $PIAAmaterial $LStransm $NBls $mlambda $mlambdaB $NBrings $maskradld $ssize $extmode $fpmmaterial $fpmminsag $fpmmaxsag $fpmregsag_coeff $fpmregsag_alpha $fpmccnbr $fpmccz $fpmocradld $fpmocz 000
+
+
+
+
+
+
+
+
+
+
 
 
 
