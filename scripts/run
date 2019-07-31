@@ -762,6 +762,11 @@ find ./piaacmcconf_i000/WFpha0_* -type f -newer run.cmd.tsart -print0 | xargs -0
 find ./piaacmcconf_i000/conf_* -type f -newer run.cmd.tsart -print0 | xargs -0 cp -t ./eval0/
 find ./piaacmcconf_i000/scoring* -type f -newer run.cmd.tsart -print0 | xargs -0 cp -t ./eval0/
 
+# added by Justin to match modified on line 386 in rupopt fxn mzfpmoptimize
+find ./piaacmcconf_i000/Contrast* -type f -newer run.cmd.tsart -print0 | xargs -0 cp -t ./eval0/
+find ./piaacmcconf_i000/psfi0_x00* -type f -newer run.cmd.tsart -print0 | xargs -0 cp -t ./eval0/
+find ./piaacmcconf_i000/psfi0_x50* -type f -newer run.cmd.tsart -print0 | xargs -0 cp -t ./eval0/
+
 #find ./piaacmcconf_i000/ -type f -newer run.cmd.tsart -print0 | xargs -0 cp -t ./eval0/
 
 echo "cp piaacmcconf_i000/fpm_zone*$( cat fpm_name.txt )* ./eval0/" > tmpcmd

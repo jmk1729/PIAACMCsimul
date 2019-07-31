@@ -218,7 +218,7 @@ if [ -d $dirname1 ]; then
 if [ ! -d $dirname ]; then
 echo "IMPORTING MONOCHROMATIC SOLUTION ... "
 sleep 2
-echo "CREARING DIRECTORY $dirname"
+echo "CREATING DIRECTORY $dirname"
 mkdir -p $dirname
 cp $dirname1/pupa0_1024.fits $dirname/
 cp $dirname1/piaa0Cmodes.fits $dirname/

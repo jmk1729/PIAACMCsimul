@@ -664,9 +664,6 @@ int PIAACMCsimul_initpiaacmcconf(
         piaacmc[0].lambdaarray[k] = piaacmcsimul_var.LAMBDASTART + (0.5+k)*(piaacmcsimul_var.LAMBDAEND - piaacmcsimul_var.LAMBDASTART)/piaacmc[0].nblambda;
 
 
-
-
-
     // create modes for aspheric optical surfaces description
     beamradpix = piaacmc[0].beamrad/piaacmc[0].pixscale;
     size = piaacmc[0].size;
@@ -1125,6 +1122,7 @@ int PIAACMCsimul_initpiaacmcconf(
 	sprintf(command, "echo \"%s\" > fpm_name_conf.txt", piaacmcsimul_var.fnamedescr_conf);
 	ret = system(command);
 	
+	
 
 
     /*    piaacmcsimul_var.CREATE_fpmzmap = 0;
@@ -1155,6 +1153,8 @@ int PIAACMCsimul_initpiaacmcconf(
     {
         printf("Make zonemap ...\n");
         fflush(stdout);
+        //debug from Justin
+        //sleep(10);
         PIAACMCsimul_mkFPM_zonemap("fpmzmap");
     }
     else
@@ -1185,7 +1185,10 @@ int PIAACMCsimul_initpiaacmcconf(
             sprintf(fname, "%s/fpm_zonez.%s.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
 
             printf("LOADING FILE NAME : \"%s\"  -  %ld %d \n", fname, piaacmctype, loaded);
-
+			fflush(stdout);
+			// debug from Justin
+			sleep(10);
+			
             piaacmc[0].zonezID = load_fits(fname, "fpmzt", 1);
             if(piaacmc[0].zonezID == -1)
                 piaacmcsimul_var.CREATE_fpmzt = 1;
@@ -1199,6 +1202,7 @@ int PIAACMCsimul_initpiaacmcconf(
     if( piaacmcsimul_var.CREATE_fpmzt == 1 )
     {
         printf("Creating fpmzt, saving as fpm_zonez.fits - %ld %d\n", piaacmctype, loaded);
+        fflush(stdout);
         piaacmc[0].zonezID = image_ID("fpmzt");
         if(piaacmc[0].zonezID!=-1)
             delete_image_ID("fpmzt");
@@ -1210,6 +1214,8 @@ int PIAACMCsimul_initpiaacmcconf(
         {
             printf("IDEALIZED FOCAL PLANE MASK\n");
             fflush(stdout);
+            // debug from Justin
+            //sleep(10);
             //          exit(0);
 
             // measure dpha/dt
@@ -1218,7 +1224,9 @@ int PIAACMCsimul_initpiaacmcconf(
             // set t to get PI phase
             t = (M_PI/pha0)*t0;
             printf("t = %g m (%lf %g) -> %g %g\n", t, pha0, t0, OPTICSMATERIALS_pha_lambda(piaacmc[0].fpmmaterial_code, t, 0.5*(piaacmcsimul_var.LAMBDASTART + piaacmcsimul_var.LAMBDAEND)), 0.5*(piaacmcsimul_var.LAMBDASTART + piaacmcsimul_var.LAMBDAEND));
-
+			fflush(stdout);
+			// debug from Justin
+			//sleep(10);
             printf(" -- lambda = %g\n", piaacmc[0].lambda);
             printf(" -- lambdaB = %g\n", piaacmc[0].lambdaB);
             printf(" -- LAMBDASTART = %g\n", piaacmcsimul_var.LAMBDASTART);
@@ -1238,6 +1246,9 @@ int PIAACMCsimul_initpiaacmcconf(
 		sprintf(fname, "!%s/fpm_zonez.%s.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
 
         printf("Writing %s\n", fname);
+        fflush(stdout);
+        // debug from Justin
+        sleep(10);
         save_fits("fpmzt", fname);
     }
 
@@ -1245,6 +1256,7 @@ int PIAACMCsimul_initpiaacmcconf(
     // zones transmission amplitude
 
     printf("CREATE_fpmza = %d\n", piaacmcsimul_var.CREATE_fpmza);
+    fflush(stdout);
     if( piaacmcsimul_var.FORCE_CREATE_fpmza == 0 )
     {
         piaacmc[0].zoneaID = image_ID("fpmza");
@@ -1274,6 +1286,8 @@ int PIAACMCsimul_initpiaacmcconf(
         if( piaacmcsimul_var.PIAACMC_MASKRADLD > 0.2 ) // physical mask
         {
             printf("PHYSICAL MASK ... %ld zones\n", piaacmc[0].focmNBzone);
+            fflush(stdout);
+            
             for(ii=0; ii<piaacmc[0].focmNBzone; ii++)
                 data.image[piaacmc[0].zoneaID].array.D[ii] = 1.0;
         }

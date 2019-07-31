@@ -382,7 +382,8 @@ fi
 # compute polychromatic PSF for extended source
 
 # 0.01 l/D
-if [ $computecontrast -gt 1 ]
+# evaluation for eval0 and eval1 added by Justin
+if [ $computecontrast -gt 0 ]
 then
 datestr=`date -u +%Y-%m-%d_%H:%M:%S`
 echo "$datestr  ./sim 721 $pscale $coin $coout $fpmrad $lambda $PIAAmaterial $LStransm $NBlyotstop $mlambda $mlambdaB $NBrings $maskradld $fpmminsag $fpmmaxsag $fpmregsag_coeff $fpmregsag_alpha $fpmccnbr $fpmccz $fpmocradld $fpmocz $ssize $extmode $fpmmaterial $index" >> cmdlog.txt
@@ -511,6 +512,8 @@ funcprocess ()
 {
 file1="./status/design_coin${coin}_coout${coout}_fpmrad${fpmrad}_l${lambda}_${PIAAmaterial}_lt${LStransm}_nbls${NBlyotstop}_mono.txt"
 echo "file1 : $file1"
+# debug from Justin
+# sleep 10
 echo "funcprocess: MdesignStepMax = $MdesignStepMax"
 
 if [ -f ${file1} ]

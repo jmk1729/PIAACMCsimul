@@ -145,10 +145,14 @@ int PIAACMCsimul_eval_poly_design()
 
 
     piaacmcsimul_var.FORCE_CREATE_fpmza = 1;
+    
+    // debug from Justin
+    //printf("Initializing PIAACMC configuration\n");
+    //fflush(stdout);
+    //sleep(10);
     PIAACMCsimul_initpiaacmcconf(piaacmcsimul_var.PIAACMC_fpmtype, fpmradld, centobs0, centobs1, 0, 1);
-
-
-
+    
+    
 
 
     PIAACMCsimul_makePIAAshapes(piaacmc, 0);
@@ -169,6 +173,10 @@ int PIAACMCsimul_eval_poly_design()
     printf("ldoffset = %f\n", ldoffset);
 
     // compute off-axis POINT source
+    // debug from Justin
+    printf("Computing off-axis point spread function\n");
+    fflush(stdout);
+    //sleep(10);
     valref = PIAACMCsimul_computePSF(5.0, 0.0, 0, optsyst[0].NBelem, 1, 0, 0, 0);
     sprintf(fname,"!%s/psfi0_x50_y00.fits", piaacmcsimul_var.piaacmcconfdir);
     save_fits("psfi0", fname);
@@ -204,6 +212,10 @@ int PIAACMCsimul_eval_poly_design()
 
 
     // compute on-axis POINT source
+    // debug from Justin
+    printf("Computing on-axis point spread function\n");
+    fflush(stdout);
+    //sleep(10);
     valref = PIAACMCsimul_computePSF(0.0, 0.0, 0, optsyst[0].NBelem, 1, 0, 0, 1);
     sprintf(fname,"!%s/psfi0_x00_y00.fits", piaacmcsimul_var.piaacmcconfdir);
     save_fits("psfi0", fname);
@@ -261,7 +273,7 @@ int PIAACMCsimul_eval_poly_design()
     fprintf(fp, "# Contrast curve\n");
     fprintf(fp, "# col 1: Angular separation [l/D]\n");
     fprintf(fp, "# col 2: Contrast value\n");
-    fprintf(fp, "# col 3: Numer of points used for contrast measurement\n");
+    fprintf(fp, "# col 3: Number of points used for contrast measurement\n");
     fprintf(fp, "\n");    
     for(ri=0; ri<eval_sepNBpt; ri++)
     {

@@ -142,16 +142,18 @@ NBls="1"
 set_optconfig=1
 }
 
-
 # refractive PIAA lenses in collimated beam, SiO2 focal plane mask
-function SetConfig_MagAOX_APLCMC_1024 {
+function SetConfig_MagAOX_1024 {
 size="1024"
-invPIAAmode=0
-lambda="800"
-PIAAmaterial="Mirror"
+#invPIAAmode=0
+lambda="900"
+#lambda="800"
+PIAAmaterial="CaF2"
+#PIAAmaterial="Mirror"
 beamrad="0.00430"
 pscale="0.0000215"
-Fratio="30.0"
+Fratio="69.0"
+#Fratio="30.0"
 PIAAsep="0.06"
 PIAA0pos="0.0"
 LyotZmin="-0.1"
@@ -162,18 +164,19 @@ fpmmaterial="SiO2"
 FPMsectors="2"
 
 # LYOT STOP(S) DESIGN
-LStransm="0.99"
+#LStransm="0.99"
+LStransm="0.80"
 NBls="1"
 
-    echo "setting APLC mode (no PIAA optics)"
-    APLCMC="1"
-    PIAAmode="0"
-    echo "$PIAAmode" > ./conf/conf_PIAAmode.txt
-    PIAAmode="0"
-	prePIAA0maskpos="0"
-	echo "$prePIAA0maskpos" > ./conf/conf_prePIAA0maskpos.txt
-	pupoutmaskrad="1.0"
-	echo "$pupoutmaskrad" > ./conf/conf_pupoutmaskrad.txt
+    #echo "setting APLC mode (no PIAA optics)"
+    #APLCMC="1"
+    #PIAAmode="0"
+    #echo "$PIAAmode" > ./conf/conf_PIAAmode.txt
+    #PIAAmode="0"
+	#prePIAA0maskpos="0"
+	#echo "$prePIAA0maskpos" > ./conf/conf_prePIAA0maskpos.txt
+	#pupoutmaskrad="1.0"
+	#echo "$pupoutmaskrad" > ./conf/conf_pupoutmaskrad.txt
 
 set_optconfig=1
 }
@@ -306,7 +309,8 @@ exampledir="$srcdir/PIAACMCsimul/examples"
 cp $exampledir/pupMagAOXM_1024_200.fits.gz pup_1024.fits.gz
 rm pup_1024.fits 2> /dev/null
 gunzip pup_1024.fits.gz
-coin="0.33"
+#coin="0.33"
+coin="0.31"
 coout="0.2"
 pupoutmaskrad="0.95"
 set_pupil=1
@@ -826,17 +830,17 @@ fi
 
 
 
-# MagAO-X APLCMC
+# MagAO-X PIAACMC
 if [ "$DesignExampleIndex" -eq 7 ]; then
 loadPup_MagAOX1024
-SetConfig_MagAOX_APLCMC_1024
+SetConfig_MagAOX_1024
 SetOptParam
 NBrings="12"
 fpmradld="0.8"
-maskradld="1.2"
+maskradld="1.1"
 fpmmaterial="SiO2"
-fpmminsag="-0.6e-6"
-fpmmaxsag="0.6e-6"
+fpmminsag="-1.5e-6"
+fpmmaxsag="1.5e-6"
 lambdaB="2"    # spectral band (%)
 mlambdaB="$lambdaB"
 fi

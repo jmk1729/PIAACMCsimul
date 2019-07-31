@@ -232,6 +232,10 @@ long PIAACMCsimul_mkFocalPlaneMask(
             printf("piaacmc[0].fpmRad = %g m\n", piaacmc[0].fpmRad);
             printf("piaacmc[0].fpmCentConeRad = %g m\n", piaacmc[0].fpmCentConeRad);
             printf("piaacmc[0].fpmOuterConeRad [%d] = %g m\n",  OuterCone, piaacmc[0].fpmOuterConeRad);
+            // debug from Justin
+            printf("Sleeping before mask construction\n");
+            fflush(stdout);
+            sleep(5);
 
 	
 

@@ -353,7 +353,7 @@ double PIAACMCsimul_computePSF(
             // name of the image vector to hold the propagation result
 			sprintf(imname, "imvectp%02ld", imindex);
 			
-            // xld and yld are the input positions of the input source in lamba/D
+            // xld and yld are the input positions of the input source in lambda/D
 			// initialize first point source, which sets optsyst
 			if (extmode==0)
 				PIAACMCsimul_init(piaacmc, 0, xld, yld);
