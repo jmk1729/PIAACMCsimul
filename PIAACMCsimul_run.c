@@ -117,6 +117,9 @@ int PIAACMCsimul_run(
 
 
     printf("mode = %ld\n", mode);
+    fflush(stdout);
+    // debug from Justin
+    sleep(10);
     
     
     double fpmradld = 0.95;  // default

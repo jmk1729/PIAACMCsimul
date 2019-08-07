@@ -157,6 +157,10 @@ int PIAACMCsimul_loadpiaacmcconf(
 int PIAACMCsimul_update_fnamedescr_conf()
 {
 	sprintf(piaacmcsimul_var.fnamedescr_conf, "s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_ssr%02d_ssm%d_wb%02d", piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].nblambda);
+	// debug from Justin
+	// printf("s%d_l%04ld_sr%02ld_nbr%03ld_mr%03ld_ssr%02d_ssm%d_wb%02d\n", piaacmcsimul_var.PIAACMC_FPMsectors, (long) (1.0e9*piaacmc[0].lambda + 0.1), (long) (1.0*piaacmc[0].lambdaB + 0.1), piaacmc[0].NBrings, (long) (100.0*piaacmcsimul_var.PIAACMC_MASKRADLD+0.1), piaacmcsimul_var.computePSF_ResolvedTarget, piaacmcsimul_var.computePSF_ResolvedTarget_mode, piaacmc[0].nblambda);
+	// fflush(stdout);
+	// sleep(2);
 	
 	return EXIT_SUCCESS;
 }
@@ -171,6 +175,10 @@ int PIAACMCsimul_update_fnamedescr()
 	PIAACMCsimul_update_fnamedescr_conf();
 	
 	sprintf(piaacmcsimul_var.fnamedescr, "%s.minsag%06ld_maxsag%06ld_fpmregc%08ld_fpmrega%06ld_%s", piaacmcsimul_var.fnamedescr_conf, (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1.0e9*piaacmc[0].fpmsagreg_coeff+0.1),  (long) (1000.0*piaacmc[0].fpmsagreg_alpha+0.1), piaacmc[0].fpmmaterial_name);
+	// debug from Justin
+	// printf("Running PIAACMCsimul_update_fnamedescr: %s.minsag%06ld_maxsag%06ld_fpmregc%08ld_fpmrega%06ld_%s\n", piaacmcsimul_var.fnamedescr_conf, (long) (1.0e9*piaacmc[0].fpmminsag - 0.1), (long) (1.0e9*piaacmc[0].fpmmaxsag + 0.1), (long) (1.0e9*piaacmc[0].fpmsagreg_coeff+0.1),  (long) (1000.0*piaacmc[0].fpmsagreg_alpha+0.1), piaacmc[0].fpmmaterial_name);
+	// fflush(stdout);
+	// sleep(2);
 		
 	return EXIT_SUCCESS;
 }
@@ -261,7 +269,6 @@ int PIAACMCsimul_savepiaacmcconf(const char *dname)
     sprintf(fname, "!%s/fpm_zonea.%s.fits", piaacmcsimul_var.piaacmcconfdir, piaacmcsimul_var.fnamedescr);
     if(piaacmc[0].zoneaID!=-1)
         save_fits(data.image[piaacmc[0].zoneaID].name, fname);
-
 
 	
 	long IDfpmzmap1;
