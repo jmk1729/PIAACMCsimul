@@ -1,0 +1,373 @@
+#!/bin/bash
+
+
+# number of arguments to script
+NBARGS=2
+
+
+# ======================= PROCESS NAME =================================
+pname=`echo "$0" | sed "s/\.\///g"`
+echo "pname = $pname"
+
+
+mratio0=1.00
+
+# puprad in mm, for MagAO-X this is the undersized pupil at 8.604 mm (from 9.00 mm).
+puprad0=4.302
+
+
+function printHELP {
+echo "------------------------------------------------------------------------"
+echo "$(tput bold) $pname : CREATE MAGELLAN PUPIL $(tput sgr0)"
+echo "------------------------------------------------------------------------"
+echo "  Create Magellan telescope pupil"
+echo "  Assumes re-sizing of all features = $mratio0"
+echo "  Native pupil radius                = $puprad0 mm"
+echo "  Masked pupil radius                = $puprad / $matio0 mm"
+echo "  "
+echo "  "
+echo " $(tput bold)USAGE:$(tput sgr0)"
+echo "     $0 [-hnz] <pixsize> <radpix>"
+echo ""
+echo " $(tput bold)OPTIONS:$(tput sgr0)"
+echo "     $(tput bold)-h$(tput sgr0)          help"
+echo "     $(tput bold)-n$(tput sgr0)          pre-mask pupil (native telescope pupil)"
+echo "     $(tput bold)-m$(tput sgr0)          mask pupil (after pupil mask in Magellan) (default)"
+echo "     $(tput bold)-z$(tput sgr0)          compress output images (gzip)"
+echo ""
+echo " $(tput bold)INPUT:$(tput sgr0)"
+echo "     <pixsize>     array size   [pixel]"
+echo "     <radpix>      pupil radius [pixel]"
+echo ""
+echo " $(tput bold)OUTPUT:$(tput sgr0)"
+echo "     pupMagellan_<pixsize>_<pixrad>.fits            output pupil"
+echo "     pupMagellanm_<pixsize>_<pixrad>.fits           output pupil after actuator masking"
+echo "     pupMagellanM_<pixsize>_<pixrad>.fits           output pupil after actuator masking + support strut"
+echo "   if -n option: "
+echo "     pupMagellan_native_<pixsize>_<pixrad>.fits     output native telescope pupil"
+echo ""
+echo " $(tput bold)NOTES:$(tput sgr0)"
+echo "    The masked pupils are resized so that their outer radius matches parameter <radpix>"
+echo "       -> spiders and central obstruction will be slightly magnified !"
+echo "------------------------------------------------------------------------"
+}
+
+
+printHELP1 ()
+{
+    printf "%20s       Create Magellan pupil\n" "$0" 
+}
+
+
+
+EXITSTATUS=0
+
+function checkFile {
+if [ -f $1 ]
+  then
+    echo "[$(tput setaf 2)$(tput bold)   OK   $(tput sgr0)] File $(tput bold)$1$(tput sgr0) found"
+   else
+    echo "[$(tput setaf 1)$(tput bold) FAILED $(tput sgr0)] File $(tput bold)$1$(tput sgr0) not found"
+    EXITSTATUS=1
+fi
+}
+
+function checkDir {
+if [ -d $1 ]
+  then
+    echo "[$(tput setaf 2)$(tput bold)   OK   $(tput sgr0)] Directory $(tput bold)$1$(tput sgr0) found"
+   else
+    echo "[$(tput setaf 1)$(tput bold) FAILED $(tput sgr0)] Directory $(tput bold)$1$(tput sgr0) not found"
+    EXITSTATUS=1
+fi
+}
+
+function cmdexists()
+{
+  command -v "$1" >/dev/null 2>&1
+}
+
+
+function checkCommand {
+if cmdexists $1; then
+    echo "[$(tput setaf 2)$(tput bold)   OK   $(tput sgr0)] Command $(tput bold)$1$(tput sgr0) found"
+else
+    echo "[$(tput setaf 1)$(tput bold) FAILED $(tput sgr0)] Command $(tput bold)$1$(tput sgr0) not installed.  Aborting."; EXITSTATUS=1;
+fi
+
+}
+
+
+# ================= OPTIONS =============================
+
+
+
+
+# Transform long options to short ones
+singlelinehelp=0
+for arg in "$@"; do
+  shift
+  case "$arg" in
+    "--help") set -- "$@" "-h" ;;
+    "--help1") 
+set -- "$@" "-h" 
+singlelinehelp=1;
+;;
+    *)        set -- "$@" "$arg"
+  esac
+done
+
+
+
+
+
+COROMASK="1"
+COMPRESS="0"
+while getopts :hmnz FLAG; do
+  case $FLAG in
+    n) # native pupil
+	COROMASK="0"
+    ;;
+    m) # masked pupil
+	COROMASK="1"
+    ;;
+    z)
+    COMPRESS="1"
+    ;;
+    h)  #show help
+      if [ "$singlelinehelp" -eq "0" ]; then
+      printHELP
+      else
+      printHELP1
+      fi
+      exit
+      ;;
+    \?) #unrecognized option - show help
+      echo -e \\n"Option -${BOLD}$OPTARG${NORM} not allowed."
+      printHELP
+      ;;
+  esac
+done
+
+shift $((OPTIND-1))  
+
+
+
+
+
+
+
+
+if [ "$1" = "help" ] || [ "$#" -ne $NBARGS ]; then
+if [ "$#" -ne $NBARGS ]; then
+    echo "$(tput setaf 1)$(tput bold) Illegal number of parameters ($NBARGS params required, $# entered) $(tput sgr0)"
+fi
+printHELP
+        exit
+fi
+
+
+
+# ======================= CHECK REQUIRED FILES =================================
+echo ""
+#checkFile file1.txt
+#checkFile file1.txt
+
+
+# ============================= CHECK IF COMMAND EXISTS ==========================
+
+checkCommand coffee
+
+
+
+
+
+
+if [ $EXITSTATUS -eq 1 ]; then
+echo ""
+echo "$(tput setaf 1)$(tput bold) REQUIRED FILES, COMMANDS NOT FOUND: EXITING $(tput sgr0)"
+echo ""
+exit
+else
+echo ""
+fi
+
+
+
+
+# ======================= SCRIPT CODE STARTS HERE =================================
+
+
+
+
+#
+# spider offset
+# spider centerline intersects x-axis at +spoffr (two right spiders) and -spoffr (two left spiders)
+# Note that setting this parameter to zero would have all spiders originate from center of pupil
+# in mm
+spoffr=0.4707
+
+#
+# This is the angle between x-axis and spiders
+# spiders are 90 deg apart, so we use angle = 45 degrees
+# angle in radians
+PA=0.78539816
+
+
+#
+# pre-mask pupil, numbers relative to pupil radius
+#
+
+# magnification ratio. It is 1.0 for the native pupil, and is >1.0 when mask is applied
+# this magnification adjusts the pupil size back to the <pupradpix> entry when the mask is actually undersizing the pupil
+# it is unused (=1.0) unless a mask is applied
+mratio=1.0
+
+# central obstruction radius relative to pupil radius
+# for the Magellan pupil (undersized) it is 2.79 mm / 8.604 mm
+co0=0.32426
+
+# spider thickness in mm
+spthick0=0.1917
+
+# bump angle
+#BA = -38.775 # degrees
+#BA=-0.67675 # radians
+
+
+
+
+
+if [ "$COROMASK" = "1" ]; then
+# post-mask pupil, numbers relative to pupil radius
+mratio=$mratio0
+#co=0.31746 # AFTER magnification by mratio, due to combined effect of 5% oversizing of central obstruction and 5% undersizing of pupil edge
+#spthick=0.064626 # AFTER magnification by mratio
+fi
+
+size=$1
+pupradpix=$2
+# milk should be sym linked to coffee or cacao from installation of either
+milk << EOF
+cx=$size/2
+cy=$size/2
+
+# scale by mratio
+puprad=$puprad0*$mratio
+co=$co0*$mratio*$mratio
+spthick=$spthick0*$mratio
+
+# scale in pix per mm
+scale=$pupradpix/puprad
+copix=co*$pupradpix
+
+# mkdisk <name> <arraysize1> <arraysize2> <centerx> <centery> <radius>
+mkdisk d0 $size $size cx cy $pupradpix
+mkdisk d1 $size $size cx cy copix
+
+# spiders
+spoffpix=$spoffr*scale*$mratio
+spthickpix=spthick*scale
+
+# top right
+x10=cx
+y10=cy+spoffpix
+x20=x10+$pupradpix*cos($PA)
+y20=y10+$pupradpix*sin($PA)
+
+# top left
+x11=cx
+y11=cy-spoffpix
+x21=x11+$pupradpix*cos($PA)
+y21=y11-$pupradpix*sin($PA)
+
+# bottom right
+x12=cx
+y12=cy+spoffpix
+x22=x12-$pupradpix*cos($PA)
+y22=y12+$pupradpix*sin($PA)
+
+# bottom left
+x13=cx
+y13=cy-spoffpix
+x23=x13-$pupradpix*cos($PA)
+y23=y13-$pupradpix*sin($PA)
+
+# mkline <name> <size1> <size2> <x1> <y1> <x2> <y2> <thickness>
+# this makes a line of thickness t from (x1, y1) to (x2, y2)
+mkline spider0 $size $size x10 y10 x20 y20 spthickpix
+mkline spider1 $size $size x11 y11 x21 y21 spthickpix
+mkline spider2 $size $size x12 y12 x22 y22 spthickpix
+mkline spider3 $size $size x13 y13 x23 y23 spthickpix
+
+# from Subaru (mkSubPup) for second actuator mask
+#xl1=x13+2.9*scale
+#yl1=y13-2.0*scale
+#xl2=x23+2.9*scale
+#yl2=y23-2.0*scale
+#spthickpix1=0.5*spthickpix
+#mkline l1 $size $size xl1 yl1 xl2 yl2 spthickpix1
+
+# make actuator mask element - rotated from bump angle (BA)
+cx1=cx+1.8043*scale
+cy1=cy-2.3095*scale
+r1=(0.67/2)*scale
+mkdisk d2 $size $size cx1 cy1 r1
+
+#cx1=cx+3.95*scale
+#cy1=cy+3.15*scale
+#r1=scale*0.7
+
+#mkdisk d3 $size $size cx1 cy1 r1
+
+# create the pupil masks
+pupM=d0-d1-spider0-spider1-spider2-spider3-d2
+#rotateim pupM pupMr 1.570796327
+# truncate matrix values between a range
+imtrunc pupM 0 1 pupM1
+
+pup=d0-d1-spider0-spider1-spider2-spider3
+#rotateim pup pupr 1.570796327
+imtrunc pup 0 1 pup1
+
+#pupm=d0-d1-spider0-spider1-spider2-spider3-d2-d3
+#imtrunc pupm 0 1 pupm1
+
+savefits pupM1 "!tmp_pupMagellanM_${size}_${pupradpix}.fits"
+
+savefits pup1 "!tmp_pupMagellan_${size}_${pupradpix}.fits"
+
+#savefits pupm1 "!tp_pupMagellanm_${size}_${pupradpix}.fits"
+
+
+# some residual Subaru pupil stuff
+#rotateim pup1 pup1r 0.105
+
+#loadfits "pup_measured_internal.fits" mpup
+#mpup1=0.0-mpup/700000
+#resizeim pup1r pup1rr 451 451
+#addim pup1rr mpup1 pupadd 73 100 
+#savefits pup1r "!pup1r.fits"
+#savefits pupadd "!pupadd.fits"
+exit
+EOF
+
+
+
+if [ "$COROMASK" = "1" ]; then
+	mv tmp_pupMagellan_${size}_${pupradpix}.fits pupMagellan_${size}_${pupradpix}.fits
+#	mv tmp_pupMagellanm_${size}_${pupradpix}.fits pupMagellanm_${size}_${pupradpix}.fits
+	mv tmp_pupMagellanM_${size}_${pupradpix}.fits pupMagellanM_${size}_${pupradpix}.fits
+	if [ "$COMPRESS" = "1" ]; then
+	gzip pupMagellan_${size}_${pupradpix}.fits
+#	gzip pupMagellanm_${size}_${pupradpix}.fits
+	gzip pupMagellanM_${size}_${pupradpix}.fits
+	fi
+else
+	mv tmp_pupMagellan_${size}_${pupradpix}.fits pupMagellan_native_${size}_${pupradpix}.fits
+#	rm tmp_pupMagellanm_${size}_${pupradpix}.fits
+	rm tmp_pupMagellanM_${size}_${pupradpix}.fits
+	if [ "$COMPRESS" = "1" ]; then
+	gzip pupMagellan_native_${size}_${pupradpix}.fits
+	fi
+fi
