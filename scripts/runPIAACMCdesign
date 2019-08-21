@@ -1029,6 +1029,15 @@ echo "$REGPIAACALPHA" > conf/conf_REGPIAACALPHA.txt
 echo "$REGPIAACCOEFF" > conf/conf_REGPIAACCOEFF.txt  
 echo "$REGPIAAFALPHA" > conf/conf_REGPIAAFALPHA.txt  
 echo "$REGPIAAFCOEFF" > conf/conf_REGPIAAFCOEFF.txt
+# use setparam.bash for variables typically set in run 
+if [ -z $piaaNBCmodesmax ]; then
+echo "'piaaNBCmodesmax' is unset";
+else echo "$piaaNBCmodesmax" > conf/conf_piaaNBCmodesmax.txt
+fi
+if [ -z $piaaCPAmax ]; then
+echo "'piaaCPAmax' is unset";
+else echo "$piaaCPAmax" > conf/conf_piaaCPAmax.txt
+fi
 #fi
 
 echo "$fpmradld" > conf/conf_fpmradld.txt
@@ -1472,6 +1481,9 @@ if [ "$APLCMC" = "0" ]; then
 step="018"
 if [ "$step" -le "$mSTEP" ]; then
 	if [ ! -f "step$step.txt" ]; then
+        # update the number of Fourier modes to 625 - this overwrites user input
+        # for large array (> 2048) sizes with typical beamradpix (2*400 pix @ 2048), the RAM usage is at least 25 Gb for these Fmodes
+        echo "10.0" > conf/conf_piaaCPAmax.txt
 		./run optsingle $step
 		if [ "$SAVESTEP" = "1" ]; then
 			rsync -au --progress $PWD/ $PWD.step${step} &> /dev/null

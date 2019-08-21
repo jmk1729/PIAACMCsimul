@@ -220,7 +220,7 @@ printhelp_designsteps()
 	echo ""
 	cecho "STEP 009 ----------------------------------------" $bwhite
 	echo ""
-	echo "    Compute Lyot stops shapes and locations, 2nd pass, throughput = LStransm1"
+	echo "    Compute Lyot stops shapes and locations, 3rd pass, throughput = LStransm1"
 	echo ""
 	cecho "STEP 010 ----------------------------------------" $bwhite
 	echo ""
@@ -236,7 +236,7 @@ printhelp_designsteps()
 	echo ""
 	cecho "STEP 013 ----------------------------------------" $bwhite
 	echo ""
-	echo "     Compute Lyot stops shapes and locations, 3rd pass, 80% throughput"
+	echo "     Compute Lyot stops shapes and locations, 4th pass, 80% throughput"
 	echo ""
 	cecho "STEP 014 ----------------------------------------" $bwhite
 	echo ""
@@ -267,7 +267,7 @@ printhelp_designsteps()
 printhelp ()
 {
 	echo ""
-	echo "main PIAACMC design scrit"
+	echo "main PIAACMC design script"
 
 	echo ""
 	echo "Print description of design steps:"
@@ -1417,7 +1417,7 @@ datestr=`date -u +%Y-%m-%d_%H:%M:%S`
  then
 echo "$datestr  $0  LINE $LINENO    step001  Compute on-axis PSF"
 echo "$datestr  $0  LINE $LINENO    step001  Compute on-axis PSF" >> cmdlog.txt
- echo "001" > ./$1/runstep
+echo "001" > ./$1/runstep
  touch ./$1/step001.run.txt
 $execnamestring -n step001 << EOF
 # idealized mask
