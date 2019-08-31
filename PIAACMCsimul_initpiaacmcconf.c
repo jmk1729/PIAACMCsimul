@@ -321,7 +321,8 @@ int PIAACMCsimul_initpiaacmcconf(
         piaacmc[0].beamrad = 0.01; // beam physical radius
         piaacmc[0].PIAA0pos = 1.0; // piaa 0 position [m]
         piaacmc[0].PIAAsep = 1.00; // [m]
-        piaacmc[0].fpzfactor = 8.0;
+        //piaacmc[0].fpzfactor = 8.0;
+        piaacmc[0].fpzfactor = 16.0;
         piaacmc[0].Fratio = 80.0; // default
         strcpy(piaacmc[0].PIAAmaterial_name, "Mirror");  // mirrors
         piaacmc[0].prePIAA0mask = 0;

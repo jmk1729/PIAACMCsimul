@@ -34,7 +34,7 @@ checkerrorstatus ()
 if [ -f ${errorfile} ]
 then
 echo ""
-echo "****** [$(date)] FATAL ERROR: script $0 : $(cat ${errorfile})"
+echo "****** [$(date -u)] FATAL ERROR: script $0 : $(cat ${errorfile})"
 echo "****** exit script $0"
 echo "****** bye !"
 echo ""

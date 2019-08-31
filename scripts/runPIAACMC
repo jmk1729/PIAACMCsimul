@@ -16,7 +16,7 @@ checkerrorstatus ()
 if [ -f ${errorfile} ]
 then
 echo ""
-echo "****** [$(date)] FATAL ERROR: script $0 : $(cat ${errorfile})"
+echo "****** [$(date -u)] FATAL ERROR: script $0 : $(cat ${errorfile})"
 echo "****** exit script $0"
 echo "****** Manually remove file $errorfile to unlock"
 echo "****** bye !"
@@ -499,7 +499,9 @@ LStransm1=$( echo "($LStransm0+$LStransm2)*0.5" | bc -l )
 SCORINGMASKTYPE=1
 
 
-NBpropStep=200
+#NBpropStep=200
+# more reasonable memory usage
+NBpropStep=100
 
 # PARAMETER LOAD SCRIPT TO BE EXECUTED - DEFAULT VALUES
 startupfile="clistartup$pid.txt"

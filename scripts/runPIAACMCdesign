@@ -36,6 +36,8 @@ fi
 execname="coffee"
 echo "reading $execname srcdir"
 srcdir=$( $execname -i 2> /dev/null | grep SOURCEDIR| awk '{ print $NF }')
+# update srcdir to point to the right place
+srcdir+="/src"
 destdir=$( pwd )
 
 

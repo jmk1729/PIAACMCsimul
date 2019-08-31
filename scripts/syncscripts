@@ -51,6 +51,8 @@ echo "------------------------------------------------------------------------"
 # copy PIAACMC design scripts to local directory
 execname="coffee"
 srcdir=$( $execname -i 2> /dev/null | grep SOURCEDIR| awk '{ print $NF }')
+# update srcdir to point to the right place
+srcdir+="/src"
 destdir=$( pwd )
 
 

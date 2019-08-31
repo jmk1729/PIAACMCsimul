@@ -32,7 +32,7 @@ checkerrorstatus ()
 if [ -f ${errorfile} ]
 then
 echo ""
-echo "****** [$(date)] FATAL ERROR: script $0 : $(cat ${errorfile})"
+echo "****** [$(date -u)] FATAL ERROR: script $0 : $(cat ${errorfile})"
 echo "****** exit script $0"
 echo "****** bye !"
 echo ""
@@ -51,9 +51,9 @@ printhelp ()
 	echo ""
 	echo ""
 	echo "Syntax:"
-	echo " $0 <1:designstep> <2:pscale> <3:coin> <4:coout> <5:fpmrad> <6:lambda> <7:PIAAmaterial> <8:LStransm> <9:NBlyotstop> <10:mlambda> <11:mlambdaB> <12:NBrings> <13:maskradld> <14:ssize> <15:extmode> <16:fpmmaterial> <17:index>" 
+	echo " $0 <1:designstep> <2:pscale> <3:coin> <4:coout> <5:fpmrad> <6:lambda> <7:PIAAmaterial> <8:LStransm> <9:NBlyotstop> <10:mlambda> <11:mlambdaB> <12:NBrings> <13:maskradld> <14:fpmminsag> <15:fpmmaxsag> <16:fpmregsag_coeff> <17:fpmregsag_alpha> <18:fpmccnbr> <19:fpmccz> <20:fpmocradld> <21:fpmocz> <22:ssize> <23:extmode> <24:fpmmaterial> <25:index>" 
 	echo "Example : "
-	echo " $0 optsingle    0.00011       0.30     0.29         1.10       650          Mirror         0.75            4           850          10            22           1.60          15           0          Mirror      001"
+	echo " $0 optsingle    0.00011       0.30     0.29         1.10       650          Mirror         0.75            4           850          10            22           1.60          -1.0e-6            1.0e-6            0.1            1.0            0            1.0e-6            8.0            0.0            15           0          Mirror      001"
 	echo ""
 	echo " 1     designstep  : see documentation"
 	echo
