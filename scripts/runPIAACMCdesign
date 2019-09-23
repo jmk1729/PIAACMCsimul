@@ -491,7 +491,7 @@ echo "                           0 : Subaru PIAACMC, H band, 2048 pix array"
 echo "                           1 : WFIST PIAACMC, visible (default), 1024 pix array"
 echo "                           2 : PIAACMC on 3-rings segmented aperture, visible, 1024 pix array"
 echo "                           3 : PIAACMC 1024  LUVOIR     1300nm"
-echo "                           4 : PIAACMC 2018  LUVOIR     1300nm"
+echo "                           4 : PIAACMC 4096  LUVOIR     650nm"
 echo "                           5 : APLCMC  1024  Subaru     H band   (-a not needed), 2% band"
 echo "                           6 : APLCMC  1024  Clear pup  H band   (-a not needed), 2% band"
 echo "                           7 : PIAACMC 2048  MagAO-X    900nm    2% band"
@@ -805,16 +805,19 @@ fi
 
 
 # LUVOIR 2048, 1300nm
+# LUVOIR 4096, 650nm
 if [ "$DesignExampleIndex" -eq 4 ]; then
-loadPup_LUVOIR2048
+loadPup_LUVOIR4096
 
-size="2048"
+size="4096"
+#size="2048"
 invPIAAmode=0
-lambda="1300"
+lambda="650"
+#lambda="1300"
 PIAAmaterial="Mirror"
 beamrad="0.0188474"
 
-pscale="0.00003916814414" 
+pscale="0.00001958407207" 
 # 2048: "0.00003916814414"
 # 4096: "0.00001958407207"
 
@@ -837,16 +840,21 @@ FPMsectors="2"
 
 lambdaB="10"    # spectral band (%)
 mlambdaB="$lambdaB"
-fpmradld="1.2"
+#fpmradld="1.2"
+fpmradld="1.0"
 fpmmaterial="Mirror"
-ssize="20"
+ssize="10"
+extmode="2"
 NBrings="12"
-maskradld="2.00"
-fpmminsag="-0.5e-6"
-fpmmaxsag="0.5e-6"
+#maskradld="2.00"
+maskradld="1.50"
+# for 650 nm do half the sag range
+fpmminsag="-0.25e-6"
+fpmmaxsag="0.25e-6"
 fpmregsag_coeff="1.0"
 fpmregsag_alpha="1.0"
-NBls="2"
+NBls="1"
+#NBls="2"
 set_optparam="1"
 fi
 
