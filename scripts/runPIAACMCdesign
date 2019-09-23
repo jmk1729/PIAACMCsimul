@@ -1074,6 +1074,10 @@ echo "$lambda" > conf/conf_mlambda.txt
 echo "$lambdaB" > conf/conf_mlambdaB.txt
 echo "$nblambda" > conf/conf_nblambda.txt
 echo "$ssize" > conf/conf_ssize.txt
+if [ -z $extmode ]; then
+echo "'Assume point source (extmode = 0)'";
+else echo "$extmode" > conf/conf_extmode.txt
+fi
 
 # OPTICAL DESIGN
 echo "$size" > conf/conf_size.txt
