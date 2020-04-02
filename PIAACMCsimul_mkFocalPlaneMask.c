@@ -178,30 +178,30 @@ long PIAACMCsimul_mkFocalPlaneMask(
 	for(k=0; k<nblambda; k++)
 		for(zi=0;zi<piaacmc[0].focmNBzone;zi++)
 		{
-			//printf("lamdba %3ld  zone %4ld   ", k, zi);
-			//fflush(stdout);
+			printf("lamdba %3ld  zone %4ld   ", k, zi);
+			fflush(stdout);
 	
-			//printf("  ID=%3ld  zi=%3ld -> %4ld/%4ld :\n", piaacmc[0].zonezID, zi, piaacmc[0].focmNBzone*k+zi, piaacmc[0].focmNBzone*nblambda);
-			//fflush(stdout);
+			printf("  ID=%3ld  zi=%3ld -> %4ld/%4ld :\n", piaacmc[0].zonezID, zi, piaacmc[0].focmNBzone*k+zi, piaacmc[0].focmNBzone*nblambda);
+			fflush(stdout);
 			
 			// print material thickness
 			tarray[piaacmc[0].focmNBzone*k+zi] = data.image[piaacmc[0].zonezID].array.D[zi];
-			//printf("     thickness = %8.4g m\n", tarray[piaacmc[0].focmNBzone*k+zi]);
-			//fflush(stdout);
+			printf("     thickness = %8.4g m\n", tarray[piaacmc[0].focmNBzone*k+zi]);
+			fflush(stdout);
 			
-			//printf("     (ID = %3ld  zi = %3ld -> pix = %4ld/%4ld)\n", piaacmc[0].zoneaID, zi, piaacmc[0].focmNBzone*k+zi, piaacmc[0].focmNBzone*nblambda);
-			//fflush(stdout);			
+			printf("     (ID = %3ld  zi = %3ld -> pix = %4ld/%4ld)\n", piaacmc[0].zoneaID, zi, piaacmc[0].focmNBzone*k+zi, piaacmc[0].focmNBzone*nblambda);
+			fflush(stdout);			
 			aarray[piaacmc[0].focmNBzone*k+zi] = data.image[piaacmc[0].zoneaID].array.D[zi];
-			//printf("     amp = %8.4f\n", aarray[piaacmc[0].focmNBzone*k+zi]);
-			//fflush(stdout);			
+			printf("     amp = %8.4f\n", aarray[piaacmc[0].focmNBzone*k+zi]);
+			fflush(stdout);			
 			
 			//
 			// compute phase from thickness
 			// phase sign is positive for outgoing beam element ahead of main beam
 			// 
 			phaarray[piaacmc[0].focmNBzone*k+zi] = OPTICSMATERIALS_pha_lambda(piaacmc[0].fpmmaterial_code, tarray[piaacmc[0].focmNBzone*k+zi], optsyst[0].lambdaarray[k]);
-			//printf("     pha = %8.4f rad\n", phaarray[piaacmc[0].focmNBzone*k+zi]);
-			//fflush(stdout);		
+			printf("     pha = %8.4f rad\n", phaarray[piaacmc[0].focmNBzone*k+zi]);
+			fflush(stdout);		
 
 			cosphaarray[piaacmc[0].focmNBzone*k+zi] = cosf(phaarray[piaacmc[0].focmNBzone*k+zi]);
 			sinphaarray[piaacmc[0].focmNBzone*k+zi] = sinf(phaarray[piaacmc[0].focmNBzone*k+zi]);
